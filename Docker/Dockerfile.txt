@@ -1,0 +1,29 @@
+# Use the ROS2 base image
+FROM ros:foxy
+
+# Install any additional dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    build-essential \
+    python3-colcon-common-extensions \
+    python3-sphinx \
+    python3-pip \
+    default-jdk \
+    graphviz
+
+RUN pip install myst-parser
+RUN pip install sphinx-rtd-theme
+RUN pip install docutils==0.18.1
+RUN pip install -U pytest
+RUN pip install pytest-flake8
+
+# Clone your ROS2 package from GitHub
+RUN mkdir -p /ros_ws/src
+WORKDIR /ros_ws/src
+#change the link to the github repo
+RUN git clone https://github.com/CrazyPandabier/super-duper-fishstick.git
+
+# Build your ROS2 package
+WORKDIR /ros_ws
+RUN . /opt/ros/foxy/setup.sh && \
+    colcon build
