@@ -21,10 +21,12 @@ class Controller(Node):
         self.create_subscription(Odometry, 'r4/odom', self.odom_callback, 10)
         
         # Outputs: cmd_vel for each robot
-        self.pub_r1 = self.create_publisher(Twist, 'r1/cmd_vel', 10)
-        self.pub_r2 = self.create_publisher(Twist, 'r2/cmd_vel', 10)
-        self.pub_r3 = self.create_publisher(Twist, 'r3/cmd_vel', 10)
-        self.pub_r4 = self.create_publisher(Twist, 'r4/cmd_vel', 10)
+        self.cmd_vel_publisher = [
+            self.create_publisher(Twist, 'r1/cmd_vel', 10),
+            self.create_publisher(Twist, 'r2/cmd_vel', 10),
+            self.create_publisher(Twist, 'r3/cmd_vel', 10),
+            self.create_publisher(Twist, 'r4/cmd_vel', 10),
+        ]
 
         self.m2p = 3779.52755
 
@@ -70,8 +72,8 @@ class Controller(Node):
 
             tf_matrix = np.array(
                 [
-                    [np.cos(angle), -np.sin(angle), self.x[i] * self.MAX_SPEED],
-                    [np.sin(angle), np.cos(angle), self.y[i] * self.MAX_SPEED],
+                    [np.cos(angle), -np.sin(angle), self.x[i]],
+                    [np.sin(angle), np.cos(angle), self.y[i]],
                     [0, 0, 1],
                 ]
             )  # transformation matrix template.
@@ -124,55 +126,52 @@ class Controller(Node):
         angle_cof = 1
         lin_cof = 10
 
-        for pose_index, poses in enumerate(path):
+        d_time_linear = []
 
-            time.sleep(0.01)
+        # Build a list of the time it takes for the VS to get from one pose to the next.
+        for pose, next_pose in zip(path, path[1:]):
+            d_p_net_max = 0
+            for i in range(len(pose)):
+                d_pose_x = next_pose[i][0] - pose[i][0]
+                d_pose_y = next_pose[i][1] - pose[i][1]
+                d_p_net = np.sqrt(np.square(d_pose_x) + np.square(d_pose_y))                
+                
+                if d_p_net > d_p_net_max:
+                    d_p_net_max = d_p_net
 
-            print(f'pose {pose_index}')
-            for robot_index, robot_pose in enumerate(poses):
+            d_time_linear.append(d_p_net_max / self.MAX_SPEED)
+
+
+        for (pose_index, poses), (pose_index_next, poses_next) in zip(enumerate(path), enumerate(path[1:])):
+
+            for (robot_index, robot_pose), (robot_index_next, robot_pose_next) in zip(enumerate(poses), enumerate(poses_next)):
                 try:
-                    d_pose_x = (path[pose_index + 1][robot_index][0]) - robot_pose[0]
-                    d_pose_y = (path[pose_index + 1][robot_index][1]) - robot_pose[1]
+                    # Calculate the difference in pose between the current pose and the next pose.
+                    d_pose_x = robot_pose_next[0] - robot_pose[0]
+                    d_pose_y = robot_pose_next[1] - robot_pose[1]
+                    d_p = np.sqrt(np.square(d_pose_x) + np.square(d_pose_y))
 
-                    #d_pose_angle = np.arctan(d_pose_y / d_pose_x) 
-                    d_pose_angle = robot_pose[2]
-
-                    net_speed = np.sqrt(np.square(d_pose_x) + np.square(d_pose_y))
+                    d_angle = robot_pose_next[2] - robot_pose[2]   #sus
 
                 except:
-                    print('EXCEPTION 140 CALLED')
+                    # Catch the exception when the last pose is reached.
                     d_pose_x=d_pose_x
+                    d_pose_y=d_pose_y
+                    d_angle=d_angle
+                    d_p=d_p
 
-                cmd_vel = Twist()  
+                # Generate ROS message.
+                cmd_vel = Twist()
+                cmd_vel.linear.x = d_p / 10
+                cmd_vel.angular.z = d_angle / 10
 
-                if(robot_index == 0):
-                    cmd_vel.angular.z = d_pose_angle / angle_cof
-                    cmd_vel.linear.x = net_speed / lin_cof
-                    self.pub_r1.publish(cmd_vel)
+                self.cmd_vel_publisher[robot_index].publish(cmd_vel)
 
-                if(robot_index == 1):
-                    cmd_vel.angular.z = d_pose_angle / angle_cof
-                    cmd_vel.linear.x = net_speed / lin_cof
-                    self.pub_r2.publish(cmd_vel)
-
-                if(robot_index == 2):
-                    cmd_vel.angular.z = d_pose_angle / angle_cof
-                    cmd_vel.linear.x = net_speed / lin_cof
-                    self.pub_r3.publish(cmd_vel)
-
-                if(robot_index == 3):
-                    cmd_vel.angular.z = d_pose_angle / angle_cof
-                    cmd_vel.linear.x = net_speed / lin_cof
-                    self.pub_r4.publish(cmd_vel)
-
+                print(f'r{robot_index} cmd_vel: {str(cmd_vel.linear.x)[:5]}, {str(cmd_vel.angular.z)[:5]}')
                 
+            # time.sleep(d_time_linear[pose_index])
+            time.sleep(10)
 
-                print(f'r{robot_index} d_pose: {str(d_pose_x)[:5]}, {str(d_pose_y)[:5]}, d_angle {str(d_pose_angle)[:5]}')               
-
-
-                # print(f'Pose-{pose_index}, r{robot_index}: {robot_pose}')
-
-        
         return Twist()
 
 
