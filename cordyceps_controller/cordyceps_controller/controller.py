@@ -38,7 +38,6 @@ def generate_paths(self, poses) -> dict:
 
     return {}
 
-
 def calculate_cmd_vel_robot(self, robot, current_pose, goal_pose) -> Twist:
     #TODO: Calculate the cmd_vel for the robot based on the current pose and the goal pose
     return Twist()
