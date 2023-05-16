@@ -5,6 +5,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Pose
 import numpy as np
 import time
+import matplotlib.pyplot as plt
 
 class Controller(Node):
     def __init__(self):
@@ -28,25 +29,37 @@ class Controller(Node):
             self.create_publisher(Twist, 'r4/cmd_vel', 10),
         ]
 
-        self.m2p = 3779.52755
+        self.m2p = 3779
 
 
         self.RESOLUTION = 1000 # The amount of points in which the paths will be split.
-        self.MAX_SPEED = 20  # Maximum allowed speed from a robot.
+        self.MAX_SPEED = 0.5 # Maximum allowed speed from a robot.(m/s)
 
-        self.x = np.linspace(1.0, -100.0, self.RESOLUTION)
-        self.y_lins = np.linspace(1.0, 100.0, self.RESOLUTION)
-        self.y = np.sin(self.y_lins / 2) * 5
-        self.vs_origin_x = 960  # pixels
-        self.vs_origin_y = 540  # pixels
+        self.vs_origin_x = 400 / self.m2p  # pixels
+        self.vs_origin_y = 400 / self.m2p  # pixels
+
+        self.x = np.linspace(1.0, 5, self.RESOLUTION)
+        self.y_lins = np.linspace(1.0, 5, self.RESOLUTION)
+        self.y = (np.sin(self.y_lins) * 7)
+
+        # generate x and y coordinates for a path folowing a circle with radius r
+        # r = 1 
+        # self.i = np.linspace(-np.pi / 2 , 2.5 * np.pi, self.RESOLUTION)
+        # self.x = r * np.cos(self.i)
+        # self.y = r * np.sin(self.i) - (self.vs_origin_y - 25/ self.m2p)        
+
         self.angle = 0.0  # rad
 
-        self.robot_paths = self.generate_paths()
+        self.distance_to_vs_pixels = 0   # pixels
+        self.distance_to_vs = self.distance_to_vs_pixels / self.m2p   # meters
+
+        self.robot_paths = self.generate_paths()        
+
 
     def cmd_vel_callback(self, msg):
         #TODO: Implement dividing the cmd_vel into 4 cmd_vel for each robot 
         print(msg)
-        
+
     def path_callback(self, msg):
         #TODO: Implement dividing the pose into 4 pose for each robot
         self.robot_paths = self.generate_paths()
@@ -56,10 +69,11 @@ class Controller(Node):
 
     def generate_paths(self) -> dict:
         path = []
+
         for i in range(self.RESOLUTION - 1):
             # mag_vel = np.sqrt(np.square(x[i+1]-x[i]) + np.square(y[i+1]-y[i]))
-            x_goal = self.x[i + 1] - self.x[i]
-            y_goal = self.y[i + 1] - self.y[i]
+            x_goal = (self.x[i + 1] - self.x[i])
+            y_goal = (self.y[i + 1] - self.y[i])
 
             angle = np.arctan(y_goal / x_goal)
             
@@ -67,7 +81,8 @@ class Controller(Node):
                     angle += np.pi
             if y_goal > 0 and x_goal < 0:
                     angle -= np.pi
-            #if y_goal < 0:  # check if the angle is above pi.
+
+            # if y_goal < 0:  # check if the angle is above pi.
             #    angle += np.pi
 
             tf_matrix = np.array(
@@ -79,10 +94,12 @@ class Controller(Node):
             )  # transformation matrix template.
 
             # Robot coordinates.
-            bot_0_xy = np.array([50, -50, 1])
-            bot_1_xy = np.array([50, 50, 1])
-            bot_2_xy = np.array([-50, 50, 1])
-            bot_3_xy = np.array([-50, -50, 1])
+            # bot_0_xy = np.array([0, 0, 1])
+
+            bot_0_xy = np.array([self.distance_to_vs, -self.distance_to_vs, 1])
+            bot_1_xy = np.array([self.distance_to_vs, self.distance_to_vs, 1])
+            bot_2_xy = np.array([-self.distance_to_vs, self.distance_to_vs, 1])
+            bot_3_xy = np.array([-self.distance_to_vs, -self.distance_to_vs, 1])
 
             # Calculation for pose of every robot in the VS.
             trans_0 = tf_matrix.dot(bot_0_xy)
@@ -99,7 +116,12 @@ class Controller(Node):
                     ([trans_3[0] + self.vs_origin_x, trans_3[1] + self.vs_origin_y, angle]),
                 )
             )
-    
+
+        # path.insert(0, [[(self.vs_origin_x + self.distance_to_vs_pixels)/self.m2p, (self.vs_origin_y + self.distance_to_vs_pixels)/self.m2p, 0],
+        #                 [(self.vs_origin_x + self.distance_to_vs_pixels)/self.m2p, (self.vs_origin_y - self.distance_to_vs_pixels)/self.m2p, 0],
+        #                 [(self.vs_origin_x - self.distance_to_vs_pixels)/self.m2p, (self.vs_origin_y - self.distance_to_vs_pixels)/self.m2p, 0],
+        #                 [(self.vs_origin_x - self.distance_to_vs_pixels)/self.m2p, (self.vs_origin_y + self.distance_to_vs_pixels)/self.m2p, 0]])
+
 
         for vs_pose_id, vs_pose in enumerate(path):
             for bot_pose_id, bot_pose in enumerate(vs_pose):
@@ -110,14 +132,31 @@ class Controller(Node):
                     alpha=alpha
                 alpha = -np.arctan(yy / xx)
 
-                if yy < 0 and xx < 0:
-                    alpha += np.pi
-                if yy > 0 and xx < 0:
-                    alpha -= np.pi
+                # if yy < 0 and xx < 0:
+                #     alpha += np.pi
+                # if yy > 0 and xx < 0:
+                #     alpha -= np.pi
 
                 bot_pose[2] = alpha
 
-        self.cmd_vels = self.calculate_cmd_vel_robot(path=path)
+        # li_r1 = []
+        # li_r2 = []
+        # li_r3 = []
+        # li_r4 = []
+        # for i, pose in enumerate(path):
+        #     li_r1.append([pose[0][0], pose[0][1]])
+        #     li_r2.append([pose[1][0], pose[1][1]])
+        #     li_r3.append([pose[2][0], pose[2][1]])
+        #     li_r4.append([pose[3][0], pose[3][1]])
+            
+        # plt.scatter(*zip(*li_r1), s=3)
+        # plt.scatter(*zip(*li_r2), s=3)
+        # plt.scatter(*zip(*li_r3), s=3)
+        # plt.scatter(*zip(*li_r4), s=3)       
+        
+        # plt.show()
+
+        self.calculate_cmd_vel_robot(path=path)        
 
         return path        
 
@@ -139,10 +178,11 @@ class Controller(Node):
                 if d_p_net > d_p_net_max:
                     d_p_net_max = d_p_net
 
-            d_time_linear.append(d_p_net_max / self.MAX_SPEED)
+            d_time_linear.append((d_p_net_max) / self.MAX_SPEED)
 
 
         for (pose_index, poses), (pose_index_next, poses_next) in zip(enumerate(path), enumerate(path[1:])):
+            print("pose_index: ", pose_index)
 
             for (robot_index, robot_pose), (robot_index_next, robot_pose_next) in zip(enumerate(poses), enumerate(poses_next)):
                 try:
@@ -152,6 +192,8 @@ class Controller(Node):
                     d_p = np.sqrt(np.square(d_pose_x) + np.square(d_pose_y))
 
                     d_angle = robot_pose_next[2] - robot_pose[2]   #sus
+                    if(d_angle > 3):
+                        d_angle = d_angle - 2*np.pi
 
                 except:
                     # Catch the exception when the last pose is reached.
@@ -162,15 +204,23 @@ class Controller(Node):
 
                 # Generate ROS message.
                 cmd_vel = Twist()
-                cmd_vel.linear.x = d_p / 10
-                cmd_vel.angular.z = d_angle / 10
+                cmd_vel.linear.x = (d_p) / d_time_linear[pose_index]
+                cmd_vel.angular.z = (d_angle / d_time_linear[pose_index])
+
 
                 self.cmd_vel_publisher[robot_index].publish(cmd_vel)
 
                 print(f'r{robot_index} cmd_vel: {str(cmd_vel.linear.x)[:5]}, {str(cmd_vel.angular.z)[:5]}')
-                
+                print(f'sleep time: {d_time_linear[pose_index]}')
+            
+            # Stop the robots.
+            
+
             # time.sleep(d_time_linear[pose_index])
-            time.sleep(10)
+            time.sleep(d_time_linear[pose_index])
+
+        for i in range(4):
+                self.cmd_vel_publisher[i].publish(Twist())
 
         return Twist()
 
