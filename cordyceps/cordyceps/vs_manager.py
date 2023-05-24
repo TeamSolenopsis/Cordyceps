@@ -17,8 +17,6 @@ class Vs_manager(Node):
     def __init__(self):
         super().__init__('vs_manager')
         self.controller_action_client = ActionClient(self, Controller, 'controller')
-        
-        self.send_goal(19)
 
         self.m2p = 3779
 
@@ -142,13 +140,13 @@ class Vs_manager(Node):
         if show:       
             plt.show()
 
-    def send_goal(self, order):
+    def controll_vs(self, order):
         goal_msg = Controller.Goal()
         goal_msg.order = order
         self.controller_action_client.wait_for_server()
         self.controller_action_client.send_goal_async(goal_msg, feedback_callback=self.feedback_callback)
 
-    def feedback_callback(self, feedback_msg):
+    def controller_feedback_callback(self, feedback_msg):
         self.get_logger().info('Received feedback: {0}'.format(feedback_msg.feedback))
 
 
