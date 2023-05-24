@@ -1,1 +1,0 @@
-RobotPose[] robot_pose
