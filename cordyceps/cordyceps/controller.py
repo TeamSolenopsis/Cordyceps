@@ -11,17 +11,13 @@ class ControllerActionServer(Node):
         super().__init__('cordyceps_controller')
         self.action_server = ActionServer(self, Controller, 'controller', self.execute_callback)
         
-        # Outputs: cmd_vel for each robot
-        self.cmd_vel_publisher = [
-            self.create_publisher(Twist, 'r1/cmd_vel', 10),
-            self.create_publisher(Twist, 'r2/cmd_vel', 10),
-            self.create_publisher(Twist, 'r3/cmd_vel', 10),
-            self.create_publisher(Twist, 'r4/cmd_vel', 10),
-        ]  
-        self.action_server = ActionServer(self, Controller, 'controller', self.execute_callback)
-
     def execute_callback(self, goal_handle):
         self.get_logger().info('Executing goal...')
+        
+        feedback = Controller.Feedback()
+        feedback.partial_sequence = [10,10,10]
+        goal_handle.publish_feedback(feedback)
+
         goal_handle.succeed()
         result = Controller.Result()
         return result

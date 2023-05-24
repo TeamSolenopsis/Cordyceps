@@ -1,19 +1,9 @@
 import rclpy
 from rclpy.node import Node
-from rclpy.node import ActionClient
-
-# from cordyceps_interfaces.msg import Arrived
-# from cordyceps_interfaces.msg import PoseShape
-# from cordyceps_interfaces.msg import Assembled  
-
-from cordyceps_interfaces.action import Controller
-from geometry_msgs.msg import Twist
-from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Pose
 import numpy as np
 import matplotlib.pyplot as plt
 
-from rclpy.node import ActionClient
+from rclpy.action import ActionClient
 
 # from cordyceps_interfaces.msg import Arrived
 # from cordyceps_interfaces.msg import PoseShape
@@ -22,14 +12,13 @@ from rclpy.node import ActionClient
 from cordyceps_interfaces.action import Controller
 
 
-# from cordyceps_interfaces.msg import arrived
-# from cordyceps_interfaces.msg import pose_shape
-# from cordyceps_interfaces.msg import assembled  
 class Vs_manager(Node):
 
     def __init__(self):
         super().__init__('vs_manager')
         self.controller_action_client = ActionClient(self, Controller, 'controller')
+        
+        self.send_goal(19)
 
         self.m2p = 3779
 
@@ -159,11 +148,15 @@ class Vs_manager(Node):
         self.controller_action_client.wait_for_server()
         self.controller_action_client.send_goal_async(goal_msg, feedback_callback=self.feedback_callback)
 
+    def feedback_callback(self, feedback_msg):
+        self.get_logger().info('Received feedback: {0}'.format(feedback_msg.feedback))
+
 
 
 def main(args=None):
     rclpy.init(args=args)
     vs_manager = Vs_manager()
+
     rclpy.spin(vs_manager)
     vs_manager.destroy_node()
     rclpy.shutdown()
