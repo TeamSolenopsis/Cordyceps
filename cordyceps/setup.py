@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'controller = cordyceps.controller:main',
             'manager = cordyceps.vs_manager:main',
+            'service = cordyceps.assembler:main',
         ],
     },
 )

@@ -1,2 +1,2 @@
 geometry_msgs/Pose pose
-int number_of_robots
+int64 number_of_robots
