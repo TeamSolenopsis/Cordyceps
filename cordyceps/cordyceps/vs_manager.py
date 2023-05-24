@@ -14,7 +14,8 @@ class Vs_manager(Node):
         super().__init__('vs_manager')
         self.robot_path_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
         self.req = CustomPathPlanner.Request()
-        print(self.send_request(0.5))
+        self.res = self.send_request(0.5)
+        print(self.res.robot_paths.paths[0].robot_poses[0])
 
     def send_request(self, p:float):
         self.req.p = p

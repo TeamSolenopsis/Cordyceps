@@ -59,7 +59,12 @@ class PathPlanner(Node):
     
     def get_robot_paths_callback(self, request, response):
         # TODO: Call Assembler to get robot positions in relation to the vs.
-        
+    
+        # Robot coordinates. 
+        bot_0_xy = np.array([self.distance_to_vs, 0, 1])
+        bot_1_xy = np.array([0, self.distance_to_vs, 1]) 
+        bot_2_xy = np.array([-self.distance_to_vs, 0, 1])
+        bot_3_xy = np.array([0, -self.distance_to_vs, 1])
         
         # TODO: Trigger nav2 to create a path for VS
         vs_path = self.generate_vs_path(self.vs_origin_x, self.vs_origin_y)
@@ -79,13 +84,6 @@ class PathPlanner(Node):
                     [0, 0, 1],
                 ]
             )           
-
-            # Robot coordinates. 
-            # TODO: is going to be supplied by the assembler via Service call
-            bot_0_xy = np.array([self.distance_to_vs, 0, 1])
-            bot_1_xy = np.array([0, self.distance_to_vs, 1]) 
-            bot_2_xy = np.array([-self.distance_to_vs, 0, 1])
-            bot_3_xy = np.array([0, -self.distance_to_vs, 1])
 
             # Calculation for pose of every robot in the VS.
             trans_0 = tf_matrix.dot(bot_0_xy)
