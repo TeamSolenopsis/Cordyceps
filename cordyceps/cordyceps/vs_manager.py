@@ -49,6 +49,22 @@ class Vs_manager(Node):
         self.plot_path(self.robot_paths, True)
 
 
+    def generate_vs_path(self, vs_origin_x, vs_origin_y) -> tuple():
+        x = [vs_origin_x]
+        y = [vs_origin_y]
+
+        # right
+        x = np.append(x, np.linspace(x[-1] - 1, x[-1], self.RESOLUTION))
+        y = np.append(y, np.linspace(y[-1],y[-1], self.RESOLUTION))
+
+        # turn right
+        r = 4
+        i = np.linspace(0*np.pi, 0.5*np.pi, self.RESOLUTION)
+        x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
+        y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
+
+        return x, y
+    
     def generate_paths(self, vs_path) -> dict:
         path = []
 
@@ -115,22 +131,6 @@ class Vs_manager(Node):
                 bot_pose[2] = alpha  
 
         return path        
-
-    def generate_vs_path(self, vs_origin_x, vs_origin_y) -> tuple():
-        x = [vs_origin_x]
-        y = [vs_origin_y]
-
-        # right
-        x = np.append(x, np.linspace(x[-1] - 1, x[-1], self.RESOLUTION))
-        y = np.append(y, np.linspace(y[-1],y[-1], self.RESOLUTION))
-
-        # turn right
-        r = 4
-        i = np.linspace(0*np.pi, 0.5*np.pi, self.RESOLUTION)
-        x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
-        y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
-
-        return x, y
 
     def plot_path(self, path, show:bool) -> None:
         li_r1 = []
