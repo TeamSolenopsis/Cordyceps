@@ -65,7 +65,7 @@ class Vs_manager(Node):
 
         return x, y
     
-    def generate_paths(self, vs_path) -> dict:
+    def generate_robot_paths(self, vs_path) -> dict:
         path = []
 
         for  pose, next_pose in zip(vs_path, vs_path[1:]):
