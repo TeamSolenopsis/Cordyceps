@@ -2,24 +2,16 @@ import rclpy
 from rclpy.node import Node
 import numpy as np
 import matplotlib.pyplot as plt
-
-from rclpy.action import ActionClient
-
-# from cordyceps_interfaces.msg import Arrived
-# from cordyceps_interfaces.msg import PoseShape
-# from cordyceps_interfaces.msg import Assembled  
-
-from cordyceps_interfaces.action import Controller
+from cordyceps_interfaces.srv import RobotPaths
+from cordyceps_interfaces.msg import Path   
 
 
-# from cordyceps_interfaces.msg import arrived
-# from cordyceps_interfaces.msg import pose_shape
-# from cordyceps_interfaces.msg import assembled  
-class Vs_manager(Node):
-
+class PathPlanner(Node):
     def __init__(self):
-        super().__init__('vs_manager')
-        self.controller_action_client = ActionClient(self, Controller, 'controller')
+        super().__init__('path_planner_service')
+        self.service = self.create_service(RobotPaths, 'get_robot_paths', self.get_robot_paths_callback)
+        
+
 
         self.m2p = 3779
 
@@ -35,7 +27,7 @@ class Vs_manager(Node):
 
         self.distance_to_vs = 1   # meters
 
-        self.robot_paths = self.generate_robot_paths(list(zip(self.x, self.y)))      
+        self.robot_paths = self.generate_robot_paths_callback(list(zip(self.x, self.y)))      
         self.plot_path(self.robot_paths, True)
 
 
@@ -55,8 +47,10 @@ class Vs_manager(Node):
 
         return x, y
     
-    def generate_robot_paths(self, vs_path) -> dict:
-        path = []
+    def generate_robot_paths_callback(self, vs_path) -> dict:
+        # TODO: Call Assembler to get robot positions in relation to the vs.
+        
+        path = Path()
 
         for  pose, next_pose in zip(vs_path, vs_path[1:]):
 
@@ -80,7 +74,7 @@ class Vs_manager(Node):
                     [np.sin(angle), np.cos(angle), pose[1]],
                     [0, 0, 1],
                 ]
-            )  
+            )           
 
             # Robot coordinates.
             bot_0_xy = np.array([self.distance_to_vs, 0, 1])
@@ -127,11 +121,11 @@ class Vs_manager(Node):
         li_r2 = []
         li_r3 = []
         li_r4 = []
-        for pose in path:
-            li_r1.append([pose[0][0], pose[0][1]])
-            li_r2.append([pose[1][0], pose[1][1]])
-            li_r3.append([pose[2][0], pose[2][1]])
-            li_r4.append([pose[3][0], pose[3][1]])
+        for poses in path:
+            li_r1.append([poses[0][0], poses[0][1]])
+            li_r2.append([poses[1][0], poses[1][1]])
+            li_r3.append([poses[2][0], poses[2][1]])
+            li_r4.append([poses[3][0], poses[3][1]])
             
         plt.scatter(*zip(*li_r1), s=3)
         plt.scatter(*zip(*li_r2), s=3)
@@ -143,23 +137,15 @@ class Vs_manager(Node):
         if show:       
             plt.show()
 
-    def controll_vs(self, order):
-        goal_msg = Controller.Goal()
-        goal_msg.order = order
-        self.controller_action_client.wait_for_server()
-        self.controller_action_client.send_goal_async(goal_msg, feedback_callback=self.feedback_callback)
 
-    def controller_feedback_callback(self, feedback_msg):
-        self.get_logger().info('Received feedback: {0}'.format(feedback_msg.feedback))
 
 
 
 def main(args=None):
     rclpy.init(args=args)
-    vs_manager = Vs_manager()
-
-    rclpy.spin(vs_manager)
-    vs_manager.destroy_node()
+    path_planner = PathPlanner()
+    rclpy.spin(path_planner)
+    path_planner.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
