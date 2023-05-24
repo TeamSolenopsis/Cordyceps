@@ -1,0 +1,3 @@
+int32 diameter
+---
+RobotPose[] vs_ref_pose

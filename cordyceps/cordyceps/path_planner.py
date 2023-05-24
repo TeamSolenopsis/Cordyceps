@@ -3,7 +3,7 @@ from rclpy.node import Node
 import numpy as np
 import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
-from cordyceps_interfaces.srv import CustomPathPlanner
+from cordyceps_interfaces.srv import CustomPathPlanner, CustomAss
 from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
 
 
@@ -11,6 +11,10 @@ class PathPlanner(Node):
     def __init__(self):
         super().__init__('path_planner_service')
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_paths', self.get_robot_paths_callback)
+        self.assembler_client = self.create_client(CustomAss, 'get_robot_vs_ref_pose')
+        self.assembler_request = CustomAss.Request()
+
+
         
 
         self.m2p = 3779
@@ -21,9 +25,9 @@ class PathPlanner(Node):
         self.vs_origin_x = 0 / self.m2p  # pixels
         self.vs_origin_y = 0 / self.m2p  # pixels
 
-        self.angle = 0.0  # rad
+        self.distance_to_vs = 1
 
-        self.distance_to_vs = 1   # meters
+        self.angle = 0.0  # rad
 
     def generate_vs_path(self, vs_origin_x, vs_origin_y) -> list:
         x = [vs_origin_x]
@@ -57,15 +61,35 @@ class PathPlanner(Node):
 
         return list(zip(x, y, angles))
     
-    def get_robot_paths_callback(self, request, response):
-        # TODO: Call Assembler to get robot positions in relation to the vs.
-    
-        # Robot coordinates. 
-        bot_0_xy = np.array([self.distance_to_vs, 0, 1])
-        bot_1_xy = np.array([0, self.distance_to_vs, 1]) 
-        bot_2_xy = np.array([-self.distance_to_vs, 0, 1])
-        bot_3_xy = np.array([0, -self.distance_to_vs, 1])
+    def send_assembler_request(self):
+        print('sending assembler request')
+        task = Task()
+        start_pose = Pose()
+        goal_pose = Pose()
+        task.start_pose = start_pose
+        task.goal_pose = goal_pose
+        task.number_of_robots = 4
+        task.diameter = 2
+
+        self.assembler_request.diameter = 2
+        future = self.assembler_client.call_async(self.assembler_request)
+        print('line 76')
+        rclpy.spin_until_future_complete(self, future)
+        print(future.result())
         
+        return future.result()
+         
+
+         
+    
+    def get_robot_paths_callback(self, request, response):
+        print('path planner triggered')
+        # TODO: Call Assembler to get robot positions in relation to the vs.
+
+        self.assembler_res = self.send_assembler_request()
+        print(self.assembler_res.vs_ref_pose)
+
+    
         # TODO: Trigger nav2 to create a path for VS
         vs_path = self.generate_vs_path(self.vs_origin_x, self.vs_origin_y)
 
@@ -84,6 +108,13 @@ class PathPlanner(Node):
                     [0, 0, 1],
                 ]
             )           
+
+        # Robot coordinates. 
+            bot_0_xy = np.array([1, 0, 1])
+            bot_1_xy = np.array([0, 1, 1]) 
+            bot_2_xy = np.array([-1, 0, 1])
+            bot_3_xy = np.array([0, -1, 1])
+
 
             # Calculation for pose of every robot in the VS.
             trans_0 = tf_matrix.dot(bot_0_xy)

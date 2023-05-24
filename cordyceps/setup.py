@@ -24,6 +24,7 @@ setup(
             'manager = cordyceps.vs_manager:main',
             'service = cordyceps.assembler:main',
             'planner = cordyceps.path_planner:main',
+            'assembler = cordyceps.customAssembler:main',
         ],
     },
 )
