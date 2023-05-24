@@ -45,7 +45,7 @@ class Vs_manager(Node):
 
         self.distance_to_vs = 1   # meters
 
-        self.robot_paths = self.generate_paths(list(zip(self.x, self.y)))      
+        self.robot_paths = self.generate_robot_paths(list(zip(self.x, self.y)))      
         self.plot_path(self.robot_paths, True)
 
 
