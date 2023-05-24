@@ -1,5 +1,4 @@
-int32 order
+RobotPaths robot_paths
 ---
-int32[] sequence
+bool done
 ---
-int32[] partial_sequence

@@ -13,13 +13,10 @@ class ControllerActionServer(Node):
         
     def execute_callback(self, goal_handle):
         self.get_logger().info('Executing goal...')
-        
-        feedback = Controller.Feedback()
-        feedback.partial_sequence = [10,10,10]
-        goal_handle.publish_feedback(feedback)
-
         goal_handle.succeed()
+
         result = Controller.Result()
+        result.result = True
         return result
 
 def main(args=None):
