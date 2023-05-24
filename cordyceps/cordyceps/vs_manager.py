@@ -11,10 +11,15 @@ from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Pose
 import numpy as np
-import time
-import string
 import matplotlib.pyplot as plt
 
+from rclpy.node import ActionClient
+
+# from cordyceps_interfaces.msg import Arrived
+# from cordyceps_interfaces.msg import PoseShape
+# from cordyceps_interfaces.msg import Assembled  
+
+from cordyceps_interfaces.action import Controller
 
 
 # from cordyceps_interfaces.msg import arrived
@@ -26,11 +31,6 @@ class Vs_manager(Node):
         super().__init__('vs_manager')
         self.controller_action_client = ActionClient(self, Controller, 'controller')
 
-    def send_goal(self, order):
-        goal_msg = Controller.Goal()
-        goal_msg.order = order
-        self.controller_action_client.wait_for_server()
-        self.controller_action_client.send_goal_async(goal_msg, feedback_callback=self.feedback_callback)
         self.m2p = 3779
 
         self.RESOLUTION = 1000 # The amount of points in which the paths will be split.
@@ -152,6 +152,12 @@ class Vs_manager(Node):
 
         if show:       
             plt.show()
+
+    def send_goal(self, order):
+        goal_msg = Controller.Goal()
+        goal_msg.order = order
+        self.controller_action_client.wait_for_server()
+        self.controller_action_client.send_goal_async(goal_msg, feedback_callback=self.feedback_callback)
 
 
 
