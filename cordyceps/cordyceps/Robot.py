@@ -7,3 +7,7 @@ class Robot():
         self.offset_y = offset_y
         self.node = node
         self.cmd_vel_publisher = None
+
+
+
+
