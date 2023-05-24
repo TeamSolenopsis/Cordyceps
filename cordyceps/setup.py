@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'cordyceps_controller'
+package_name = 'cordyceps'
 
 setup(
     name=package_name,
@@ -20,7 +20,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'cordyceps_controller = cordyceps_controller.controller:main'
+            'controller = cordyceps.controller:main',
+            'manager = cordyceps.vs_manager:main',
+            'service = cordyceps.assembler:main',
         ],
     },
 )

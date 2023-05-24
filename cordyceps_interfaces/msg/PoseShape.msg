@@ -1,0 +1,2 @@
+geometry_msgs/Pose pose
+int64 number_of_robots
