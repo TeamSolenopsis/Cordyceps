@@ -2,16 +2,16 @@ import rclpy
 from rclpy.node import Node
 import numpy as np
 import matplotlib.pyplot as plt
-from cordyceps_interfaces.srv import RobotPaths
-from cordyceps_interfaces.msg import Path   
+from geometry_msgs.msg import Pose
+from cordyceps_interfaces.srv import CustomPathPlanner
+from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
 
 
 class PathPlanner(Node):
     def __init__(self):
         super().__init__('path_planner_service')
-        self.service = self.create_service(RobotPaths, 'get_robot_paths', self.get_robot_paths_callback)
+        self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_paths', self.get_robot_paths_callback)
         
-
 
         self.m2p = 3779
 
@@ -21,19 +21,14 @@ class PathPlanner(Node):
         self.vs_origin_x = 0 / self.m2p  # pixels
         self.vs_origin_y = 0 / self.m2p  # pixels
 
-        self.x, self.y = self.generate_vs_path(self.vs_origin_x, self.vs_origin_y)
-
         self.angle = 0.0  # rad
 
         self.distance_to_vs = 1   # meters
 
-        self.robot_paths = self.generate_robot_paths_callback(list(zip(self.x, self.y)))      
-        self.plot_path(self.robot_paths, True)
-
-
-    def generate_vs_path(self, vs_origin_x, vs_origin_y) -> tuple():
+    def generate_vs_path(self, vs_origin_x, vs_origin_y) -> list:
         x = [vs_origin_x]
         y = [vs_origin_y]
+        angles = []
 
         # right
         x = np.append(x, np.linspace(x[-1] - 1, x[-1], self.RESOLUTION))
@@ -45,42 +40,50 @@ class PathPlanner(Node):
         x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
         y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
 
-        return x, y
-    
-    def generate_robot_paths_callback(self, vs_path) -> dict:
-        # TODO: Call Assembler to get robot positions in relation to the vs.
-        
-        path = Path()
+        for i in range(len(x) - 1):
+            x_goal = (x[i + 1] - x[i])
+            y_goal = (y[i + 1] - y[i])
 
-        for  pose, next_pose in zip(vs_path, vs_path[1:]):
-
-            x_goal = (next_pose[0] - pose[0])
-            y_goal = (next_pose[1] - pose[1])
-
-            angle = np.arctan(y_goal / x_goal)
+            if x_goal != 0:
+                angle = np.arctan(y_goal / x_goal)
+            else:
+                angle = 0
             
-            if y_goal < 0 and x_goal < 0:
+            if y_goal <= 0 and x_goal <= 0:
                     angle += np.pi
-            if y_goal > 0 and x_goal < 0:
+            if y_goal >= 0 and x_goal <= 0:
                     angle -= np.pi
+            angles.append(angle)
 
-            # if y_goal < 0:  # check if the angle is above pi.
-            #    angle += np.pi
+        return list(zip(x, y, angles))
+    
+    def get_robot_paths_callback(self, request, response):
+        # TODO: Call Assembler to get robot positions in relation to the vs.
+    
+        # Robot coordinates. 
+        bot_0_xy = np.array([self.distance_to_vs, 0, 1])
+        bot_1_xy = np.array([0, self.distance_to_vs, 1]) 
+        bot_2_xy = np.array([-self.distance_to_vs, 0, 1])
+        bot_3_xy = np.array([0, -self.distance_to_vs, 1])
+        
+        # TODO: Trigger nav2 to create a path for VS
+        vs_path = self.generate_vs_path(self.vs_origin_x, self.vs_origin_y)
 
+        robot_paths = RobotPaths()
+        bot_0_path = Path()
+        bot_1_path = Path()
+        bot_2_path = Path()
+        bot_3_path = Path()
+
+        for pose in vs_path:
             # transformation matrix template.   
             tf_matrix = np.array(
                 [
-                    [np.cos(angle), -np.sin(angle), pose[0]],
-                    [np.sin(angle), np.cos(angle), pose[1]],
+                    [np.cos(pose[2]), -np.sin(pose[2]), pose[0]],
+                    [np.sin(pose[2]), np.cos(pose[2]), pose[1]],
                     [0, 0, 1],
                 ]
             )           
-
-            # Robot coordinates.
-            bot_0_xy = np.array([self.distance_to_vs, 0, 1])
-            bot_1_xy = np.array([0, self.distance_to_vs, 1]) 
-            bot_2_xy = np.array([-self.distance_to_vs, 0, 1])
-            bot_3_xy = np.array([0, -self.distance_to_vs, 1])
 
             # Calculation for pose of every robot in the VS.
             trans_0 = tf_matrix.dot(bot_0_xy)
@@ -89,57 +92,34 @@ class PathPlanner(Node):
             trans_3 = tf_matrix.dot(bot_3_xy)
 
             # Calculated path for every robot in the VS.
-            path.append(
-                (
-                    ([trans_0[0] + self.vs_origin_x, trans_0[1] + self.vs_origin_y, angle]),
-                    ([trans_1[0] + self.vs_origin_x, trans_1[1] + self.vs_origin_y, angle]),
-                    ([trans_2[0] + self.vs_origin_x, trans_2[1] + self.vs_origin_y, angle]),
-                    ([trans_3[0] + self.vs_origin_x, trans_3[1] + self.vs_origin_y, angle]),
-                )
-            )
 
-        for vs_pose_id, vs_pose in enumerate(path):
-            for bot_pose_id, bot_pose in enumerate(vs_pose):
-                try:
-                    yy = path[vs_pose_id + 1][bot_pose_id][1] - bot_pose[1]
-                    xx = path[vs_pose_id + 1][bot_pose_id][0] - bot_pose[0]
-                except:
-                    alpha=alpha
-                alpha = -np.arctan(yy / xx)
+            bot_0_pose = RobotPose()
+            bot_1_pose = RobotPose()
+            bot_2_pose = RobotPose()
+            bot_3_pose = RobotPose()
 
-                # if yy < 0 and xx < 0:
-                #     alpha += np.pi
-                # if yy > 0 and xx < 0:
-                #     alpha -= np.pi
+            bot_0_pose.x = trans_0[0] + self.vs_origin_x
+            bot_1_pose.x = trans_1[0] + self.vs_origin_x
+            bot_2_pose.x = trans_2[0] + self.vs_origin_x
+            bot_3_pose.x = trans_3[0] + self.vs_origin_x
 
-                bot_pose[2] = alpha  
+            bot_0_pose.y = trans_0[1] + self.vs_origin_y
+            bot_1_pose.y = trans_1[1] + self.vs_origin_y
+            bot_2_pose.y = trans_2[1] + self.vs_origin_y
+            bot_3_pose.y = trans_3[1] + self.vs_origin_y
 
-        return path        
+            bot_0_path.robot_poses.append(bot_0_pose)
+            bot_1_path.robot_poses.append(bot_1_pose)
+            bot_2_path.robot_poses.append(bot_2_pose)
+            bot_3_path.robot_poses.append(bot_3_pose)
 
-    def plot_path(self, path, show:bool) -> None:
-        li_r1 = []
-        li_r2 = []
-        li_r3 = []
-        li_r4 = []
-        for poses in path:
-            li_r1.append([poses[0][0], poses[0][1]])
-            li_r2.append([poses[1][0], poses[1][1]])
-            li_r3.append([poses[2][0], poses[2][1]])
-            li_r4.append([poses[3][0], poses[3][1]])
-            
-        plt.scatter(*zip(*li_r1), s=3)
-        plt.scatter(*zip(*li_r2), s=3)
-        plt.scatter(*zip(*li_r3), s=3)
-        plt.scatter(*zip(*li_r4), s=3)
+        robot_paths.paths.append(bot_0_path)
+        robot_paths.paths.append(bot_1_path)
+        robot_paths.paths.append(bot_2_path)
+        robot_paths.paths.append(bot_3_path)
 
-        plt.legend(['R1', 'R2', 'R3', 'R4'])
-
-        if show:       
-            plt.show()
-
-
-
-
+        response.robot_paths = robot_paths
+        return response        
 
 def main(args=None):
     rclpy.init(args=args)

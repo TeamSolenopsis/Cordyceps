@@ -15,13 +15,11 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
 
-  "msg/PoseShape.msg"
-  "action/Controller.action"
-  "msg/Task.msg"
-  "msg/RobotPose.msg"
-  "msg/Poses.msg"
   "msg/Path.msg"
-  "srv/RobotPaths.srv"
+  "msg/RobotPaths.msg"
+  "msg/RobotPose.msg"
+  "msg/Task.msg"
+  "srv/CustomPathPlanner.srv"
   DEPENDENCIES geometry_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
 )
 

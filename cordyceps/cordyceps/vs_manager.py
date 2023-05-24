@@ -11,6 +11,8 @@ from rclpy.action import ActionClient
 
 from cordyceps_interfaces.action import Controller
 
+from geometry_msgs.msg import Pose
+from cordyceps_interfaces.srv import CustomPathPlanner
 
 # from cordyceps_interfaces.msg import arrived
 # from cordyceps_interfaces.msg import pose_shape
@@ -127,6 +129,7 @@ class Vs_manager(Node):
         li_r2 = []
         li_r3 = []
         li_r4 = []
+
         for pose in path:
             li_r1.append([pose[0][0], pose[0][1]])
             li_r2.append([pose[1][0], pose[1][1]])
@@ -143,6 +146,7 @@ class Vs_manager(Node):
         if show:       
             plt.show()
 
+
     def controll_vs(self, order):
         goal_msg = Controller.Goal()
         goal_msg.order = order
@@ -151,8 +155,6 @@ class Vs_manager(Node):
 
     def controller_feedback_callback(self, feedback_msg):
         self.get_logger().info('Received feedback: {0}'.format(feedback_msg.feedback))
-
-
 
 def main(args=None):
     rclpy.init(args=args)
