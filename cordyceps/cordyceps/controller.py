@@ -1,8 +1,6 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionServer
-from geometry_msgs.msg import Twist
-from rclpy.action import ActionServer
 
 from cordyceps_interfaces.action import Controller
 
