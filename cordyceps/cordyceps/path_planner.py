@@ -56,7 +56,6 @@ class PathPlanner(Node):
         # TODO: Call Assembler to get robot positions in relation to the vs.
 
         vs_ref_pose = request.vs_ref_pose
-        print(vs_ref_pose)
         start_pose = request.task.start_pose
     
         # TODO: Trigger nav2 to create a path for VS
