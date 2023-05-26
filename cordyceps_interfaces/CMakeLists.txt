@@ -20,7 +20,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Task.msg"
   "srv/CustomRobotAssembler.srv"
   "srv/CustomPathPlanner.srv"
-  DEPENDENCIES geometry_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
+  "action/Controller.action"
+  DEPENDENCIES geometry_msgs 
 )
 
 if(BUILD_TESTING)

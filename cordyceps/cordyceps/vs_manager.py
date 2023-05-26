@@ -2,7 +2,14 @@ import rclpy
 from rclpy.node import Node
 import numpy as np
 import matplotlib.pyplot as plt
+
+from rclpy.action import ActionClient
+
+
+from cordyceps_interfaces.action import Controller
+
 from geometry_msgs.msg import Pose
+
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
 from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
 
@@ -10,6 +17,7 @@ class Vs_manager(Node):
 
     def __init__(self):
         super().__init__('vs_manager')
+
         self.path_planner_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
         self.assembler_client = self.create_client(CustomRobotAssembler, 'get_robot_vs_ref_pose')
         
@@ -78,9 +86,18 @@ class Vs_manager(Node):
         task.diameter = 2
         return task
 
+    def controll_vs(self, paths: RobotPaths):
+        goal_msg = Controller.Goal()
+        goal_msg.robot_paths = paths
+
+        self.controller_action_client.wait_for_server()
+        return self.controller_action_client.send_goal_async(goal_msg)
+
+
 def main(args=None):
     rclpy.init(args=args)
     vs_manager = Vs_manager()
+
     rclpy.spin(vs_manager)
     vs_manager.destroy_node()
     rclpy.shutdown()
