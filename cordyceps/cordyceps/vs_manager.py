@@ -22,7 +22,7 @@ class Vs_manager(Node):
         self.controller_action_client = ActionClient(self, Controller, 'controller')
         self.req = CustomPathPlanner.Request()
         self.res = self.send_request(0.5)
-        self.controll_vs(self.res.robot_paths)
+        self.controller_future = self.controll_vs(self.res.robot_paths)
 
 
     def send_request(self, p:float):
@@ -57,7 +57,7 @@ class Vs_manager(Node):
         goal_msg.robot_paths = paths
 
         self.controller_action_client.wait_for_server()
-        self.controller_action_client.send_goal_async(goal_msg)
+        return self.controller_action_client.send_goal_async(goal_msg)
 
 def main(args=None):
     rclpy.init(args=args)
