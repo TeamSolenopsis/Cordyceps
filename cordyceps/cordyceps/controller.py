@@ -14,7 +14,6 @@ class ControllerActionServer(Node):
     def execute_callback(self, goal_handle):
         self.get_logger().info('Executing goal...')
         goal_handle.succeed()
-        print(goal_handle.request.robot_paths)
         result = Controller.Result()
         result.done = True
         return result
