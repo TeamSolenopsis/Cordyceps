@@ -1,3 +1,4 @@
-float32 p
+Task task
+RobotPose[] vs_ref_pose
 ---
 RobotPaths robot_paths

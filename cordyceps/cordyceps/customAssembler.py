@@ -12,22 +12,23 @@ class CustomAssembler(Node):
         self.assembler_service = self.create_service(CustomAss, 'get_robot_vs_ref_pose', self.get_robot_vs_ref_pose_callback)
         
     def get_robot_vs_ref_pose_callback(self, request, response):
+        task = request.task
         bot_0_pose = RobotPose()
         bot_1_pose = RobotPose()
         bot_2_pose = RobotPose()
         bot_3_pose = RobotPose()
 
-        bot_0_pose.x = request.diameter / 2
+        bot_0_pose.x = task.diameter / 2
         bot_0_pose.y = 0.0
 
         bot_1_pose.x = 0.0
-        bot_1_pose.y = request.diameter / 2
+        bot_1_pose.y = task.diameter / 2
 
-        bot_2_pose.x = -request.diameter / 2
+        bot_2_pose.x = -task.diameter / 2
         bot_2_pose.y = 0.0
 
         bot_3_pose.x = 0.0
-        bot_3_pose.y = -request.diameter / 2
+        bot_3_pose.y = -task.diameter / 2
 
         response.vs_ref_pose.append(bot_0_pose)
         response.vs_ref_pose.append(bot_1_pose)
