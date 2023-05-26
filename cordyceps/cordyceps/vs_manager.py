@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 from rclpy.action import ActionClient
 
-# from cordyceps_interfaces.msg import Arrived
 # from cordyceps_interfaces.msg import PoseShape
 # from cordyceps_interfaces.msg import Assembled  
 
