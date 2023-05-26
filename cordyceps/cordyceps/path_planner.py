@@ -11,15 +11,12 @@ class PathPlanner(Node):
     def __init__(self):
         super().__init__('path_planner_service')
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_paths', self.get_robot_paths_callback)
-        
-
-        self.m2p = 3779
 
         self.RESOLUTION = 1000 # The amount of points in which the paths will be split.
         self.MAX_SPEED = 0.5 # Maximum allowed speed from a robot.(m/s)
 
-        self.vs_origin_x = 0 / self.m2p  # pixels
-        self.vs_origin_y = 0 / self.m2p  # pixels
+        self.vs_origin_x = 0  # pixels
+        self.vs_origin_y = 0  # pixels
 
         self.angle = 0.0  # rad
 
