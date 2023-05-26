@@ -20,6 +20,7 @@ class Vs_manager(Node):
 
         self.path_planner_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
         self.assembler_client = self.create_client(CustomRobotAssembler, 'get_robot_vs_ref_pose')
+        self.controller_action_client = ActionClient(self, Controller, 'controller')
         
         self.assembler_response = self.send_assembler_request(self.construct_mock_task())
         self.path_planner_response = self.send_path_planner_request(self.construct_mock_task(), self.assembler_response.vs_ref_pose)
