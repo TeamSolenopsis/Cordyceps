@@ -21,7 +21,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Task.msg"
   "srv/CustomPathPlanner.srv"
   "action/Controller.action"
-  DEPENDENCIES geometry_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
+  DEPENDENCIES geometry_msgs 
 )
 
 if(BUILD_TESTING)
