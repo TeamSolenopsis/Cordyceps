@@ -39,9 +39,9 @@ class Assembler(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    custom_assembler = Assembler()
-    rclpy.spin(custom_assembler)
-    custom_assembler.destroy_node()
+    assembler = Assembler()
+    rclpy.spin(assembler)
+    assembler.destroy_node()
     rclpy.shutdown()
 
 
