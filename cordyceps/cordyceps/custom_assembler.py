@@ -4,7 +4,7 @@ from cordyceps_interfaces.srv import CustomRobotAssembler
 from cordyceps_interfaces.msg import RobotPose, RobotPaths, Task, Path
 import numpy as np
 
-class CustomAssembler(Node):
+class Assembler(Node):
 
     def __init__(self):
         super().__init__('minimal_service')
@@ -39,7 +39,7 @@ class CustomAssembler(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    custom_assembler = CustomAssembler()
+    custom_assembler = Assembler()
     rclpy.spin(custom_assembler)
     custom_assembler.destroy_node()
     rclpy.shutdown()
