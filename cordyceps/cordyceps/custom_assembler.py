@@ -7,7 +7,7 @@ import numpy as np
 class Assembler(Node):
 
     def __init__(self):
-        super().__init__('minimal_service')
+        super().__init__('assembler')
         
         self.assembler_service = self.create_service(CustomRobotAssembler, 'get_robot_vs_ref_pose', self.get_robot_vs_ref_pose_callback)
         
