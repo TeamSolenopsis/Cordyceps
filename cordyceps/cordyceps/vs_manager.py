@@ -24,23 +24,25 @@ class Vs_manager(Node):
         self.controller_action_client = ActionClient(self, Controller, 'controller')
         self.task_subscriber = self.create_subscription(Task, 'vs_manager/task', self.task_callback, 10)
 
-        self.req = CustomPathPlanner.Request()
-        self.res = self.send_request(0.5)
-        self.controller_future = self.controll_vs(self.res.robot_paths)
-
     def task_callback(self, msg:Task):
         self.task_queue.put(msg)
+
 
     def task_executor(self):
         while True:
             task = self.task_queue.get(block=True)
             print("Task received")
+            paths = self.request_paths(task)
+            self.controll_vs(paths)
 
-    def send_request(self, p:float):
-        self.req.p = p
-        self.future = self.robot_path_client.call_async(self.req)
-        rclpy.spin_until_future_complete(self, self.future)
-        return self.future.result()
+
+    def request_paths(self, task:Task):
+        req  = CustomPathPlanner.Request()
+        req.task = task
+
+        future = self.robot_path_client.call_async(self.req)
+        rclpy.spin_until_future_complete(self, future)
+        return future.result()
     
     def plot_path(self, path, show:bool) -> None:
         li_r1 = []
@@ -68,7 +70,8 @@ class Vs_manager(Node):
         goal_msg.robot_paths = paths
 
         self.controller_action_client.wait_for_server()
-        return self.controller_action_client.send_goal_async(goal_msg)
+        future = self.controller_action_client.send_goal_async(goal_msg)
+        return future.result()
 
 def main(args=None):
     rclpy.init(args=args)
