@@ -3,23 +3,20 @@ from rclpy.node import Node
 import numpy as np
 import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
-from cordyceps_interfaces.srv import CustomPathPlanner, CustomAss
+from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
 from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
 
-# from cordyceps_interfaces.msg import arrived
-# from cordyceps_interfaces.msg import pose_shape
-# from cordyceps_interfaces.msg import assembled  
 class Vs_manager(Node):
 
     def __init__(self):
         super().__init__('vs_manager')
         self.path_planner_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
-        self.assembler_client = self.create_client(CustomAss, 'get_robot_vs_ref_pose')
+        self.assembler_client = self.create_client(CustomRobotAssembler, 'get_robot_vs_ref_pose')
         
         self.assembler_response = self.send_assembler_request(self.construct_mock_task())
         self.path_planner_response = self.send_path_planner_request(self.construct_mock_task(), self.assembler_response.vs_ref_pose)
         
-        # self.plot_path(self.path_planner_response, True)
+        self.plot_path(self.path_planner_response, True)
 
     def send_path_planner_request(self, task, vs_ref_pose):
         planner_request = CustomPathPlanner.Request()
@@ -33,7 +30,7 @@ class Vs_manager(Node):
         return response.result()
     
     def send_assembler_request(self, task):
-        assembler_request = CustomAss.Request()
+        assembler_request = CustomRobotAssembler.Request()
 
         assembler_request.task = task
 
@@ -49,8 +46,6 @@ class Vs_manager(Node):
         path_r3 = []
         path_r4 = []
 
-        print(path_r1)
-        
         for poses in self.path_planner_response.robot_paths.paths[0].robot_poses[:]:
             path_r1.append([poses.x, poses.y])
 
@@ -62,12 +57,6 @@ class Vs_manager(Node):
 
         for poses in self.path_planner_response.robot_paths.paths[3].robot_poses[:]:
             path_r4.append([poses.x, poses.y])
-
-
-        print(len(path_r1))
-        print(len(path_r2))
-        print(len(path_r3))
-        print(len(path_r4))
             
         plt.scatter(*zip(*path_r1), s=3)
         plt.scatter(*zip(*path_r2), s=3)

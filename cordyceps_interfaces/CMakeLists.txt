@@ -18,8 +18,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/RobotPaths.msg"
   "msg/RobotPose.msg"
   "msg/Task.msg"
+  "srv/CustomRobotAssembler.srv"
   "srv/CustomPathPlanner.srv"
-  "srv/CustomAss.srv"
   DEPENDENCIES geometry_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
 )
 

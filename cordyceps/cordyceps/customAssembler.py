@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from cordyceps_interfaces.srv import CustomAss
+from cordyceps_interfaces.srv import CustomRobotAssembler
 from cordyceps_interfaces.msg import RobotPose, RobotPaths, Task, Path
 import numpy as np
 
@@ -9,7 +9,7 @@ class CustomAssembler(Node):
     def __init__(self):
         super().__init__('minimal_service')
         
-        self.assembler_service = self.create_service(CustomAss, 'get_robot_vs_ref_pose', self.get_robot_vs_ref_pose_callback)
+        self.assembler_service = self.create_service(CustomRobotAssembler, 'get_robot_vs_ref_pose', self.get_robot_vs_ref_pose_callback)
         
     def get_robot_vs_ref_pose_callback(self, request, response):
         task = request.task

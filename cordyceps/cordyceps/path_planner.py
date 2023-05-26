@@ -3,7 +3,7 @@ from rclpy.node import Node
 import numpy as np
 import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
-from cordyceps_interfaces.srv import CustomPathPlanner, CustomAss
+from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
 from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
 
 
