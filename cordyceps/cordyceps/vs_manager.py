@@ -8,7 +8,7 @@ from rclpy.action import ActionClient
 
 from cordyceps_interfaces.action import Controller
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
-from cordyceps_interfaces.msg import RobotPaths, Task, RobotPose
+from cordyceps_interfaces.msg import RobotPaths, Task, RobotPose,Path
 
 class Vs_manager(Node):
 
@@ -18,14 +18,25 @@ class Vs_manager(Node):
         self.task_thread = threading.Thread(target=self.task_executor)
         self.task_thread.start()
 
-        self.robot_path_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
-        self.assembler_client = self.create_client(CustomRobotAssembler, 'get_robot_vs_ref_pose')
+        #self.robot_path_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
+        #self.assembler_client = self.create_client(CustomRobotAssembler, 'get_robot_vs_ref_pose')
         self.controller_action_client = ActionClient(self, Controller, 'controller')
-        self.task_subscriber = self.create_subscription(Task, 'vs_manager/task', self.task_callback, 10)
+
+        msg = RobotPaths()
+        path = Path()
+        pose = RobotPose()
+        pose.x = 2.0
+        pose.y = 0.0
+        path.robot_poses = []
+        path.robot_poses.append(pose)
+        msg.paths = []
+        msg.paths.append(path)
+        self.controll_vs(msg)
+        #self.task_subscriber = self.create_subscription(Task, 'vs_manager/task', self.task_callback, 10)
 
         #temp
-        self.timer = self.create_timer(1.0, self.timer_callback)
-        self.pub = self.create_publisher(Task, 'vs_manager/task', 10)
+        #self.timer = self.create_timer(5.0, self.timer_callback)
+        #self.pub = self.create_publisher(Task, 'vs_manager/task', 10)
 
 
     def timer_callback(self):
@@ -65,6 +76,8 @@ class Vs_manager(Node):
     def construct_mock_task(self) -> Task:
         task = Task()
         start_pose = Pose()
+        start_pose.position.x = 1.0
+        start_pose.position.y = 0.0
         goal_pose = Pose()
         task.start_pose = start_pose
         task.goal_pose = goal_pose

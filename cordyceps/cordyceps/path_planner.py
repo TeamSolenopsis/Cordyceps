@@ -12,10 +12,8 @@ class PathPlanner(Node):
         super().__init__('path_planner_service')
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_paths', self.get_robot_paths_callback)
 
-        self.RESOLUTION = 1000 # The amount of points in which the paths will be split.
+        self.RESOLUTION = 10 # The amount of points in which the paths will be split.
         self.MAX_SPEED = 0.5 # Maximum allowed speed from a robot.(m/s)
-
-        self.distance_to_vs = 1
 
         self.angle = 0.0  # rad
 
@@ -28,11 +26,11 @@ class PathPlanner(Node):
         x = np.append(x, np.linspace(x[-1] - 1, x[-1], self.RESOLUTION))
         y = np.append(y, np.linspace(y[-1],y[-1], self.RESOLUTION))
 
-        # turn right
-        r = 4
-        i = np.linspace(0*np.pi, 0.5*np.pi, self.RESOLUTION)
-        x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
-        y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
+        # # turn right
+        # r = 4
+        # i = np.linspace(0*np.pi, 0.5*np.pi, self.RESOLUTION)
+        # x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
+        # y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
 
         for i in range(len(x) - 1):
             x_goal = (x[i + 1] - x[i])
