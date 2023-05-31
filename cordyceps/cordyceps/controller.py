@@ -29,7 +29,7 @@ class ControllerActionServer(Node):
         """Recieves each bot's path and sends the velocities to follow them"""
 
         self.get_logger().info("Executing goal...")
-        #self.plot_path(goal_handle.request.robot_paths)
+        self.plot_path(goal_handle.request.robot_paths)
         self.follow_path(goal_handle.request.robot_paths)
         goal_handle.succeed()
         result = Controller.Result()
@@ -56,6 +56,7 @@ class ControllerActionServer(Node):
         paths = np.array(
             paths.paths
         ).transpose()  # paths is now a list of lists of robot poses
+        print(paths)
         for goals in paths:  # iterate through immeadiate goals
             goal_achieved = False
             while not goal_achieved:
@@ -66,9 +67,7 @@ class ControllerActionServer(Node):
 
                 velocities = self.compute_velocities(goals_tformed)
                 self.__publish_velocities(velocities)
-                print(goals_tformed)
-                goal_achieved = True if goals_tformed[0] <= 1 else False  #TODO index is x value 
-                # TODO give tolerances
+                goal_achieved = True if goals_tformed == np.array(len(goals)*np.array([0,0])) else False  # TODO give tolerances
 
     def compute_velocities(self, goal_points):
         """returns the required velocities for each robot to reach its goal (given the current poses) at the same time"""

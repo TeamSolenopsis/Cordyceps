@@ -36,10 +36,7 @@ class PathPlanner(Node):
             x_goal = (x[i + 1] - x[i])
             y_goal = (y[i + 1] - y[i])
 
-            if x_goal != 0:
-                angle = np.arctan(y_goal / x_goal)
-            else:
-                angle = 0
+            angle = np.arctan(y_goal / x_goal) if x_goal != 0 else 0
             
             if y_goal <= 0 and x_goal <= 0:
                     angle += np.pi
