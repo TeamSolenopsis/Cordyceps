@@ -31,12 +31,21 @@ class Robot:
     def publish_velocity(self, vel: Twist) -> None:
         self.cmd_vel_publisher.publish(vel)
 
-    def compute_deltas(self, goal_point):
+    def compute_deltas(self, goal_point) -> tuple:
+        """returns delta_s, delta_theta"""
         x, y = goal_point
         goal_distance = np.sqrt(x**2 + y**2)
-        radius = goal_distance / (-2 * y) if y != 0 else 0
-        delta_theta = 2 * np.arcsin(goal_distance / (2 * radius)) if radius != 0 else np.inf
+
+        # edge cases
+        if goal_distance == 0: # if the goal is the current position
+            return 0, 0
+        if y == 0: # if the goal is on the x axis
+            return goal_distance, 0
+ 
+        radius = goal_distance**2 / (-2 * y)
+        delta_theta = -2 * np.arcsin(goal_distance / (2 * radius))
         delta_s = delta_theta * radius  # orthodromic distance
+        
         return delta_s, delta_theta
 
     def transform_frame(self, point:RobotPose, new_frame):
