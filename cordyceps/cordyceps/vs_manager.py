@@ -4,13 +4,10 @@ import threading
 from queue import Queue
 from geometry_msgs.msg import Pose
 
-from rclpy.action import ActionClient
-
-from cordyceps_interfaces.action import Controller
-from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
+from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler, Controller, CheckThread
 from cordyceps_interfaces.msg import RobotPaths, Task, RobotPose,Path
 
-class Vs_manager(Node):
+class VsManager(Node):
 
     def __init__(self):
         super().__init__('vs_manager')
@@ -20,18 +17,8 @@ class Vs_manager(Node):
 
         self.robot_path_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
         self.assembler_client = self.create_client(CustomRobotAssembler, 'get_robot_vs_ref_pose')
-        self.controller_action_client = ActionClient(self, Controller, 'controller')
-
-        # msg = RobotPaths()
-        # path = Path()
-        # pose = RobotPose()
-        # pose.x = 2.0
-        # pose.y = 0.0
-        # path.robot_poses = []
-        # path.robot_poses.append(pose)
-        # msg.paths = []
-        # msg.paths.append(path)
-        # self.controll_vs(msg)
+        self.start_path_follow_client = self.create_client(Controller, 'start_follow_path')
+        self.check_thread_state_client = self.create_client(CheckThread, 'check_thread_state')
 
         self.task_subscriber = self.create_subscription(Task, 'vs_manager/task', self.task_callback, 10)
 
@@ -86,18 +73,21 @@ class Vs_manager(Node):
         return task
 
     def controll_vs(self, paths: RobotPaths):
-        goal_msg = Controller.Goal()
-        goal_msg.robot_paths = paths
+        request = Controller.Request()
+        request.robot_paths = paths
 
-        self.controller_action_client.wait_for_server()
-        response = self.controller_action_client.send_goal(goal_msg)
-        print(response)
-        return response
+        self.start_path_follow_client.wait_for_service()
+        self.start_path_follow_client.call(request)
+        
+        is_alive = False
+
+        while not is_alive:
+            is_alive = self.check_thread_state_client.call().is_alive
 
 
 def main(args=None):
     rclpy.init(args=args)
-    vs_manager = Vs_manager()
+    vs_manager = VsManager()
 
     rclpy.spin(vs_manager)
     vs_manager.destroy_node()

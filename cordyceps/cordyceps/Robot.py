@@ -1,64 +1,67 @@
-from geometry_msgs.msg import Twist
+import numpy as np
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
-from cordyceps_interfaces.msg import RobotPose
-from geometry_msgs.msg import Pose2D
-import numpy as np
-from math import cos, sin
-
-
+from geometry_msgs.msg import Twist, Quaternion
+import math
+import threading
+import time
 
 class Robot:
-    def __init__(self, name, node: Node) -> None:
+    def __init__(self, x, y, theta, name, node:Node) -> None:
         self.node = node
         self.name = name
-        self.cmd_vel_publisher = self.node.create_publisher(
-            Twist, f"/{self.name}/cmd_vel", 10
-        )
-        self.odom_subscriber = self.node.create_subscription(
-            Odometry, f"/{self.name}/odom", self.pose_callback, 10
-        )
-        self.pose = Pose2D()
+        self.lock = threading.Lock()
 
-    def pose_callback(self, msg: Odometry) -> None:
-        self.pose.x = msg.pose.pose.position.x
-        self.pose.y = msg.pose.pose.position.y
-        self.pose.theta = np.arctan2(2*(msg.pose.pose.orientation.w*msg.pose.pose.orientation.z + msg.pose.pose.orientation.x*msg.pose.pose.orientation.y), 1 - 2*(msg.pose.pose.orientation.y**2 + msg.pose.pose.orientation.z**2))
+        self.pose_sub = self.node.create_subscription(Odometry, f'/{self.name}/odom', self.odom_callback, 10)
+        self.cmd_vel_pub = self.node.create_publisher(Twist, f'/{self.name}/cmd_vel', 10)
 
-    def get_pose(self) -> RobotPose:
-        return self.pose
+        self.pose = np.array([[float(x),float(y),float(theta)]]).T
 
-    def publish_velocity(self, vel: Twist) -> None:
-        self.cmd_vel_publisher.publish(vel)
+    def odom_callback(self, msg:Odometry):
+        with self.lock:
+            self.pose[0][0] = round(msg.pose.pose.position.x,2)
+            self.pose[1][0] = round(msg.pose.pose.position.y,2)
 
-    def compute_deltas(self, goal_point) -> tuple:
-        """returns delta_s, delta_theta"""
-        x, y = goal_point
-        goal_distance = np.sqrt(x**2 + y**2)
+            w, x, y, z = msg.pose.pose.orientation.w, msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z
+            siny_cosp = 2 * (w * z + x * y)
+            cosy_cosp = 1 - 2 * (y * y + z * z)
+            yaw = round(math.atan2(siny_cosp, cosy_cosp),2)
 
-        # edge cases
-        if goal_distance == 0: # if the goal is the current position
-            return 0, 0
-        if y == 0: # if the goal is on the x axis
-            return goal_distance, 0
- 
-        radius = goal_distance**2 / (-2 * y)
-        delta_theta = -2 * np.arcsin(goal_distance / (2 * radius))
-        delta_s = delta_theta * radius  # orthodromic distance
-        
-        return delta_s, delta_theta
+            self.pose[2][0] = yaw
 
-    def transform_frame(self, point:RobotPose, new_frame):
-        """returns the coordinates of the provided point in reference to the desired frame"""
+    def get_point_ref_to_robot_frame(self, point:np.array([[float, float, float]]).T):
+        with self.lock:
+            rev_point = -self.pose
 
-        frame_xy = np.array([new_frame.x, new_frame.y])
-        theta = new_frame.theta
+            trans_matrix = np.array([[1, 0, rev_point[0][0]], [0, 1, rev_point[1][0]], [0, 0, 1]])
+            new_point = np.matmul(trans_matrix, point)
+            rot_matrix = np.array([[np.cos(rev_point[2][0]), -np.sin(rev_point[2][0]), 0], [np.sin(rev_point[2][0]), np.cos(rev_point[2][0]), 0], [0, 0, 1]])
+            new_point = np.matmul(rot_matrix, new_point)
+            return new_point
 
-        point_xy = np.array([point.x, point.y])
+    def get_deltas(self, goal:np.array([[float,float,float]]).T) -> float:
+        goal = self.get_point_ref_to_robot_frame(goal)
+        displacement = float(np.sqrt(goal[0][0]**2 + goal[1][0]**2))
 
-        translated_point = point_xy - frame_xy
-        rot_matrix = np.array(([cos(-theta), -sin(-theta)], [sin(-theta), cos(-theta)]))
+        if displacement == 0.0:
+            return 0.0, 0.0, 0.0
+        if goal[1][0] == 0:
+            return displacement,0.0, displacement
 
-        transformed_point = rot_matrix.dot(translated_point)
+        radius = displacement **2 / (2 * goal[1][0])
+        print(f'pose {self.pose}')
+        print(f'radius {radius}')
+        delta_theta = 2 * np.arcsin(displacement/ (2 * radius))
+        delta_s = delta_theta * radius
+        return delta_s, delta_theta, displacement
+    
+    def publish_velocity(self, lin_vel:float, ang_vel:float):
+        msg = Twist()
+        msg.linear.x = lin_vel
+        msg.angular.z = ang_vel
 
-        return transformed_point  # TODO double check
+        self.cmd_vel_pub.publish(msg)
+
+    def get_pose(self):
+        with self.lock:
+            return self.pose

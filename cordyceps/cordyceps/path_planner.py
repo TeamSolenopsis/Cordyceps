@@ -74,7 +74,6 @@ class PathPlanner(Node):
         bot_2_path = Path()
         bot_3_path = Path()
 
-        print(vs_path)
         for pose in vs_path:
             # transformation matrix template.   
             tf_matrix = np.array(
