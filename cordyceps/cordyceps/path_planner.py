@@ -3,6 +3,7 @@ from rclpy.node import Node
 import numpy as np
 import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
+import math
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
 from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
 
@@ -20,11 +21,17 @@ class PathPlanner(Node):
     def generate_vs_path_mock(self, start_pose:Pose) -> list:
         x = [start_pose.position.x]
         y = [start_pose.position.y]
-        angles = []
+
+        qw, qx, qy, qz = start_pose.orientation.w, start_pose.orientation.x, start_pose.orientation.y, start_pose.orientation.z
+        siny_cosp = 2 * (qw * qz + qx * qy)
+        cosy_cosp = 1 - 2 * (qy * qy + qz * qz)
+        yaw = math.atan2(siny_cosp, cosy_cosp)
+
+        angles = [yaw]
 
         # right
-        x = np.append(x, np.linspace(x[-1] - 1, x[-1], self.RESOLUTION))
-        y = np.append(y, np.linspace(y[-1],y[-1], self.RESOLUTION))
+        x.append(2)
+        y.append(1)
 
         # # turn right
         # r = 4
@@ -32,17 +39,23 @@ class PathPlanner(Node):
         # x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
         # y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
 
-        for i in range(len(x) - 1):
-            x_goal = (x[i + 1] - x[i])
-            y_goal = (y[i + 1] - y[i])
 
-            angle = np.arctan(y_goal / x_goal) if x_goal != 0 else 0
+        for i in range(len(x) - 1):
+            #theta calculation
+            delta_x = (x[i + 1] - x[i])
+            delta_y = (y[i + 1] - y[i])
+
+            angle = np.arctan(delta_y / delta_x) if delta_x != 0 else 0
             
-            if y_goal <= 0 and x_goal <= 0:
+            if delta_y <= 0 and delta_x <= 0:
                     angle += np.pi
-            if y_goal >= 0 and x_goal <= 0:
+            if delta_y >= 0 and delta_x <= 0:
                     angle -= np.pi
             angles.append(angle)
+
+        angles.pop(0)
+        x.pop(0)
+        y.pop(0)
 
         return list(zip(x, y, angles))
          
@@ -61,6 +74,7 @@ class PathPlanner(Node):
         bot_2_path = Path()
         bot_3_path = Path()
 
+        print(vs_path)
         for pose in vs_path:
             # transformation matrix template.   
             tf_matrix = np.array(
@@ -79,10 +93,10 @@ class PathPlanner(Node):
 
 
             # Calculation for pose of every robot in the VS.
-            trans_0 = tf_matrix.dot(bot_0_xy)
-            trans_1 = tf_matrix.dot(bot_1_xy)
-            trans_2 = tf_matrix.dot(bot_2_xy)
-            trans_3 = tf_matrix.dot(bot_3_xy)
+            trans_0 = np.matmul(tf_matrix, bot_0_xy)
+            trans_1 = np.matmul(tf_matrix, bot_1_xy)
+            trans_2 = np.matmul(tf_matrix, bot_2_xy)
+            trans_3 = np.matmul(tf_matrix, bot_3_xy)
 
             # Calculated path for every robot in the VS.
 
@@ -91,15 +105,15 @@ class PathPlanner(Node):
             bot_2_pose = RobotPose()
             bot_3_pose = RobotPose()
 
-            bot_0_pose.x = trans_0[0] + start_pose.position.x
-            bot_1_pose.x = trans_1[0] + start_pose.position.x
-            bot_2_pose.x = trans_2[0] + start_pose.position.x
-            bot_3_pose.x = trans_3[0] + start_pose.position.x
+            bot_0_pose.x = trans_0[0]
+            bot_1_pose.x = trans_1[0]
+            bot_2_pose.x = trans_2[0]
+            bot_3_pose.x = trans_3[0]
 
-            bot_0_pose.y = trans_0[1] + start_pose.position.y
-            bot_1_pose.y = trans_1[1] + start_pose.position.y
-            bot_2_pose.y = trans_2[1] + start_pose.position.y
-            bot_3_pose.y = trans_3[1] + start_pose.position.y
+            bot_0_pose.y = trans_0[1]
+            bot_1_pose.y = trans_1[1]
+            bot_2_pose.y = trans_2[1]
+            bot_3_pose.y = trans_3[1]
 
             bot_0_path.robot_poses.append(bot_0_pose)
             bot_1_path.robot_poses.append(bot_1_pose)

@@ -18,17 +18,17 @@ class Assembler(Node):
         bot_2_pose = RobotPose()
         bot_3_pose = RobotPose()
 
-        bot_0_pose.x = task.diameter / 2
+        bot_0_pose.x = task.diameter /2
         bot_0_pose.y = 0.0
 
         bot_1_pose.x = 0.0
-        bot_1_pose.y = task.diameter / 2
+        bot_1_pose.y = task.diameter /2
 
-        bot_2_pose.x = -task.diameter / 2
+        bot_2_pose.x = -task.diameter /2
         bot_2_pose.y = 0.0
 
         bot_3_pose.x = 0.0
-        bot_3_pose.y = -task.diameter / 2
+        bot_3_pose.y = -task.diameter /2
 
         response.vs_ref_pose.append(bot_0_pose)
         response.vs_ref_pose.append(bot_1_pose)

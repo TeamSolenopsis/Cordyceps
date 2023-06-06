@@ -77,7 +77,7 @@ class Vs_manager(Node):
         task = Task()
         start_pose = Pose()
         start_pose.position.x = 1.0
-        start_pose.position.y = 0.0
+        start_pose.position.y = 1.0
         goal_pose = Pose()
         task.start_pose = start_pose
         task.goal_pose = goal_pose
