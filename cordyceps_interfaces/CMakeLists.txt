@@ -20,7 +20,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Task.msg"
   "srv/CustomRobotAssembler.srv"
   "srv/CustomPathPlanner.srv"
-  "action/Controller.action"
+  "srv/Controller.srv"
+  "srv/CheckThread.srv"
   DEPENDENCIES geometry_msgs 
 )
 
