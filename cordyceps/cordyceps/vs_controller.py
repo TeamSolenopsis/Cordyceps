@@ -7,7 +7,6 @@ import threading
 from .Robot import Robot
 from std_srvs.srv import Trigger
 from cordyceps_interfaces.msg import RobotPaths
-
 from cordyceps_interfaces.srv import Controller, CheckThread
 
 class ControllerService(Node):
