@@ -2,6 +2,7 @@ import rclpy
 from rclpy.node import Node
 from cordyceps_interfaces.srv import CustomRobotAssembler
 from cordyceps_interfaces.msg import RobotPose, RobotPaths, Task, Path
+from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 import numpy as np
 
 class Assembler(Node):
@@ -14,6 +15,7 @@ class Assembler(Node):
     def get_robot_vs_ref_pose_callback(self, request, response):
         task = request.task
         bot_pose = RobotPose()
+        navigator = BasicNavigator()
 
         for robot_index in range(4):
             angle = (2 * np.pi / 4) * robot_index
