@@ -27,17 +27,22 @@ class PathPlanner(Node):
         cosy_cosp = 1 - 2 * (qy * qy + qz * qz)
         yaw = math.atan2(siny_cosp, cosy_cosp)
 
-        angles = [yaw]
+        angles = np.array([yaw])
 
         # right
-        x.append(2)
-        y.append(1)
+    
 
         # # turn right
+        r = 4
+        i = np.linspace(0*np.pi, 0.5*np.pi, self.RESOLUTION)
+        x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
+        y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
+
         # r = 4
-        # i = np.linspace(0*np.pi, 0.5*np.pi, self.RESOLUTION)
-        # x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
-        # y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
+        # i = np.linspace(0,10, self.RESOLUTION)
+        # x = np.append(x,(x[-1] + i))
+        # y = np.append(y,(y[-1] + np.sin(i)))
+
 
 
         for i in range(len(x) - 1):
@@ -51,11 +56,11 @@ class PathPlanner(Node):
                     angle += np.pi
             if delta_y >= 0 and delta_x <= 0:
                     angle -= np.pi
-            angles.append(angle)
+            angles = np.append(angles, angle)
 
-        angles.pop(0)
-        x.pop(0)
-        y.pop(0)
+        x = x[1:]
+        y = y[1:]
+        angles = angles[1:]
 
         return list(zip(x, y, angles))
          
