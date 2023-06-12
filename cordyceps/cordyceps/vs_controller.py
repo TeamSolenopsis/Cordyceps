@@ -16,8 +16,8 @@ class ControllerService(Node):
         self.check_thread_state = self.create_service(CheckThread, "check_thread_state", self.check_thread_state_callback)
 
         # Constants delcaration
-        self.MAX_BOT_SPEED =  0.5 #m/s
-        self.GOAL_RADIUS = 0.05 #m
+        self.MAX_BOT_SPEED =  0.2 #m/s
+        self.GOAL_RADIUS = 0.1 #m
 
         self.robots = []
         for i in range(fleet_size):
@@ -44,6 +44,7 @@ class ControllerService(Node):
     
     def check_thread_state_callback(self, request, response):
         """Checks if the thread is still running"""
+        self.follow_paths_thread.join(0.06)
         response.is_alive = self.follow_paths_thread.is_alive()
         return response
 

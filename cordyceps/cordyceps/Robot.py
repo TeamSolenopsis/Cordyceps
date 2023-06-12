@@ -54,8 +54,6 @@ class Robot:
             return displacement,0.0, displacement
 
         radius = displacement **2 / (2 * goal[1][0])
-        print(f'pose {self.pose}')
-        print(f'radius {radius}')
         delta_theta = 2 * np.arcsin(displacement/ (2 * radius))
         delta_s = delta_theta * radius
         return delta_s, delta_theta, displacement
