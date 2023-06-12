@@ -20,8 +20,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'controller = cordyceps.controller:main',
-            'assembler = cordyceps.assembler:main'
+            'controller = cordyceps.vs_controller:main',
+            'manager = cordyceps.vs_manager:main',
+            'planner = cordyceps.path_planner:main',
+            'assembler = cordyceps.custom_assembler:main',
         ],
     },
 )

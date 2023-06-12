@@ -4,7 +4,7 @@
   <name>cordyceps_interfaces</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="mart.coppelmans@gmail.com">mart</maintainer>
+  <maintainer email="sara02@xs4all.nl">sara</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
@@ -12,10 +12,10 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
-  <build_depend>rosidl_default_generators</build_depend>
-
+  <depend>geometry_msgs</depend>
+  <depend>action_msgs</depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
   <exec_depend>rosidl_default_runtime</exec_depend>
-
   <member_of_group>rosidl_interface_packages</member_of_group>
 
   <export>
