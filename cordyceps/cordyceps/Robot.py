@@ -33,7 +33,7 @@ class Robot:
 
         self.pose[0][1] = json_odom_msg['position']['x']
         self.pose[1][0] = json_odom_msg['position']['y']
-        self.pose[2][0] = json_odom_msg['orientation']['z']
+        self.pose[2][0] = json_odom_msg['orientation']['w']
 
 
     def get_point_ref_to_robot_frame(self, point:np.array([[float, float, float]]).T):
