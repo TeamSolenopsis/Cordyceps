@@ -9,19 +9,17 @@ import json
 import paho.mqtt.client as mqtt
 
 class Robot:
-    def __init__(self, x, y, theta, name, node:Node, mqtt_client) -> None:
-        self.node = node
+    def __init__(self, x, y, theta, name,  mqtt_client) -> None:
         self.name = name
         self.lock = threading.Lock()
 
-        self.mqtt_client = mqtt_client
+        self.mqtt_client = mqtt.Client()
         self.mqtt_client.on_message = self.mqtt_on_message
         self.mqtt_client.on_connect = self.mqtt_on_connect
 
+        # TODO: add this to a config file
         self.mqtt_client.connect("192.168.75.201", 1883, 60)
         self.mqtt_client.loop_start()
-
-        self.pose_sub = self.node.create_subscription(Odometry, f'/{self.name}/odom', self.odom_callback, 10)
 
         self.pose = np.array([[float(x),float(y),float(theta)]]).T
 

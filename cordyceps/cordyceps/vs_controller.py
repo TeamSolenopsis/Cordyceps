@@ -8,7 +8,6 @@ from .Robot import Robot
 from std_srvs.srv import Trigger
 from cordyceps_interfaces.msg import RobotPaths
 from cordyceps_interfaces.srv import Controller, CheckThread
-import paho.mqtt.client as mqtt
 
 class ControllerService(Node):
     def __init__(self, fleet_size=4):
@@ -16,15 +15,13 @@ class ControllerService(Node):
         self.start_follow_path_service = self.create_service(Controller, "start_follow_path", self.start_thread_callback)
         self.check_thread_state = self.create_service(CheckThread, "check_thread_state", self.check_thread_state_callback)
 
-        self.mqtt_client = mqtt.Client()
-
         # Constants delcaration
         self.MAX_BOT_SPEED =  0.5 #m/s
         self.GOAL_RADIUS = 0.05 #m
 
         self.robots = []
         for i in range(fleet_size):
-            self.robots.append(Robot(0,0,0,f"r{i}", self, self.mqtt_client))
+            self.robots.append(Robot(0,0,0,f"r{i}"))
 
         self.follow_paths_thread = None
 
