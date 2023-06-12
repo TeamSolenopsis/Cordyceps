@@ -79,10 +79,10 @@ class VsManager(Node):
         self.start_path_follow_client.wait_for_service()
         self.start_path_follow_client.call(request)
         
-        is_alive = False
+        is_alive = True
         request = CheckThread.Request()
 
-        while not is_alive:
+        while is_alive:
             is_alive = self.check_thread_state_client.call(request).is_alive
 
 
