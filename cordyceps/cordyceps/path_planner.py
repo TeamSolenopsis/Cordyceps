@@ -36,10 +36,12 @@ class PathPlanner(Node):
         vs_path = self.generate_vs_path_mock(start_pose)
 
         robot_paths = RobotPaths()
-        bot_0_path = Path()
-        bot_1_path = Path()
-        bot_2_path = Path()
-        bot_3_path = Path()
+        
+        fleet_size = request.task.number_of_robots
+        bot_paths = []
+        for _ in range(fleet_size):
+            bot_paths.append(Path())
+
 
         for pose in vs_path:
             # transformation matrix template.   
@@ -49,47 +51,18 @@ class PathPlanner(Node):
                     [np.sin(pose[2]), np.cos(pose[2]), pose[1]],
                     [0, 0, 1],
                 ]
-            )           
+            )     
 
-        # Robot coordinates. 
-            bot_0_xy = np.array([vs_ref_pose[0].x, vs_ref_pose[0].y, 1])
-            bot_1_xy = np.array([vs_ref_pose[1].x, vs_ref_pose[1].y, 1]) 
-            bot_2_xy = np.array([vs_ref_pose[2].x, vs_ref_pose[2].y, 1])
-            bot_3_xy = np.array([vs_ref_pose[3].x, vs_ref_pose[3].y, 1])
+            for bot_i in range(fleet_size): 
+                bot_xy = np.array([vs_ref_pose[bot_i].x, vs_ref_pose[bot_i].y, 1])
+                trans = np.matmul(tf_matrix, bot_xy)
+                bot_pose = RobotPose()
+                bot_pose.x = trans[0]
+                bot_pose.y = trans[1]
+                bot_paths[bot_i].robot_poses.append(bot_pose)
 
-
-            # Calculation for pose of every robot in the VS.
-            trans_0 = np.matmul(tf_matrix, bot_0_xy)
-            trans_1 = np.matmul(tf_matrix, bot_1_xy)
-            trans_2 = np.matmul(tf_matrix, bot_2_xy)
-            trans_3 = np.matmul(tf_matrix, bot_3_xy)
-
-            # Calculated path for every robot in the VS.
-
-            bot_0_pose = RobotPose()
-            bot_1_pose = RobotPose()
-            bot_2_pose = RobotPose()
-            bot_3_pose = RobotPose()
-
-            bot_0_pose.x = trans_0[0]
-            bot_1_pose.x = trans_1[0]
-            bot_2_pose.x = trans_2[0]
-            bot_3_pose.x = trans_3[0]
-
-            bot_0_pose.y = trans_0[1]
-            bot_1_pose.y = trans_1[1]
-            bot_2_pose.y = trans_2[1]
-            bot_3_pose.y = trans_3[1]
-
-            bot_0_path.robot_poses.append(bot_0_pose)
-            bot_1_path.robot_poses.append(bot_1_pose)
-            bot_2_path.robot_poses.append(bot_2_pose)
-            bot_3_path.robot_poses.append(bot_3_pose)
-
-        robot_paths.paths.append(bot_0_path)
-        robot_paths.paths.append(bot_1_path)
-        robot_paths.paths.append(bot_2_path)
-        robot_paths.paths.append(bot_3_path)
+        for bot_path in bot_paths:
+            robot_paths.paths.append(bot_path)
 
         response.robot_paths = robot_paths
         return response        
