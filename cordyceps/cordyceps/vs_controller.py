@@ -16,8 +16,8 @@ class ControllerService(Node):
         self.check_thread_state = self.create_service(CheckThread, "check_thread_state", self.check_thread_state_callback)
 
         # Constants delcaration
-        self.MAX_BOT_SPEED =  0.5 #m/s
-        self.GOAL_RADIUS = 0.05 #m
+        self.MAX_BOT_SPEED =  0.2 #m/s
+        self.GOAL_RADIUS = 0.2 #m
 
         self.robots = []
         for i in range(fleet_size):

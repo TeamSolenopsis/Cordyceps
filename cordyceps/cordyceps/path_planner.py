@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
 import math
+import csv
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
 from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
 
@@ -18,55 +19,16 @@ class PathPlanner(Node):
 
         self.angle = 0.0  # rad
 
-    def generate_vs_path_mock(self, start_pose:Pose) -> list:
-        x = [start_pose.position.x]
-        y = [start_pose.position.y]
-
-        qw, qx, qy, qz = start_pose.orientation.w, start_pose.orientation.x, start_pose.orientation.y, start_pose.orientation.z
-        siny_cosp = 2 * (qw * qz + qx * qy)
-        cosy_cosp = 1 - 2 * (qy * qy + qz * qz)
-        yaw = math.atan2(siny_cosp, cosy_cosp)
-
-        angles = np.array([yaw])
-
-        # right
-    
-
-        # # turn right
-        r = 4
-        i = np.linspace(0*np.pi, 0.5*np.pi, self.RESOLUTION)
-        x = np.append(x, (x[-1]) + np.flip(np.cos(i)*r))
-        y = np.append(y, (y[-1]- r) + np.flip(np.sin(i)*r))
-
-        # r = 4
-        # i = np.linspace(0,10, self.RESOLUTION)
-        # x = np.append(x,(x[-1] + i))
-        # y = np.append(y,(y[-1] + np.sin(i)))
-
-
-
-        for i in range(len(x) - 1):
-            #theta calculation
-            delta_x = (x[i + 1] - x[i])
-            delta_y = (y[i + 1] - y[i])
-
-            angle = np.arctan(delta_y / delta_x) if delta_x != 0 else 0
-            
-            if delta_y <= 0 and delta_x <= 0:
-                    angle += np.pi
-            if delta_y >= 0 and delta_x <= 0:
-                    angle -= np.pi
-            angles = np.append(angles, angle)
-
-        x = x[1:]
-        y = y[1:]
-        angles = angles[1:]
-
-        return list(zip(x, y, angles))
+    def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
+        file = open('src/Cordyceps/cordyceps/cordyceps/Path7.csv','r')
+        data = list(csv.reader(file, delimiter=','))
+        file.close()
+        
+        for i in range(len(data)):
+            data[i] = [float(j) for j in data[i]]
+        return data
          
     def get_robot_paths_callback(self, request, response):
-        # TODO: Call Assembler to get robot positions in relation to the vs.
-
         vs_ref_pose = request.vs_ref_pose
         start_pose = request.task.start_pose
     
