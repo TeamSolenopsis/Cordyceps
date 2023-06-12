@@ -5,17 +5,26 @@ from geometry_msgs.msg import Twist, Quaternion
 import math
 import threading
 import time
+import json
+import paho.mqtt.client as mqtt
 
 class Robot:
-    def __init__(self, x, y, theta, name, node:Node) -> None:
+    def __init__(self, x, y, theta, name, node:Node, mqtt_client) -> None:
         self.node = node
         self.name = name
         self.lock = threading.Lock()
 
+        self.mqtt_client = mqtt_client
+        self.mqtt_client.on_message = self.mqtt_on_message
+        self.mqtt_client.on_connect = self.mqtt_on_connect
+
+        self.mqtt_client.connect("192.168.75.201", 1883, 60)
+        self.mqtt_client.loop_start()
+
         self.pose_sub = self.node.create_subscription(Odometry, f'/{self.name}/odom', self.odom_callback, 10)
-        self.cmd_vel_pub = self.node.create_publisher(Twist, f'/{self.name}/cmd_vel', 10)
 
         self.pose = np.array([[float(x),float(y),float(theta)]]).T
+
 
     def odom_callback(self, msg:Odometry):
         with self.lock:
@@ -56,11 +65,12 @@ class Robot:
         return delta_s, delta_theta, displacement
     
     def publish_velocity(self, lin_vel:float, ang_vel:float):
-        msg = Twist()
-        msg.linear.x = lin_vel
-        msg.angular.z = ang_vel
+        cmd_vel = {
+            'linear': lin_vel,
+            'angular': ang_vel
+        }
 
-        self.cmd_vel_pub.publish(msg)
+        self.mqtt_client.publish(f'/{self.name}/cmd_vel', json.dumps(cmd_vel))
 
     def get_pose(self):
         with self.lock:
