@@ -44,6 +44,7 @@ class ControllerService(Node):
     
     def check_thread_state_callback(self, request, response):
         """Checks if the thread is still running"""
+        self.follow_paths_thread.join(0.06)
         response.is_alive = self.follow_paths_thread.is_alive()
         return response
 
