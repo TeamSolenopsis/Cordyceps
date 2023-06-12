@@ -25,18 +25,16 @@ class Robot:
 
         self.pose = np.array([[float(x),float(y),float(theta)]]).T
 
+    def on_connect(self, client, userdata, flags, rc):
+        self.client.subscribe(f'/{self.name}/odom')
 
-    def odom_callback(self, msg:Odometry):
-        with self.lock:
-            self.pose[0][0] = round(msg.pose.pose.position.x,2)
-            self.pose[1][0] = round(msg.pose.pose.position.y,2)
+    def on_message(self, client, userdata, msg):
+        json_odom_msg = json.loads(msg.payload)
 
-            w, x, y, z = msg.pose.pose.orientation.w, msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z
-            siny_cosp = 2 * (w * z + x * y)
-            cosy_cosp = 1 - 2 * (y * y + z * z)
-            yaw = round(math.atan2(siny_cosp, cosy_cosp),2)
+        self.pose[0][1] = json_odom_msg['position']['x']
+        self.pose[1][0] = json_odom_msg['position']['y']
+        self.pose[2][0] = json_odom_msg['orientation']['z']
 
-            self.pose[2][0] = yaw
 
     def get_point_ref_to_robot_frame(self, point:np.array([[float, float, float]]).T):
         with self.lock:
