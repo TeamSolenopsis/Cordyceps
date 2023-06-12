@@ -17,7 +17,7 @@ class ControllerService(Node):
 
         # Constants delcaration
         self.MAX_BOT_SPEED =  0.2 #m/s
-        self.GOAL_RADIUS = 0.2 #m
+        self.GOAL_RADIUS = 0.1 #m
 
         self.robots = []
         for i in range(fleet_size):
