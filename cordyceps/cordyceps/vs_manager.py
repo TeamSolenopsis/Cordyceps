@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from rclpy.executors import SingleThreadedExecutor
+from rclpy.executors import MultiThreadedExecutor
 import threading
 from queue import Queue
 from geometry_msgs.msg import Pose
@@ -97,7 +97,7 @@ def main(args=None):
     planner = PathPlanner()
     assembler = Assembler()
 
-    executor = SingleThreadedExecutor()
+    executor = MultiThreadedExecutor()
     executor.add_node(vs_manager)
     executor.add_node(controller)
     executor.add_node(planner)
