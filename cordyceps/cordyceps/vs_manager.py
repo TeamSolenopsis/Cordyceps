@@ -1,8 +1,12 @@
 import rclpy
 from rclpy.node import Node
+from rclpy.executors import SingleThreadedExecutor
 import threading
 from queue import Queue
 from geometry_msgs.msg import Pose
+from .path_planner import PathPlanner
+from .custom_assembler import Assembler
+from .vs_controller import ControllerService
 
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler, Controller, CheckThread
 from cordyceps_interfaces.msg import RobotPaths, Task, RobotPose,Path
@@ -89,9 +93,21 @@ class VsManager(Node):
 def main(args=None):
     rclpy.init(args=args)
     vs_manager = VsManager()
+    controller = ControllerService()
+    planner = PathPlanner()
+    assembler = Assembler()
 
-    rclpy.spin(vs_manager)
+    executor = SingleThreadedExecutor()
+    executor.add_node(vs_manager)
+    executor.add_node(controller)
+    executor.add_node(planner)
+    executor.add_node(assembler)
+
+    executor.spin()
     vs_manager.destroy_node()
+    controller.destroy_node()
+    planner.destroy_node()
+    assembler.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
