@@ -37,7 +37,7 @@ class ControllerService(Node):
             for poses in path.robot_poses[:]:
                 paths[i].append([poses.x, poses.y])
 
-        self.plot_path(paths)
+        #self.plot_path(paths)
         self.follow_paths_thread = threading.Thread(target=self.follow_paths, args=(paths,))
         self.follow_paths_thread.start()
         return response

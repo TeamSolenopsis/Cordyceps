@@ -9,22 +9,22 @@ import json
 import paho.mqtt.client as mqtt
 
 class Robot:
-    def __init__(self, x, y, theta, name,  mqtt_client) -> None:
+    def __init__(self, x, y, theta, name) -> None:
         self.name = name
         self.lock = threading.Lock()
 
         self.mqtt_client = mqtt.Client()
-        self.mqtt_client.on_message = self.mqtt_on_message
-        self.mqtt_client.on_connect = self.mqtt_on_connect
+        self.mqtt_client.on_message = self.on_message
+        self.mqtt_client.on_connect = self.on_connect
 
         # TODO: add this to a config file
-        self.mqtt_client.connect("192.168.75.201", 1883, 60)
+        self.mqtt_client.connect("192.168.0.101", 1883, 60)
         self.mqtt_client.loop_start()
 
         self.pose = np.array([[float(x),float(y),float(theta)]]).T
 
     def on_connect(self, client, userdata, flags, rc):
-        self.client.subscribe(f'/{self.name}/odom')
+        client.subscribe(f'/{self.name}/odom')
 
     def on_message(self, client, userdata, msg):
         with self.lock:
