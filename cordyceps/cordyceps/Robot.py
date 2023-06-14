@@ -27,11 +27,12 @@ class Robot:
         self.client.subscribe(f'/{self.name}/odom')
 
     def on_message(self, client, userdata, msg):
-        json_odom_msg = json.loads(msg.payload)
+        with self.lock:
+            json_odom_msg = json.loads(msg.payload)
 
-        self.pose[0][1] = json_odom_msg['position']['x']
-        self.pose[1][0] = json_odom_msg['position']['y']
-        self.pose[2][0] = json_odom_msg['orientation']['w']
+            self.pose[0][1] = json_odom_msg['position']['x']
+            self.pose[1][0] = json_odom_msg['position']['y']
+            self.pose[2][0] = json_odom_msg['orientation']['w']
 
 
     def get_point_ref_to_robot_frame(self, point:np.array([[float, float, float]]).T):
