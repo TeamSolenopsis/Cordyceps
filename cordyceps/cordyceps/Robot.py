@@ -30,7 +30,7 @@ class Robot:
         with self.lock:
             json_odom_msg = json.loads(msg.payload)
 
-            self.pose[0][1] = json_odom_msg['position']['x']
+            self.pose[0][0] = json_odom_msg['position']['x']
             self.pose[1][0] = json_odom_msg['position']['y']
             self.pose[2][0] = json_odom_msg['orientation']['w']
 
