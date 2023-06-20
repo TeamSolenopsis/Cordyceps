@@ -6,6 +6,7 @@ from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 from geometry_msgs.msg import Pose
 import numpy as np
 import math
+import paho.mqtt.client as mqtt 
 
 class Assembler(Node):
 
@@ -14,6 +15,9 @@ class Assembler(Node):
         
         self.assembler_service = self.create_service(AssemblerGetVsRefPose, 'get_robot_vs_ref_pose', self.get_robot_vs_ref_pose_callback)
         self.assembler_service = self.create_service(CustomRobotAssembler, 'assemble_robots', self.assemble_robots_callback)
+
+        self.client = mqtt.Client()
+        self.client.connect('192.168.75.201', 1883)
         
     def get_robot_vs_ref_pose_callback(self, request, response):
         task = request.task
@@ -28,7 +32,7 @@ class Assembler(Node):
             response.vs_ref_pose.append(bot_pose)
 
         return response
-
+    
     #TODO: test this function 
     #TODO: test the way robot_poses is an np.array
     def assemble_robots_callback(self, request, response):
@@ -56,9 +60,7 @@ class Assembler(Node):
             robot_start_position = np.matmul(tf_matrix, robot_poses[robot_index])
 
             #TODO: send to MQTT with robot id
-
-
-            #TODO: wait till all robots have sent on position message
+            self.client.publish(f'r{robot_index}/pose', robot_start_position)
 
         return response
         
