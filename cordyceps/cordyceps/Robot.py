@@ -85,7 +85,7 @@ class Robot:
                 'y': y
             },
             'orientation': {
-                'z': theta
+                'theta': theta
             }
         }
 
