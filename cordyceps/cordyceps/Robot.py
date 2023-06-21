@@ -23,16 +23,24 @@ class Robot:
 
         self.pose = np.array([[float(x),float(y),float(theta)]]).T
 
+        self.arrived = False
+
     def on_connect(self, client, userdata, flags, rc):
         client.subscribe(f'/{self.name}/odom')
+        self.mqtt_client.subscribe(f'/{self.name}/goal_arrived')
 
     def on_message(self, client, userdata, msg):
         with self.lock:
-            json_odom_msg = json.loads(msg.payload)
+            if msg.topic == f'/{self.name}/goal_arrived':
+                json_goal_arrived_msg = json.loads(msg.payload)
+                self.arrived = json_goal_arrived_msg['goal_arrived']
 
-            self.pose[0][0] = json_odom_msg['position']['x']
-            self.pose[1][0] = json_odom_msg['position']['y']
-            self.pose[2][0] = json_odom_msg['orientation']['w']
+            if msg.topic == f'/{self.name}/odom':
+                json_odom_msg = json.loads(msg.payload)
+
+                self.pose[0][0] = json_odom_msg['position']['x']
+                self.pose[1][0] = json_odom_msg['position']['y']
+                self.pose[2][0] = json_odom_msg['orientation']['w']
 
 
     def get_point_ref_to_robot_frame(self, point:np.array([[float, float, float]]).T):
@@ -78,7 +86,15 @@ class Robot:
             }
         }
 
+        #TODO: add flase arrived
+        self.arrived = False
+
         self.mqtt_client.publish(f'/{self.name}/goal_pose', json.dumps(msg))
+
+    def is_arrived(self) -> bool:
+        if self.arrived:
+            return True
+        return False
 
     def get_pose(self):
         with self.lock:

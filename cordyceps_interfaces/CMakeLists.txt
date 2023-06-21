@@ -23,6 +23,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/Controller.srv"
   "srv/CheckThread.srv"
   "srv/AssemblerGetVsRefPose.srv"
+  "srv/CheckGoalPoseReached.srv"
   DEPENDENCIES geometry_msgs 
 )
 

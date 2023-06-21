@@ -8,7 +8,7 @@ from .path_planner import PathPlanner
 from .custom_assembler import Assembler
 from .vs_controller import ControllerService
 
-from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler, Controller, CheckThread
+from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler, Controller, CheckThread, AssemblerGetVsRefPose, CheckGoalPoseReached
 from cordyceps_interfaces.msg import RobotPaths, Task, RobotPose,Path
 
 class VsManager(Node):
@@ -20,7 +20,9 @@ class VsManager(Node):
         self.task_thread.start()
 
         self.robot_path_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
-        self.assembler_client = self.create_client(CustomRobotAssembler, 'AssemblerGetVsRefPose')
+        self.assembler_client = self.create_client(AssemblerGetVsRefPose, 'get_robot_vs_ref_pose')
+        self.assembler_client = self.create_client(CustomRobotAssembler, 'assemble_robots')
+        self.assembler_client = self.create_client(CheckGoalPoseReached, 'check_goal_pose_reached')
         self.start_path_follow_client = self.create_client(Controller, 'start_follow_path')
         self.check_thread_state_client = self.create_client(CheckThread, 'check_thread_state')
 
@@ -42,6 +44,8 @@ class VsManager(Node):
             task = self.task_queue.get(block=True)
             vs_ref_pose = self.request_vs_ref_pose(task)
             paths = self.request_paths(task, vs_ref_pose)
+            self.assemble_robots(task)
+            start_pose_reachd = self.check_goal_pose_reached()
             self.controll_vs(paths)
 
     def request_paths(self, task:Task, vs_ref_pose:list):
@@ -56,13 +60,30 @@ class VsManager(Node):
         return respone.robot_paths
     
     def request_vs_ref_pose(self, task):
-        assembler_request = CustomRobotAssembler.Request()
+        assembler_request = AssemblerGetVsRefPose.Request()
         assembler_request.task = task
         while True:
             if self.assembler_client.wait_for_service():
                 break
         response = self.assembler_client.call(assembler_request)
         return response.vs_ref_pose
+    
+    def assemble_robots(self, task):
+        assembler_request = CustomRobotAssembler.Request()
+        assembler_request.task = task
+        while True:
+            if self.assembler_client.wait_for_service():
+                break
+        response = self.assembler_client.call(assembler_request)
+        return response.task_send
+    
+    def check_goal_pose_reached(self):
+        assembler_request = CheckGoalPoseReached.Request()
+        while True:
+            if self.assembler_client.wait_for_service():
+                break
+        response = self.assembler_client.call(assembler_request)
+        return response.arrived
 
     def construct_mock_task(self) -> Task:
         task = Task()

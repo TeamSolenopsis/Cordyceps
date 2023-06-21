@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from cordyceps_interfaces.srv import CustomRobotAssembler, AssemblerGetVsRefPose
+from cordyceps_interfaces.srv import CustomRobotAssembler, AssemblerGetVsRefPose, CheckGoalPoseReached
 from cordyceps_interfaces.msg import RobotPose, RobotPaths, Task, Path
 from geometry_msgs.msg import Pose
 import numpy as np
@@ -14,9 +14,9 @@ class Assembler(Node):
         
         self.assembler_service = self.create_service(AssemblerGetVsRefPose, 'get_robot_vs_ref_pose', self.get_robot_vs_ref_pose_callback)
         self.assembler_service = self.create_service(CustomRobotAssembler, 'assemble_robots', self.assemble_robots_callback)
+        self.assembler_service = self.create_service(CheckGoalPoseReached, 'check_goal_pose_reached', self.check_goalpose_reached_callback)
 
         self.robots = []
-
         
     def get_robot_vs_ref_pose_callback(self, request, response):
         task = request.task
@@ -32,10 +32,8 @@ class Assembler(Node):
 
         return response
     
-    #TODO: test this function 
     def assemble_robots_callback(self, request, response):
         task = request.task
-        robot_poses = np.array()
         robot_poses = self.get_robot_vs_ref_pose_callback(self, request, response)
         print(robot_poses)
 
@@ -58,9 +56,19 @@ class Assembler(Node):
             robot_start_position = np.matmul(tf_matrix, robot_poses[robot_index])
 
             self.robots[robot_index].publish_assembler_goal_pose(float(robot_start_position.x), float(robot_start_position.y), float(robot_start_position.z))
-            
 
         return response
+
+    def check_goalpose_reached_callback(self, request, response):
+        count = 0
+        response.goal_pose_reached = False
+        for robot in self.robots:
+            if robot.check_goal_pose_reached():
+                count += 1
+
+        if count == len(self.robots):
+            response.goal_pose_reached = True
+
         
 def main(args=None):
     rclpy.init(args=args)
