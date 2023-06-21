@@ -75,6 +75,7 @@ class VsManager(Node):
                 break
         self.assembler_client.call(assembler_request)
 
+        arrived = False
         while arrived == False:
             arrived = self.check_goal_pose_reached()
 
@@ -86,7 +87,7 @@ class VsManager(Node):
             if self.assembler_check_goal_reached_client.wait_for_service():
                 break
         response = self.assembler_check_goal_reached_client.call(assembler_request)
-        return response.arrived
+        return response.all_arrived
 
     def construct_mock_task(self) -> Task:
         task = Task()
