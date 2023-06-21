@@ -31,7 +31,7 @@ class Robot:
 
     def on_connect(self, client, userdata, flags, rc):
         client.subscribe(f'/{self.name}/odom')
-        self.mqtt_client.subscribe(f'/{self.name}/goal_arrived')
+        client.subscribe(f'/{self.name}/goal_arrived')
 
     def on_message(self, client, userdata, msg):
         with self.lock:
