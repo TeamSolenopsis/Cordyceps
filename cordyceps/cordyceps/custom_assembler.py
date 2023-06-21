@@ -20,42 +20,43 @@ class Assembler(Node):
         
     def get_robot_vs_ref_pose_callback(self, request, response):
         task = request.task
-        bot_pose = RobotPose()
 
         for robot_index in range(task.number_of_robots):
+            bot_pose = RobotPose()
             angle = (2 * np.pi * robot_index) / task.number_of_robots
             bot_pose.x = float(np.cos(angle) * task.diameter / 2)
             bot_pose.y = float(np.sin(angle) * task.diameter / 2)
             print(f'robot:{robot_index} x: {bot_pose.x}, y: {bot_pose.y}') 
             response.vs_ref_pose.append(bot_pose)
+
             self.add_robot(task.number_of_robots, robot_index)
 
         return response
     
     def assemble_robots_callback(self, request, response):
         task = request.task
-        #robot_poses = np.array(self.get_robot_vs_ref_pose_callback(request, response))
-        # print(robot_poses)
+        robot_poses = request.robot_poses
+        print("robot_poses" + str(robot_poses))
 
-        # w, x, y, z = task.start_pose.pose.pose.orientation.w, task.start_pose.pose.pose.orientation.x, task.start_pose.pose.pose.orientation.y, task.start_pose.pose.pose.orientation.z
-        # siny_cosp = 2 * (w * z + x * y)
-        # cosy_cosp = 1 - 2 * (y * y + z * z)
-        # yaw = round(math.atan2(siny_cosp, cosy_cosp),2)
+        w, x, y, z = task.start_pose.orientation.w, task.start_pose.orientation.x, task.start_pose.orientation.y, task.start_pose.orientation.z
+        siny_cosp = 2 * (w * z + x * y)
+        cosy_cosp = 1 - 2 * (y * y + z * z)
+        yaw = round(math.atan2(siny_cosp, cosy_cosp),2)
 
-        # tf_matrix = np.array(
-        #         [
-        #             [np.cos(yaw), -np.sin(yaw), task.start_pose.pose.pose.point.x],
-        #             [np.sin(yaw), np.cos(yaw), task.start_pose.pose.pose.point.y],
-        #             [0, 0, 1],
-        #         ]
-        #     ) 
+        tf_matrix = np.array(
+                [
+                    [np.cos(yaw), -np.sin(yaw), task.start_pose.position.x],
+                    [np.sin(yaw), np.cos(yaw), task.start_pose.position.y],
+                    [0, 0, 1],
+                ]
+            ) 
 
-        # for robot_index in range(task.number_of_robots):
-        #     robot_start_position = Pose()
-
-        #     robot_start_position = np.matmul(tf_matrix, robot_poses[robot_index])
-        
-        #     self.robots[robot_index].publish_assembler_goal_pose(float(robot_start_position.x), float(robot_start_position.y), float(robot_start_position.z))
+        for robot_index in range(task.number_of_robots):
+            robot_start_position = Pose()
+            pose = np.array([robot_poses[robot_index].x, robot_poses[robot_index].y, 1])
+            robot_start_position = np.matmul(tf_matrix, pose)
+            print("robot_start_position:" + str(robot_start_position))
+            self.robots[robot_index].publish_assembler_goal_pose(float(robot_start_position[0]), float(robot_start_position[1]), float(robot_start_position[2]))
 
         return response
 

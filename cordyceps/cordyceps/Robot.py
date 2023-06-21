@@ -18,7 +18,11 @@ class Robot:
         self.mqtt_client.on_connect = self.on_connect
 
         # TODO: add this to a config file
-        self.mqtt_client.connect("192.168.0.101", 1883, 60)
+        #self.mqtt_client.connect("192.168.0.101", 1883, 60)
+
+        #Cas Solenopsis network
+        self.mqtt_client.connect("192.168.75.201", 1883, 60)
+
         self.mqtt_client.loop_start()
 
         self.pose = np.array([[float(x),float(y),float(theta)]]).T

@@ -44,7 +44,7 @@ class VsManager(Node):
             task = self.task_queue.get(block=True)
             vs_ref_pose = self.request_vs_ref_pose(task)
             paths = self.request_paths(task, vs_ref_pose)
-            self.assemble_robots(task)
+            self.assemble_robots(task, vs_ref_pose)
             self.controll_vs(paths)
 
     def request_paths(self, task:Task, vs_ref_pose:list):
@@ -67,9 +67,10 @@ class VsManager(Node):
         response = self.assembler_get_vs_ref_pose_client.call(assembler_request)
         return response.vs_ref_pose
     
-    def assemble_robots(self, task):
+    def assemble_robots(self, task, vs_ref_pose):
         assembler_request = CustomRobotAssembler.Request()
         assembler_request.task = task
+        assembler_request.robot_poses = vs_ref_pose
         while True:
             if self.assembler_client.wait_for_service():
                 break
