@@ -32,8 +32,7 @@ class Robot:
     def on_message(self, client, userdata, msg):
         with self.lock:
             if msg.topic == f'/{self.name}/goal_arrived':
-                json_goal_arrived_msg = json.loads(msg.payload)
-                self.arrived = json_goal_arrived_msg['goal_arrived']
+                self.arrived = True
 
             if msg.topic == f'/{self.name}/odom':
                 json_odom_msg = json.loads(msg.payload)

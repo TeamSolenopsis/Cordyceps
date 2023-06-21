@@ -20,9 +20,9 @@ class VsManager(Node):
         self.task_thread.start()
 
         self.robot_path_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
-        self.assembler_client = self.create_client(AssemblerGetVsRefPose, 'get_robot_vs_ref_pose')
+        self.assembler_get_vs_ref_pose_client = self.create_client(AssemblerGetVsRefPose, 'get_robot_vs_ref_pose')
         self.assembler_client = self.create_client(CustomRobotAssembler, 'assemble_robots')
-        self.assembler_client = self.create_client(CheckGoalPoseReached, 'check_goal_pose_reached')
+        self.assembler_check_goal_reached_client = self.create_client(CheckGoalPoseReached, 'check_goal_pose_reached')
         self.start_path_follow_client = self.create_client(Controller, 'start_follow_path')
         self.check_thread_state_client = self.create_client(CheckThread, 'check_thread_state')
 
@@ -45,7 +45,6 @@ class VsManager(Node):
             vs_ref_pose = self.request_vs_ref_pose(task)
             paths = self.request_paths(task, vs_ref_pose)
             self.assemble_robots(task)
-            start_pose_reachd = self.check_goal_pose_reached()
             self.controll_vs(paths)
 
     def request_paths(self, task:Task, vs_ref_pose:list):
@@ -63,9 +62,9 @@ class VsManager(Node):
         assembler_request = AssemblerGetVsRefPose.Request()
         assembler_request.task = task
         while True:
-            if self.assembler_client.wait_for_service():
+            if self.assembler_get_vs_ref_pose_client.wait_for_service():
                 break
-        response = self.assembler_client.call(assembler_request)
+        response = self.assembler_get_vs_ref_pose_client.call(assembler_request)
         return response.vs_ref_pose
     
     def assemble_robots(self, task):
@@ -74,15 +73,19 @@ class VsManager(Node):
         while True:
             if self.assembler_client.wait_for_service():
                 break
-        response = self.assembler_client.call(assembler_request)
-        return response.task_send
+        self.assembler_client.call(assembler_request)
+
+        while arrived == False:
+            arrived = self.check_goal_pose_reached()
+
+        return True
     
     def check_goal_pose_reached(self):
         assembler_request = CheckGoalPoseReached.Request()
         while True:
-            if self.assembler_client.wait_for_service():
+            if self.assembler_check_goal_reached_client.wait_for_service():
                 break
-        response = self.assembler_client.call(assembler_request)
+        response = self.assembler_check_goal_reached_client.call(assembler_request)
         return response.arrived
 
     def construct_mock_task(self) -> Task:

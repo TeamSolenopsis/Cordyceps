@@ -28,7 +28,7 @@ class Assembler(Node):
             bot_pose.y = float(np.sin(angle) * task.diameter / 2)
             print(f'robot:{robot_index} x: {bot_pose.x}, y: {bot_pose.y}') 
             response.vs_ref_pose.append(bot_pose)
-            self.robots.append(Robot(0,0,0,f"r{robot_index}", self))
+            self.add_robot(task.number_of_robots, robot_index)
 
         return response
     
@@ -54,7 +54,7 @@ class Assembler(Node):
             robot_start_position = Pose()
 
             robot_start_position = np.matmul(tf_matrix, robot_poses[robot_index])
-
+        
             self.robots[robot_index].publish_assembler_goal_pose(float(robot_start_position.x), float(robot_start_position.y), float(robot_start_position.z))
 
         return response
@@ -63,11 +63,18 @@ class Assembler(Node):
         count = 0
         response.goal_pose_reached = False
         for robot in self.robots:
-            if robot.check_goal_pose_reached():
+            if robot.is_arrived():
                 count += 1
 
         if count == len(self.robots):
             response.goal_pose_reached = True
+
+        return response
+    
+    def add_robot(self, number_of_robots, robot_number):
+        if len(self.robots) < number_of_robots:
+            robot = Robot(0,0,0,f"r{robot_number}")
+            self.robots.append(robot)
 
         
 def main(args=None):
