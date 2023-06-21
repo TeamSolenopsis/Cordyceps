@@ -2,11 +2,10 @@ import rclpy
 from rclpy.node import Node
 from cordyceps_interfaces.srv import CustomRobotAssembler, AssemblerGetVsRefPose
 from cordyceps_interfaces.msg import RobotPose, RobotPaths, Task, Path
-from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 from geometry_msgs.msg import Pose
 import numpy as np
+from .Robot import Robot
 import math
-import paho.mqtt.client as mqtt 
 
 class Assembler(Node):
 
@@ -16,13 +15,12 @@ class Assembler(Node):
         self.assembler_service = self.create_service(AssemblerGetVsRefPose, 'get_robot_vs_ref_pose', self.get_robot_vs_ref_pose_callback)
         self.assembler_service = self.create_service(CustomRobotAssembler, 'assemble_robots', self.assemble_robots_callback)
 
-        self.client = mqtt.Client()
-        self.client.connect('192.168.75.201', 1883)
+        self.robots = []
+
         
     def get_robot_vs_ref_pose_callback(self, request, response):
         task = request.task
         bot_pose = RobotPose()
-        navigator = BasicNavigator()
 
         for robot_index in range(task.number_of_robots):
             angle = (2 * np.pi * robot_index) / task.number_of_robots
@@ -30,11 +28,11 @@ class Assembler(Node):
             bot_pose.y = float(np.sin(angle) * task.diameter / 2)
             print(f'robot:{robot_index} x: {bot_pose.x}, y: {bot_pose.y}') 
             response.vs_ref_pose.append(bot_pose)
+            self.robots.append(Robot(0,0,0,f"r{robot_index}", self))
 
         return response
     
     #TODO: test this function 
-    #TODO: test the way robot_poses is an np.array
     def assemble_robots_callback(self, request, response):
         task = request.task
         robot_poses = np.array()
@@ -59,8 +57,8 @@ class Assembler(Node):
 
             robot_start_position = np.matmul(tf_matrix, robot_poses[robot_index])
 
-            #TODO: send to MQTT with robot id
-            self.client.publish(f'r{robot_index}/pose', robot_start_position)
+            self.robots[robot_index].publish_assembler_goal_pose(float(robot_start_position.x), float(robot_start_position.y), float(robot_start_position.z))
+            
 
         return response
         

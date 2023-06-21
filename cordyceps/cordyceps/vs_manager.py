@@ -20,7 +20,7 @@ class VsManager(Node):
         self.task_thread.start()
 
         self.robot_path_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
-        self.assembler_client = self.create_client(CustomRobotAssembler, 'get_robot_vs_ref_pose')
+        self.assembler_client = self.create_client(CustomRobotAssembler, 'AssemblerGetVsRefPose')
         self.start_path_follow_client = self.create_client(Controller, 'start_follow_path')
         self.check_thread_state_client = self.create_client(CheckThread, 'check_thread_state')
 
