@@ -68,12 +68,17 @@ class Robot:
         self.mqtt_client.publish(f'/{self.name}/cmd_vel', json.dumps(cmd_vel))
 
     def publish_assembler_goal_pose(self, x:float, y:float, theta:float):
-        msg = Pose()
-        msg.position.x = x
-        msg.position.y = y
-        msg.orientation.z = theta
+        msg = {
+            'position': {
+                'x': x,
+                'y': y
+            },
+            'orientation': {
+                'z': theta
+            }
+        }
 
-        self.assembler_goal_pose.publish(msg)
+        self.mqtt_client.publish(f'/{self.name}/goal_pose', json.dumps(msg))
 
     def get_pose(self):
         with self.lock:
