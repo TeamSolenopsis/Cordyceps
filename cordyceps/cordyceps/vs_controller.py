@@ -21,7 +21,7 @@ class ControllerService(Node):
 
         self.robots = []
         for i in range(fleet_size):
-            self.robots.append(Robot(0,0,0,f"r{i}", self))
+            self.robots.append(Robot(0,0,0,f"r{i}"))
 
         self.follow_paths_thread = None
 
@@ -37,7 +37,7 @@ class ControllerService(Node):
             for poses in path.robot_poses[:]:
                 paths[i].append([poses.x, poses.y])
 
-        self.plot_path(paths)
+        #self.plot_path(paths)
         self.follow_paths_thread = threading.Thread(target=self.follow_paths, args=(paths,))
         self.follow_paths_thread.start()
         return response

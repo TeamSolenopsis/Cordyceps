@@ -5,29 +5,35 @@ from geometry_msgs.msg import Twist, Quaternion
 import math
 import threading
 import time
+import json
+import paho.mqtt.client as mqtt
 
 class Robot:
-    def __init__(self, x, y, theta, name, node:Node) -> None:
-        self.node = node
+    def __init__(self, x, y, theta, name) -> None:
         self.name = name
         self.lock = threading.Lock()
 
-        self.pose_sub = self.node.create_subscription(Odometry, f'/{self.name}/odom', self.odom_callback, 10)
-        self.cmd_vel_pub = self.node.create_publisher(Twist, f'/{self.name}/cmd_vel', 10)
+        self.mqtt_client = mqtt.Client()
+        self.mqtt_client.on_message = self.on_message
+        self.mqtt_client.on_connect = self.on_connect
+
+        # TODO: add this to a config file
+        self.mqtt_client.connect("192.168.0.101", 1883, 60)
+        self.mqtt_client.loop_start()
 
         self.pose = np.array([[float(x),float(y),float(theta)]]).T
 
-    def odom_callback(self, msg:Odometry):
+    def on_connect(self, client, userdata, flags, rc):
+        client.subscribe(f'/{self.name}/odom')
+
+    def on_message(self, client, userdata, msg):
         with self.lock:
-            self.pose[0][0] = round(msg.pose.pose.position.x,2)
-            self.pose[1][0] = round(msg.pose.pose.position.y,2)
+            json_odom_msg = json.loads(msg.payload)
 
-            w, x, y, z = msg.pose.pose.orientation.w, msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z
-            siny_cosp = 2 * (w * z + x * y)
-            cosy_cosp = 1 - 2 * (y * y + z * z)
-            yaw = round(math.atan2(siny_cosp, cosy_cosp),2)
+            self.pose[0][0] = json_odom_msg['position']['x']
+            self.pose[1][0] = json_odom_msg['position']['y']
+            self.pose[2][0] = json_odom_msg['orientation']['w']
 
-            self.pose[2][0] = yaw
 
     def get_point_ref_to_robot_frame(self, point:np.array([[float, float, float]]).T):
         with self.lock:
@@ -54,11 +60,12 @@ class Robot:
         return delta_s, delta_theta, displacement
     
     def publish_velocity(self, lin_vel:float, ang_vel:float):
-        msg = Twist()
-        msg.linear.x = lin_vel
-        msg.angular.z = ang_vel
+        cmd_vel = {
+            'linear': lin_vel,
+            'angular': ang_vel
+        }
 
-        self.cmd_vel_pub.publish(msg)
+        self.mqtt_client.publish(f'/{self.name}/cmd_vel', json.dumps(cmd_vel))
 
     def get_pose(self):
         with self.lock:
