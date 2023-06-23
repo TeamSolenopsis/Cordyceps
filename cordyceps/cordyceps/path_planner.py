@@ -21,7 +21,7 @@ class PathPlanner(Node):
 
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
 
-        file = open('/home/mart/Documents/git/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/sine_big.csv','r')
+        file = open('cordyceps/resource/Path1.csv','r')
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
