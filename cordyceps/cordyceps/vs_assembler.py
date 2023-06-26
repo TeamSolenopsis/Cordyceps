@@ -5,13 +5,21 @@ from cordyceps_interfaces.msg import RobotPose, RobotRoutes, Task, Path
 import numpy as np
 
 class Assembler(Node):
-
+    
     def __init__(self):
+        """Constructor for the Assembler class. Initializes the ROS2 node and creates the service."""
         super().__init__('assembler')
         
         self.assembler_service = self.create_service(CustomRobotAssembler, 'get_robot_vs_ref_pose', self.get_robot_vs_ref_pose_callback)
-        
+     
     def get_robot_vs_ref_pose_callback(self, request, response):
+        """Callback function for the assembler service.
+        
+        :param request: Request message for the service.
+        :param response: Response message for the service.
+        
+        :returns: The response message with the reference poses for each robot."""
+
         task = request.task
         bot_0_pose = RobotPose()
         bot_1_pose = RobotPose()

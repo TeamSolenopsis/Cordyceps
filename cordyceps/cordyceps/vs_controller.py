@@ -12,6 +12,8 @@ from cordyceps_interfaces.srv import Controller, CheckThread
 
 class ControllerService(Node):
     def __init__(self, fleet_size=4):
+        """Constructor for the ControllerService class. Initializes the ROS2 node and creates the service."""
+
         super().__init__("cordyceps_controller")
         self.start_follow_path_service = self.create_service(
             Controller, "start_follow_route", self.start_thread_callback
@@ -29,7 +31,10 @@ class ControllerService(Node):
         self.follow_routes_thread = None
 
     def start_thread_callback(self, request, response):
-        """Recieves each bot's path and sends the velocities to follow them"""
+        """Recieves each bot's path and sends the velocities to follow them
+        
+        :param Request request: Request message for the service.
+        :param Response response: Response message for the service."""
 
         self.get_logger().info("Executing goal...")
 
@@ -47,12 +52,22 @@ class ControllerService(Node):
         return response
 
     def check_thread_state_callback(self, request, response):
-        """Checks if the thread is still running"""
+        """Checks if the thread is still running
+        
+        :param Request request: Request message for the service.
+        :param Response response: Response message for the service.
+        
+        :returns: True if the thread is still running, False otherwise."""
+
         self.follow_routes_thread.join(0.06)
         response.is_alive = self.follow_routes_thread.is_alive()
         return response
 
     def plot_path(self, routes: list[list[tuple[float, float]]]) -> None:
+        """Plots the paths of the robots
+
+        :param list[list[tuple[float, float]]] robot_paths: List of paths for each robot."""
+
         labels = []
 
         for i, route in enumerate(routes):
@@ -65,11 +80,15 @@ class ControllerService(Node):
         plt.show()
 
     def follow_routes(self, routes: list[list[tuple[float, float]]]):
+        """Publishes the velocities so that the robots follow their paths
+        
+        :param list[list[tuple[float, float]]] paths: List of paths for each robot."""
+        
         routes = np.array(routes)
         for robot, route in enumerate(routes):
-            with open(f"/home/tangouniform/Documents/cordycepsws/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
+            with open(f"/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
                 f.write(str(route))
-
+    
         goals_achieved = False
         while not goals_achieved:
             max_distance = 0
@@ -77,15 +96,13 @@ class ControllerService(Node):
             thetas = []
             first = True
             min_current_point_index = min(
-                robot.project_pose(robot.get_prev_point_index(), route)
+                robot.project_pose(route)
                 for robot, route in zip(self.robots, routes)
             )
             for robot, route in zip(
                 self.robots, routes
             ):  # get deltas of each bot from their carrots
-                current_point_index = robot.project_pose(
-                    robot.get_prev_point_index(), route
-                )
+                current_point_index = robot.project_pose(route)
 
                 goal = robot.calculate_carrot(min_current_point_index, route)
                 goal = np.array((goal[0], goal[1], 1)).T  # formatting for get_deltas()
@@ -112,9 +129,18 @@ class ControllerService(Node):
             for robot, velocity in zip(
                 self.robots, bot_velocities
             ):  # publish velocity commands to each bot
+                print(bot_velocities)
                 robot.publish_velocity(float(velocity[0]), float(velocity[1]))
 
-    def calc_velocities(self, distances, thetas, max_distance) -> list[list[float]]:
+    def calc_velocities(self, distances:list[float], thetas:list[float], max_distance:float) -> list[list[float]]:
+        """Calculates the velocities for each robot
+
+        :param list[float] distances: List of distances from the robots to their goals.
+        :param list[float] thetas: List of angles from the robots to their goals.
+        :param float max_distance: largest distance a robot travels.
+
+        :returns: List of velocities for each robot."""
+
         bot_velocities = []
 
         delta_s = np.array(distances)
