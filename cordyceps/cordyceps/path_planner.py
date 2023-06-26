@@ -21,7 +21,11 @@ class PathPlanner(Node):
 
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
 
+<<<<<<< HEAD
         file = open('cordyceps/resource/Path1.csv','r')
+=======
+        file = open('/home/tangouniform/Documents/cordycepsws/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/Path3.csv','r')
+>>>>>>> e6c7eaf (Controllerv2 update)
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
@@ -61,6 +65,7 @@ class PathPlanner(Node):
                 bot_pose.x = trans[0]
                 bot_pose.y = trans[1]
                 bot_paths[bot_i].robot_poses.append(bot_pose)
+
 
         for bot_path in bot_paths:
             robot_paths.paths.append(bot_path)

@@ -66,6 +66,9 @@ class ControllerService(Node):
 
     def follow_paths(self, paths: list[list[tuple[float, float]]]):
         paths = np.array(paths)
+        for robot, path in enumerate(paths):
+            with open(f"/home/tangouniform/Documents/cordycepsws/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
+                f.write(str(path))
 
         goals_achieved = False
         while not goals_achieved:
@@ -92,7 +95,7 @@ class ControllerService(Node):
                     first = False
 
                 # if displacement > self.GOAL_RADIUS:
-                if delta_s > max_distance:
+                if abs(delta_s) > max_distance:
                     max_distance = delta_s
                 distances.append(delta_s)
                 thetas.append(theta)
@@ -114,18 +117,23 @@ class ControllerService(Node):
     def calc_velocities(self, distances, thetas, max_distance) -> list[list[float]]:
         bot_velocities = []
 
-        for delta_s, delta_theta in zip(distances, thetas):
-            if delta_s == 0:
-                bot_velocities.append([0, 0])
-            else:
-                delta_t = max_distance / self.MAX_BOT_SPEED
-                self.time = delta_t
-                lin_vel = delta_s / delta_t
-                ang_vel = delta_theta / (delta_t)
-                bot_velocities.append([lin_vel, ang_vel])
+        delta_s = np.array(distances)
+        delta_theta = np.array(thetas)
+
+        delta_t = abs(max_distance) / self.MAX_BOT_SPEED
+        self.time = delta_t
+
+        non_zero_indices = np.where(delta_s != 0)
+
+        lin_vel = np.zeros_like(delta_s)
+        lin_vel[non_zero_indices] = delta_s[non_zero_indices] / delta_t
+
+        ang_vel = np.zeros_like(delta_theta)
+        ang_vel[non_zero_indices] = delta_theta[non_zero_indices] / delta_t
+
+        bot_velocities = np.column_stack((lin_vel, ang_vel)).tolist()
 
         return bot_velocities
-
 
 def main(args=None):
     rclpy.init(args=args)
