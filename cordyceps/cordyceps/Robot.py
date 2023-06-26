@@ -47,7 +47,6 @@ class Robot:
             yaw = round(math.atan2(siny_cosp, cosy_cosp), 2)
             self.pose[2][0] = yaw
 
-
     def project_pose(self, prev_point_index, route: list):
         """returns the index of the closest point in the route to the coordinates"""
 
