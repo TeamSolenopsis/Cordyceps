@@ -75,8 +75,11 @@ class Robot:
         :param list route: list of points
         :return: the new goal point"""
 
-        carrot = route[projected_point_index + self.LOOKAHEAD]
-        print(f"lookahead_point: {projected_point_index + self.LOOKAHEAD}")
+        lookahead_index = projected_point_index + self.LOOKAHEAD
+        if lookahead_index >= len(route):
+            lookahead_index = len(route) - 1     # if the lookahead point is out of bounds, set it to the last point
+        carrot = route[lookahead_index]
+        print(f"lookahead_point: {lookahead_index}")
         return carrot
 
     def get_point_ref_to_robot_frame(self, point: np.array([[float, float, float]]).T):

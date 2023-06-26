@@ -44,7 +44,7 @@ class ControllerService(Node):
             for poses in route.robot_poses[:]:
                 routes[i].append([poses.x, poses.y])
 
-        # self.plot_path(paths)
+        #self.plot_path(routes)
         self.follow_paths_thread = threading.Thread(
             target=self.follow_paths, args=(routes,)
         )
@@ -128,6 +128,7 @@ class ControllerService(Node):
             for robot, velocity in zip(
                 self.robots, bot_velocities
             ):  # publish velocity commands to each bot
+                print(bot_velocities)
                 robot.publish_velocity(float(velocity[0]), float(velocity[1]))
 
     def calc_velocities(self, distances:list[float], thetas:list[float], max_distance:float) -> list[list[float]]:
