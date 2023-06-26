@@ -21,7 +21,7 @@ class PathPlanner(Node):
 
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
 
-        file = open('cordyceps/resource/Path1.csv','r')
+        file = open('/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/Path1.csv','r')
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
