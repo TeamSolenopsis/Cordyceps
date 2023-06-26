@@ -55,20 +55,20 @@ class ControllerService(Node):
     def plot_path(self, routes: list[list[tuple[float, float]]]) -> None:
         labels = []
 
-        for i, path in enumerate(routes):
+        for i, route in enumerate(routes):
             labels.append(f"R{i+1}")
 
-        for path in routes:
-            plt.scatter(*zip(*path), s=3)
+        for route in routes:
+            plt.scatter(*zip(*route), s=3)
 
         plt.legend(labels)
         plt.show()
 
     def follow_routes(self, routes: list[list[tuple[float, float]]]):
         routes = np.array(routes)
-        for robot, path in enumerate(routes):
+        for robot, route in enumerate(routes):
             with open(f"/home/tangouniform/Documents/cordycepsws/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
-                f.write(str(path))
+                f.write(str(route))
 
         goals_achieved = False
         while not goals_achieved:
@@ -77,17 +77,17 @@ class ControllerService(Node):
             thetas = []
             first = True
             min_current_point_index = min(
-                robot.project_pose(robot.get_prev_point_index(), path)
-                for robot, path in zip(self.robots, routes)
+                robot.project_pose(robot.get_prev_point_index(), route)
+                for robot, route in zip(self.robots, routes)
             )
-            for robot, path in zip(
+            for robot, route in zip(
                 self.robots, routes
             ):  # get deltas of each bot from their carrots
                 current_point_index = robot.project_pose(
-                    robot.get_prev_point_index(), path
+                    robot.get_prev_point_index(), route
                 )
 
-                goal = robot.calculate_carrot(min_current_point_index, path)
+                goal = robot.calculate_carrot(min_current_point_index, route)
                 goal = np.array((goal[0], goal[1], 1)).T  # formatting for get_deltas()
                 delta_s, theta, displacement = robot.get_deltas(goal)
                 if first:  # DEBUG
