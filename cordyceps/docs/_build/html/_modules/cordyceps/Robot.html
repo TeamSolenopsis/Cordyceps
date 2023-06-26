@@ -80,7 +80,14 @@
 
 <div class="viewcode-block" id="Robot"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot">[docs]</a><span class="k">class</span> <span class="nc">Robot</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a robot object that can be used to control the robot.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a robot object that can be used to control the robot.</span>
+<span class="sd">        </span>
+<span class="sd">        :param float x: x coordinate of the robot</span>
+<span class="sd">        :param float y: y coordinate of the robot</span>
+<span class="sd">        :param float theta: orientation of the robot</span>
+<span class="sd">        :param str name: name of the robot</span>
+<span class="sd">        :param Node node: ROS2 node&quot;&quot;&quot;</span>
+        
         <span class="bp">self</span><span class="o">.</span><span class="n">node</span> <span class="o">=</span> <span class="n">node</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
@@ -96,6 +103,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># number of points pure pursuit looks ahead</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_prev_point_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Robot.set_prev_point_index"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.set_prev_point_index">[docs]</a>    <span class="k">def</span> <span class="nf">set_prev_point_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;sets the index of the previous point in the route</span>
+
+<span class="sd">        :param int index: index of the previous point</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_point_index</span> <span class="o">=</span> <span class="n">index</span></div>
 
 <div class="viewcode-block" id="Robot.odom_callback"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.odom_callback">[docs]</a>    <span class="k">def</span> <span class="nf">odom_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">Odometry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;updates the pose of the robot</span>
@@ -146,8 +160,11 @@
 <span class="sd">        :param list route: list of points</span>
 <span class="sd">        :return: the new goal point&quot;&quot;&quot;</span>
 
-        <span class="n">carrot</span> <span class="o">=</span> <span class="n">route</span><span class="p">[</span><span class="n">projected_point_index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lookahead_point: </span><span class="si">{</span><span class="n">projected_point_index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lookahead_index</span> <span class="o">=</span> <span class="n">projected_point_index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span>
+        <span class="k">if</span> <span class="n">lookahead_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">):</span>
+            <span class="n">lookahead_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>     <span class="c1"># if the lookahead point is out of bounds, set it to the last point</span>
+        <span class="n">carrot</span> <span class="o">=</span> <span class="n">route</span><span class="p">[</span><span class="n">lookahead_index</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lookahead_point: </span><span class="si">{</span><span class="n">lookahead_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">carrot</span></div>
 
 <div class="viewcode-block" id="Robot.get_point_ref_to_robot_frame"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.get_point_ref_to_robot_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_point_ref_to_robot_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>

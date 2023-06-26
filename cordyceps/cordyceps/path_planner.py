@@ -28,7 +28,7 @@ class PathPlanner(Node):
         :return: The path that the virtual structure should follow.
         """
 
-        file = open('/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/Path1.csv','r')
+        file = open('/home/mart/Documents/git/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/Path1.csv','r')
         data = list(csv.reader(file, delimiter=','))
         file.close()
         

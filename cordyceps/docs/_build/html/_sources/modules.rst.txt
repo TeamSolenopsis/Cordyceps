@@ -5,4 +5,3 @@ cordyceps
    :maxdepth: 4
 
    cordyceps
-   cordyceps.classes

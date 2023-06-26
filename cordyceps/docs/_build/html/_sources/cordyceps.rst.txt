@@ -1,37 +1,49 @@
-Nodes
+cordyceps package
 =================
 
-.. toctree::
-   :maxdepth: 4
+Class
+----------
 
-cordyceps.path\_planner Node
-----------------------------
+Robot Class
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: cordyceps.Robot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Node
+----------
+
+path\_planner Node
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: cordyceps.path_planner
    :members:
    :undoc-members:
    :show-inheritance:
 
-cordyceps.vs\_assembler Node
-----------------------------
+vs\_assembler Node
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: cordyceps.vs_assembler
    :members:
    :undoc-members:
    :show-inheritance:
 
-cordyceps.vs\_controller Node
------------------------------
+vs\_controller Node
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: cordyceps.vs_controller
    :members:
    :undoc-members:
    :show-inheritance:
 
-cordyceps.vs\_manager Node
---------------------------
+vs\_manager Node
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: cordyceps.vs_manager
    :members:
    :undoc-members:
    :show-inheritance:
+

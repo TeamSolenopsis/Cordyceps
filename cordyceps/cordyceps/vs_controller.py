@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from geometry_msgs.msg import Twist
 import threading
-from .classes.Robot import Robot
+from .Robot import Robot
 from std_srvs.srv import Trigger
 from cordyceps_interfaces.msg import RobotPaths
 from cordyceps_interfaces.srv import Controller, CheckThread
@@ -93,15 +93,13 @@ class ControllerService(Node):
             thetas = []
             first = True
             min_current_point_index = min(
-                robot.project_pose(robot.get_prev_point_index(), path)
+                robot.project_pose(path)
                 for robot, path in zip(self.robots, paths)
             )
             for robot, path in zip(
                 self.robots, paths
             ):  # get deltas of each bot from their carrots
-                current_point_index = robot.project_pose(
-                    robot.get_prev_point_index(), path
-                )
+                current_point_index = robot.project_pose(path)
 
                 goal = robot.calculate_carrot(min_current_point_index, path)
                 goal = np.array((goal[0], goal[1], 1)).T  # formatting for get_deltas()

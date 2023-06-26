@@ -9,7 +9,14 @@ import time
 
 class Robot:
     def __init__(self, x, y, theta, name, node: Node) -> None:
-        """Creates a robot object that can be used to control the robot."""
+        """Creates a robot object that can be used to control the robot.
+        
+        :param float x: x coordinate of the robot
+        :param float y: y coordinate of the robot
+        :param float theta: orientation of the robot
+        :param str name: name of the robot
+        :param Node node: ROS2 node"""
+        
         self.node = node
         self.name = name
         self.lock = threading.Lock()
@@ -25,6 +32,13 @@ class Robot:
         self.LOOKAHEAD = 8  # number of points pure pursuit looks ahead
 
         self._prev_point_index = 0
+
+    def set_prev_point_index(self, index: int):
+        """sets the index of the previous point in the route
+
+        :param int index: index of the previous point
+        """
+        self._prev_point_index = index
 
     def odom_callback(self, msg: Odometry):
         """updates the pose of the robot
