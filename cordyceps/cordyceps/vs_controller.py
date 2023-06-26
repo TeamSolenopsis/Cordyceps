@@ -6,7 +6,7 @@ from geometry_msgs.msg import Twist
 import threading
 from .Robot import Robot
 from std_srvs.srv import Trigger
-from cordyceps_interfaces.msg import RobotPaths
+from cordyceps_interfaces.msg import RobotRoutes
 from cordyceps_interfaces.srv import Controller, CheckThread
 
 
@@ -14,7 +14,7 @@ class ControllerService(Node):
     def __init__(self, fleet_size=4):
         super().__init__("cordyceps_controller")
         self.start_follow_path_service = self.create_service(
-            Controller, "start_follow_path", self.start_thread_callback
+            Controller, "start_follow_route", self.start_thread_callback
         )
         self.check_thread_state = self.create_service(
             CheckThread, "check_thread_state", self.check_thread_state_callback
@@ -26,7 +26,7 @@ class ControllerService(Node):
         self.robots = []
         for i in range(fleet_size):
             self.robots.append(Robot(0, 0, 0, f"r{i}", self))
-        self.follow_paths_thread = None
+        self.follow_routes_thread = None
 
     def start_thread_callback(self, request, response):
         """Recieves each bot's path and sends the velocities to follow them"""
@@ -34,39 +34,39 @@ class ControllerService(Node):
         self.get_logger().info("Executing goal...")
 
         routes = []
-        for i, route in enumerate(request.robot_paths.paths):
+        for i, route in enumerate(request.robot_routes.routes):
             routes.append([])
             for poses in route.robot_poses[:]:
                 routes[i].append([poses.x, poses.y])
 
-        # self.plot_path(paths)
-        self.follow_paths_thread = threading.Thread(
-            target=self.follow_paths, args=(routes,)
+        # self.plot_path(routes)
+        self.follow_routes_thread = threading.Thread(
+            target=self.follow_routes, args=(routes,)
         )
-        self.follow_paths_thread.start()
+        self.follow_routes_thread.start()
         return response
 
     def check_thread_state_callback(self, request, response):
         """Checks if the thread is still running"""
-        self.follow_paths_thread.join(0.06)
-        response.is_alive = self.follow_paths_thread.is_alive()
+        self.follow_routes_thread.join(0.06)
+        response.is_alive = self.follow_routes_thread.is_alive()
         return response
 
-    def plot_path(self, robot_paths: list[list[tuple[float, float]]]) -> None:
+    def plot_path(self, routes: list[list[tuple[float, float]]]) -> None:
         labels = []
 
-        for i, path in enumerate(robot_paths):
+        for i, path in enumerate(routes):
             labels.append(f"R{i+1}")
 
-        for path in robot_paths:
+        for path in routes:
             plt.scatter(*zip(*path), s=3)
 
         plt.legend(labels)
         plt.show()
 
-    def follow_paths(self, paths: list[list[tuple[float, float]]]):
-        paths = np.array(paths)
-        for robot, path in enumerate(paths):
+    def follow_routes(self, routes: list[list[tuple[float, float]]]):
+        routes = np.array(routes)
+        for robot, path in enumerate(routes):
             with open(f"/home/tangouniform/Documents/cordycepsws/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
                 f.write(str(path))
 
@@ -78,10 +78,10 @@ class ControllerService(Node):
             first = True
             min_current_point_index = min(
                 robot.project_pose(robot.get_prev_point_index(), path)
-                for robot, path in zip(self.robots, paths)
+                for robot, path in zip(self.robots, routes)
             )
             for robot, path in zip(
-                self.robots, paths
+                self.robots, routes
             ):  # get deltas of each bot from their carrots
                 current_point_index = robot.project_pose(
                     robot.get_prev_point_index(), path

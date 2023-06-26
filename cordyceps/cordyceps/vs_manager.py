@@ -9,7 +9,7 @@ from .custom_assembler import Assembler
 from .vs_controller import ControllerService
 
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler, Controller, CheckThread
-from cordyceps_interfaces.msg import RobotPaths, Task, RobotPose,Path
+from cordyceps_interfaces.msg import RobotRoutes, Task, RobotPose, Path
 
 class VsManager(Node):
 
@@ -19,9 +19,9 @@ class VsManager(Node):
         self.task_thread = threading.Thread(target=self.task_executor)
         self.task_thread.start()
 
-        self.robot_path_client = self.create_client(CustomPathPlanner, 'get_robot_paths')
+        self.robot_route_client = self.create_client(CustomPathPlanner, 'get_robot_routes')
         self.assembler_client = self.create_client(CustomRobotAssembler, 'get_robot_vs_ref_pose')
-        self.start_path_follow_client = self.create_client(Controller, 'start_follow_path')
+        self.start_route_follow_client = self.create_client(Controller, 'start_follow_route')
         self.check_thread_state_client = self.create_client(CheckThread, 'check_thread_state')
 
         self.task_subscriber = self.create_subscription(Task, 'vs_manager/task', self.task_callback, 10)
@@ -41,19 +41,20 @@ class VsManager(Node):
         while True:
             task = self.task_queue.get(block=True)
             vs_ref_pose = self.request_vs_ref_pose(task)
-            paths = self.request_paths(task, vs_ref_pose)
-            self.controll_vs(paths)
+            routes = self.request_routes(task, vs_ref_pose)
+            self.controll_vs(routes)            
 
-    def request_paths(self, task:Task, vs_ref_pose:list):
+    def request_routes(self, task:Task, vs_ref_pose:list):
         req  = CustomPathPlanner.Request()
         req.task = task
         req.vs_ref_pose = vs_ref_pose
 
         while True:
-            if self.robot_path_client.wait_for_service():
+            if self.robot_route_client.wait_for_service():
                 break
-        respone = self.robot_path_client.call(req)
-        return respone.robot_paths
+        
+        respone = self.robot_route_client.call(req)
+        return respone.robot_routes
     
     def request_vs_ref_pose(self, task):
         assembler_request = CustomRobotAssembler.Request()
@@ -76,12 +77,13 @@ class VsManager(Node):
         task.diameter = 2
         return task
 
-    def controll_vs(self, paths: RobotPaths):
+    def controll_vs(self, routes: RobotRoutes):
         request = Controller.Request()
-        request.robot_paths = paths
+        request.robot_routes = routes
 
-        self.start_path_follow_client.wait_for_service()
-        self.start_path_follow_client.call(request)
+        self.start_route_follow_client.wait_for_service()
+        
+        self.start_route_follow_client.call(request)
         
         is_alive = True
         request = CheckThread.Request()
