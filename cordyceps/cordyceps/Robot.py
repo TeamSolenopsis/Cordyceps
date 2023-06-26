@@ -60,7 +60,6 @@ class Robot:
 
         return min_displacement_index
 
-
     def calculate_carrot(self, projected_point_index: int, route: list):
         """given the projected position of a bot in its route, returns the goal (aka lookahead point)"""
 
