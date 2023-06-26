@@ -14,12 +14,12 @@ find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/Path.msg"
-  "msg/RobotPaths.msg"
+  "msg/Route.msg"
+  "msg/RobotRoutes.msg"
   "msg/RobotPose.msg"
   "msg/Task.msg"
   "srv/CustomRobotAssembler.srv"
-  "srv/CustomPathPlanner.srv"
+  "srv/CustomRoutePlanner.srv"
   "srv/Controller.srv"
   "srv/CheckThread.srv"
   DEPENDENCIES geometry_msgs 

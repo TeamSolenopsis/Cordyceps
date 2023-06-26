@@ -1,4 +1,4 @@
 Task task
 RobotPose[] vs_ref_pose
 ---
-RobotPaths robot_paths
+RobotRoutes robot_routes
