@@ -4,7 +4,7 @@
   <name>cordyceps_interfaces</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="sara02@xs4all.nl">sara</maintainer>
+  <maintainer email="445071@student.fontys.nl">Sara</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
