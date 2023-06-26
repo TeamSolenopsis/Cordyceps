@@ -8,9 +8,11 @@ import csv
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
 from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
 
-
+"""ROS2 Node that generates paths for each robot in the virtual structure"""
 class PathPlanner(Node):
     def __init__(self):
+        """Initializes the node and creates the service"""
+
         super().__init__('path_planner_service')
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_paths', self.get_robot_paths_callback)
 
@@ -20,6 +22,11 @@ class PathPlanner(Node):
         self.angle = 0.0  # rad
 
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
+        """Generates a path for the virtual structure to follow.
+
+        :param Pose start_pose: The starting pose of the virtual structure.
+        :return: The path that the virtual structure should follow.
+        """
 
         file = open('cordyceps/resource/Path1.csv','r')
         data = list(csv.reader(file, delimiter=','))
@@ -28,8 +35,14 @@ class PathPlanner(Node):
         for i in range(len(data)):
             data[i] = [float(j) for j in data[i]]
         return data
-         
+
     def get_robot_paths_callback(self, request, response):
+        """Generates a path for a robot to follow in order to reach a goal pose.
+    
+        :param Request request: The request containing the starting pose of the robot.
+        :return: The path that the robot should follow.
+        """
+
         vs_ref_pose = request.vs_ref_pose
         start_pose = request.task.start_pose
     

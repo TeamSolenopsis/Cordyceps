@@ -1,0 +1,21 @@
+classes package
+===============
+
+Submodules
+----------
+
+classes.Robot module
+--------------------
+
+.. automodule:: classes.Robot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: classes
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from geometry_msgs.msg import Twist
 import threading
-from .Robot import Robot
+from .classes.Robot import Robot
 from std_srvs.srv import Trigger
 from cordyceps_interfaces.msg import RobotPaths
 from cordyceps_interfaces.srv import Controller, CheckThread
@@ -12,6 +12,8 @@ from cordyceps_interfaces.srv import Controller, CheckThread
 
 class ControllerService(Node):
     def __init__(self, fleet_size=4):
+        """Constructor for the ControllerService class. Initializes the ROS2 node and creates the service."""
+
         super().__init__("cordyceps_controller")
         self.start_follow_path_service = self.create_service(
             Controller, "start_follow_path", self.start_thread_callback
@@ -29,7 +31,10 @@ class ControllerService(Node):
         self.follow_paths_thread = None
 
     def start_thread_callback(self, request, response):
-        """Recieves each bot's path and sends the velocities to follow them"""
+        """Recieves each bot's path and sends the velocities to follow them
+        
+        :param Request request: Request message for the service.
+        :param Response response: Response message for the service."""
 
         self.get_logger().info("Executing goal...")
 
@@ -47,12 +52,22 @@ class ControllerService(Node):
         return response
 
     def check_thread_state_callback(self, request, response):
-        """Checks if the thread is still running"""
+        """Checks if the thread is still running
+        
+        :param Request request: Request message for the service.
+        :param Response response: Response message for the service.
+        
+        :returns: True if the thread is still running, False otherwise."""
+
         self.follow_paths_thread.join(0.06)
         response.is_alive = self.follow_paths_thread.is_alive()
         return response
 
     def plot_path(self, robot_paths: list[list[tuple[float, float]]]) -> None:
+        """Plots the paths of the robots
+
+        :param list[list[tuple[float, float]]] robot_paths: List of paths for each robot."""
+
         labels = []
 
         for i, path in enumerate(robot_paths):
@@ -65,6 +80,10 @@ class ControllerService(Node):
         plt.show()
 
     def follow_paths(self, paths: list[list[tuple[float, float]]]):
+        """Publishes the velocities so that the robots follow their paths
+
+        :param list[list[tuple[float, float]]] paths: List of paths for each robot."""
+
         paths = np.array(paths)
 
         goals_achieved = False
@@ -111,7 +130,15 @@ class ControllerService(Node):
             ):  # publish velocity commands to each bot
                 robot.publish_velocity(float(velocity[0]), float(velocity[1]))
 
-    def calc_velocities(self, distances, thetas, max_distance) -> list[list[float]]:
+    def calc_velocities(self, distances:list[float], thetas:list[float], max_distance:float) -> list[list[float]]:
+        """Calculates the velocities for each robot
+
+        :param list[float] distances: List of distances from the robots to their goals.
+        :param list[float] thetas: List of angles from the robots to their goals.
+        :param float max_distance: largest distance a robot travels.
+
+        :returns: List of velocities for each robot."""
+
         bot_velocities = []
 
         for delta_s, delta_theta in zip(distances, thetas):

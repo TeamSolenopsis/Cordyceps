@@ -9,6 +9,7 @@ import time
 
 class Robot:
     def __init__(self, x, y, theta, name, node: Node) -> None:
+        """Creates a robot object that can be used to control the robot."""
         self.node = node
         self.name = name
         self.lock = threading.Lock()
@@ -25,13 +26,11 @@ class Robot:
 
         self._prev_point_index = 0
 
-    def set_prev_point_index(self, prev_point_index: int):
-        self._prev_point_index = prev_point_index
-
-    def get_prev_point_index(self):
-        return self._prev_point_index
-
     def odom_callback(self, msg: Odometry):
+        """updates the pose of the robot
+        
+        :param Odometry msg: Odometry message
+        """
         with self.lock:
             self.pose[0][0] = round(msg.pose.pose.position.x, 2)
             self.pose[1][0] = round(msg.pose.pose.position.y, 2)
@@ -47,35 +46,46 @@ class Robot:
             yaw = round(math.atan2(siny_cosp, cosy_cosp), 2)
             self.pose[2][0] = yaw
 
-    def project_pose(self, prev_point_index, route: list):
-        """returns the index of the closest point in the route to the coordinates"""
+    def project_pose(self, route: list):
+        """given a route, returns the index of the closest point to the robot
 
-        # calculate displacements between the prev_point and the nearby next
+        :param list route: list of points
+        :return: index of the closest point
+        """
+
         displacement = []
-        for point in route[prev_point_index : (prev_point_index + self.LOOKAHEAD + 5)]:
+        for point in route[self._prev_point_index : (self._prev_point_index + self.LOOKAHEAD + 5)]:
             coordinates = np.array((self.pose[0][0], self.pose[1][0]))
             displacement.append(np.linalg.norm(coordinates - point))
-            # print(f"from {tt} to {point} there's {displacement[-1]} meters")
 
-        # calculate the index of the closest
-        min_displacement_index = prev_point_index + displacement.index(
+        min_displacement_index = self._prev_point_index + displacement.index(
             min(displacement)
         )
 
         print(
-            f"{self.name}, min_displacement: {min_displacement_index}, {prev_point_index}"
+            f"{self.name}, min_displacement: {min_displacement_index}, {self._prev_point_index}"
         )
 
         return min_displacement_index
 
     def calculate_carrot(self, projected_point_index: int, route: list):
-        """given the projected position of a bot in its route, returns the goal (aka lookahead point)"""
+        """given the projected position of a bot in its route, returns the goal (aka lookahead point)
+
+        :param int projected_point_index: index of the projected point
+        :param list route: list of points
+        :return: the new goal point"""
 
         carrot = route[projected_point_index + self.LOOKAHEAD]
         print(f"lookahead_point: {projected_point_index + self.LOOKAHEAD}")
         return carrot
 
     def get_point_ref_to_robot_frame(self, point: np.array([[float, float, float]]).T):
+        """given a point, returns the point in the robot frame  
+        
+        :param np.array([[float,float,float]]).T point: point to be converted
+        :return: point in the robot frame
+        """
+
         with self.lock:
             rev_point = -self.pose
 
@@ -93,7 +103,13 @@ class Robot:
             new_point = np.matmul(rot_matrix, new_point)
             return new_point
 
-    def get_deltas(self, goal: np.array([[float, float, float]]).T) -> float:
+    def get_deltas(self, goal: np.array([[float, float, float]]).T) -> tuple[float, float, float]:
+        """given a goal point, returns the deltas
+
+        :param np.array([[float,float,float]]).T goal: goal point
+        :return: delta s, delta theta, displacement
+        """
+
         goal = self.get_point_ref_to_robot_frame(goal)
         displacement = np.hypot(goal[0], goal[1], dtype=float)
 
@@ -108,6 +124,12 @@ class Robot:
         return delta_s, delta_theta, displacement
 
     def publish_velocity(self, lin_vel: float, ang_vel: float):
+        """publishes the velocity of the robot
+
+        :param float lin_vel: linear velocity
+        :param float ang_vel: angular velocity
+        """
+
         msg = Twist()
         msg.linear.x = lin_vel
         msg.angular.z = ang_vel
@@ -115,5 +137,10 @@ class Robot:
         self.cmd_vel_pub.publish(msg)
 
     def get_pose(self):
+        """returns the pose of the robot
+
+        :return: pose of the robot
+        """
+
         with self.lock:
             return self.pose

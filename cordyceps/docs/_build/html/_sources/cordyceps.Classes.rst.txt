@@ -1,0 +1,21 @@
+cordyceps.Classes package
+=========================
+
+Submodules
+----------
+
+cordyceps.Classes.Robot module
+------------------------------
+
+.. automodule:: cordyceps.Classes.Robot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: cordyceps.Classes
+   :members:
+   :undoc-members:
+   :show-inheritance:
