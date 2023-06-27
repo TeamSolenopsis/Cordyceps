@@ -10,6 +10,8 @@
    :caption: Contents:
 
    introduction
+   terminology
+   project_overview
    design
    modules
 
