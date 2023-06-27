@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
 import math
 import csv
+import os
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
 from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose, Task
 
@@ -17,13 +18,13 @@ class PathPlanner(Node):
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_routes', self.get_routes_callback)
 
         self.RESOLUTION = 10 # The amount of points in which the routes will be split.
-        self.MAX_SPEED = 0.5 # Maximum allowed speed from a robot.(m/s)
+        self.MAX_SPEED = 0.2 # Maximum allowed speed from a robot.(m/s)
 
         self.angle = 0.0  # rad
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
         """Generates a path for the virtual structure to follow."""
-
-        file = open('/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/Path3.csv','r')
+        
+        file = open('/home/cas/Project_Solenopsis/solenopsis_ws/src/Cordyceps/cordyceps/resource/rob_path2.csv' ,'r')
         data = list(csv.reader(file, delimiter=','))
         file.close()
         

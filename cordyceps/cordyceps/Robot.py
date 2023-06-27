@@ -1,7 +1,7 @@
 import numpy as np
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Twist, Quaternion
+from geometry_msgs.msg import Twist, Quaternion, Pose
 import math
 import threading
 import time
@@ -20,12 +20,13 @@ class Robot:
         self.node = node
         self.name = name
         self.lock = threading.Lock()
+        self.wheelbase = 0.14  # m
 
         self.pose_sub = self.node.create_subscription(
-            Odometry, f"/{self.name}/odom", self.odom_callback, 10
+            Odometry, f"/odom", self.odom_callback, 10
         )
         self.cmd_vel_pub = self.node.create_publisher(
-            Twist, f"/{self.name}/cmd_vel", 10
+            Twist, f"/cmd_vel", 10
         )
 
         self.pose = np.array([[float(x), float(y), float(theta)]]).T
@@ -127,12 +128,16 @@ class Robot:
         displacement = np.hypot(goal[0], goal[1], dtype=float)
 
         if goal[1] == 0:
-            return displacement, 0.0, displacement
+            return displacement, displacement, 0.0, displacement
 
         radius = displacement**2 / (2 * goal[1])
         delta_theta = 2 * np.arcsin(displacement / (2 * radius)) * np.sign(goal[0]) # sign value indicates if the point is infront or behind
+        delta_theta_wheelbase = 2 * np.arcsin(displacement / (2 * radius + (self.wheelbase/2))) * np.sign(goal[0]) # sign value indicates if the point is infront or behind
+
         delta_s = delta_theta * radius 
-        return delta_s, delta_theta, displacement
+        delta_s_wheelbase = delta_theta_wheelbase * (radius + self.wheelbase / 2) 
+
+        return delta_s, delta_s_wheelbase,  delta_theta, displacement
 
     def publish_velocity(self, lin_vel: float, ang_vel: float):
         """publishes the velocity of the robot
