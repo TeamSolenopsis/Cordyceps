@@ -19,16 +19,14 @@ class PathPlanner(Node):
         self.MAX_SPEED = 0.5 # m/s
         self.angle = 0.0  # rad
 
-        print(self.file_path)
-
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
         """Generates a path for the virtual structure to follow."""
 
-        rel_path = "cordyceps/resource/Path0.csv"
+        file_name = "Path0.csv"
         file_dir = os.path.dirname(os.path.realpath('__file__'))
-        self.file_path = os.path.join(file_dir, "src/Cordyceps", rel_path)
+        file_path = os.path.join(file_dir, "src/Cordyceps/cordyceps/resource/", file_name)
         
-        file = open(self.file_path,'r')
+        file = open(file_path,'r')
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
