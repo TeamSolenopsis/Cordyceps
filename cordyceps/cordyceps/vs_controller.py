@@ -1,12 +1,8 @@
 import rclpy
 from rclpy.node import Node
 import numpy as np
-import matplotlib.pyplot as plt
-from geometry_msgs.msg import Twist
 import threading
 from .Robot import Robot
-from std_srvs.srv import Trigger
-from cordyceps_interfaces.msg import RobotRoutes
 from cordyceps_interfaces.srv import Controller, CheckThread
 
 
@@ -15,17 +11,17 @@ class ControllerService(Node):
         """Constructor for the ControllerService class. Initializes the ROS2 node and creates the service."""
 
         super().__init__("cordyceps_controller")
-        self.start_follow_path_service = self.create_service(
+        self.start_follow_route_service = self.create_service(
             Controller, "start_follow_route", self.start_thread_callback
         )
         self.check_thread_state = self.create_service(
             CheckThread, "check_thread_state", self.check_thread_state_callback
         )
 
-        # Constants delcaration
         self.MAX_BOT_SPEED = 0.2  # m/s
         self.GOAL_RADIUS = 0.0  # m
         self.robots = []
+
         for i in range(fleet_size):
             self.robots.append(Robot(0, 0, 0, f"r{i}", self))
         self.follow_routes_thread = None
@@ -77,18 +73,17 @@ class ControllerService(Node):
             max_distance = 0
             distances = []
             thetas = []
-            first = True
             min_current_point_index = min(
                 robot.project_pose(route)
                 for robot, route in zip(self.robots, routes)
             )
             for robot, route in zip(
                 self.robots, routes
-            ):  # get deltas of each bot from their carrots
+            ):  
                 current_point_index = robot.project_pose(route)
 
                 goal = robot.calculate_carrot(min_current_point_index, route)
-                goal = np.array((goal[0], goal[1], 1)).T  # formatting for get_deltas()
+                goal = np.array((goal[0], goal[1], 1)).T 
                 delta_s, theta, displacement = robot.get_deltas(goal)
 
                 if abs(delta_s) > max_distance:
@@ -102,7 +97,7 @@ class ControllerService(Node):
 
             for robot, velocity in zip(
                 self.robots, bot_velocities
-            ):  # publish velocity commands to each bot
+            ):  
                 robot.publish_velocity(float(velocity[0]), float(velocity[1]))
 
             if current_point_index == len(route) - 1:

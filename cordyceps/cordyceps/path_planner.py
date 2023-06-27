@@ -1,12 +1,10 @@
 import rclpy
 from rclpy.node import Node
 import numpy as np
-import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
-import math
 import csv
-from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
-from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose, Task
+from cordyceps_interfaces.srv import CustomPathPlanner
+from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose
 
 """ROS2 Node that generates paths for each robot in the virtual structure"""
 class PathPlanner(Node):
@@ -16,10 +14,10 @@ class PathPlanner(Node):
         super().__init__('path_planner_service')
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_routes', self.get_routes_callback)
 
-        self.RESOLUTION = 10 # The amount of points in which the routes will be split.
-        self.MAX_SPEED = 0.5 # Maximum allowed speed from a robot.(m/s)
-
+        self.RESOLUTION = 10 
+        self.MAX_SPEED = 0.5 # m/s
         self.angle = 0.0  # rad
+
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
         """Generates a path for the virtual structure to follow."""
 
@@ -52,7 +50,6 @@ class PathPlanner(Node):
             bot_routes.append(Path())
 
         for pose in vs_path:
-            # transformation matrix template.   
             tf_matrix = np.array(
                 [
                     [np.cos(pose[2]), -np.sin(pose[2]), pose[0]],
