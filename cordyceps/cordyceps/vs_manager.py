@@ -94,12 +94,12 @@ class VsManager(Node):
 
         task = Task()
         start_pose = Pose()
-        start_pose.position.x = 1.0
-        start_pose.position.y = 1.0
+        start_pose.position.x = 0.0
+        start_pose.position.y = 0.0
         goal_pose = Pose()
         task.start_pose = start_pose
         task.goal_pose = goal_pose
-        task.number_of_robots = 4
+        task.number_of_robots = 5
         task.diameter = 2
         return task
 
