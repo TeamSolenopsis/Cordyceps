@@ -88,7 +88,7 @@ class Robot:
         if lookahead_index >= len(route):
             lookahead_index = len(route) - 1     # if the lookahead point is out of bounds, set it to the last point
         carrot = route[lookahead_index]
-        print(f"lookahead_point: {lookahead_index}")
+
         return carrot
 
     def get_point_ref_to_robot_frame(self, point: np.array([[float, float, float]]).T):
@@ -126,8 +126,6 @@ class Robot:
         
         displacement = np.hypot(goal[0], goal[1], dtype=float)
 
-        if displacement == 0.0:
-            return 0.0, 0.0, 0.0
         if goal[1] == 0:
             return displacement, 0.0, displacement
 

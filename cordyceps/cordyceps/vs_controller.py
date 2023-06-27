@@ -44,7 +44,6 @@ class ControllerService(Node):
             for poses in route.robot_poses[:]:
                 routes[i].append([poses.x, poses.y])
 
-        # self.plot_path(routes)
         self.follow_routes_thread = threading.Thread(
             target=self.follow_routes, args=(routes,)
         )
@@ -63,34 +62,18 @@ class ControllerService(Node):
         response.is_alive = self.follow_routes_thread.is_alive()
         return response
 
-    def plot_path(self, routes: list[list[tuple[float, float]]]) -> None:
-        """Plots the paths of the robots
-
-        :param list[list[tuple[float, float]]] robot_paths: List of paths for each robot."""
-
-        labels = []
-
-        for i, route in enumerate(routes):
-            labels.append(f"R{i+1}")
-
-        for route in routes:
-            plt.scatter(*zip(*route), s=3)
-
-        plt.legend(labels)
-        plt.show()
-
     def follow_routes(self, routes: list[list[tuple[float, float]]]):
-        """Publishes the velocities so that the robots follow their paths
+        """Publishes the velocities so that the robots follow their routes
         
-        :param list[list[tuple[float, float]]] paths: List of paths for each robot."""
+        :param list[list[tuple[float, float]]] routes: List of routes for each robot."""
         
         routes = np.array(routes)
         for robot, route in enumerate(routes):
             with open(f"/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
                 f.write(str(route))
     
-        goals_achieved = False
-        while not goals_achieved:
+        route_completed = False
+        while not route_completed:
             max_distance = 0
             distances = []
             thetas = []
@@ -107,30 +90,26 @@ class ControllerService(Node):
                 goal = robot.calculate_carrot(min_current_point_index, route)
                 goal = np.array((goal[0], goal[1], 1)).T  # formatting for get_deltas()
                 delta_s, theta, displacement = robot.get_deltas(goal)
-                if first:  # DEBUG
-                    # print(f"DeltaS: {delta_s}, Displacement_index: {current_point_index}")
-                    first = False
 
-                # if displacement > self.GOAL_RADIUS:
                 if abs(delta_s) > max_distance:
                     max_distance = delta_s
                 distances.append(delta_s)
                 thetas.append(theta)
-                # else:
-                #     distances.append(0)
-                #     thetas.append(theta)
 
                 robot.set_prev_point_index(current_point_index)
 
-            bot_velocities = self.calc_velocities(distances, thetas, max_distance)
-            if all(velocity == [0, 0] for velocity in bot_velocities):
-                goals_achieved = True
+            bot_velocities = self.calc_velocities(distances, thetas, max_distance)  
 
             for robot, velocity in zip(
                 self.robots, bot_velocities
             ):  # publish velocity commands to each bot
-                print(bot_velocities)
                 robot.publish_velocity(float(velocity[0]), float(velocity[1]))
+
+            if current_point_index == len(route) - 1:
+                for robot in self.robots:
+                    robot.publish_velocity(0.0, 0.0)
+
+                route_completed = True   
 
     def calc_velocities(self, distances:list[float], thetas:list[float], max_distance:float) -> list[list[float]]:
         """Calculates the velocities for each robot
