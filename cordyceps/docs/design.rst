@@ -29,4 +29,4 @@ The VS_Controller is a node that acts as an action server. The VS_Controller is 
    figure 2: Overview of the virtual structure manager
 
 
-The robot is running a MQTT to ROS bridge. This bridge is respon 
+The robot is running a MQTT to ROS bridge. This bridge is responsible for turning the ROS messages into MQTT messages and the otherway around. 
