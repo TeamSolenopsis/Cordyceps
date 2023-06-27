@@ -17,5 +17,7 @@ Definitions
     * Pose - Full definition of a frame in space. Depending on the context, it can be 2D {x, y, θ} or 3D {coordinates, quaternions}
     * Route -
 
-ToDo: add more definitions
+TODO: add more definitions and abbreviations. And check if they are correct.
+
+
 
