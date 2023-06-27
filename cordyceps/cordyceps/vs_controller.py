@@ -1,11 +1,8 @@
 import rclpy
 from rclpy.node import Node
 import numpy as np
-import matplotlib.pyplot as plt
-from geometry_msgs.msg import Twist
 import threading
 from .Robot import Robot
-from std_srvs.srv import Trigger
 from cordyceps_interfaces.srv import Controller, CheckThread
 
 
@@ -76,7 +73,6 @@ class ControllerService(Node):
             max_distance = 0
             distances = []
             thetas = []
-            first = True
             min_current_point_index = min(
                 robot.project_pose(route)
                 for robot, route in zip(self.robots, routes)

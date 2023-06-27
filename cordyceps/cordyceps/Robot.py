@@ -29,14 +29,14 @@ class Robot:
         self.pose = np.array([[float(x), float(y), float(theta)]]).T
         self.LOOKAHEAD = 3 
 
-        self._prev_point_index = 0
+        self.prev_point_index = 0
 
     def set_prev_point_index(self, index: int):
         """sets the index of the previous point in the route
 
         :param int index: index of the previous point
         """
-        self._prev_point_index = index
+        self.prev_point_index = index
 
     def odom_callback(self, msg: Odometry):
         """updates the pose of the robot
@@ -66,10 +66,10 @@ class Robot:
         """
 
         coordinates = np.array((self.pose[0][0], self.pose[1][0]))
-        route_slice = route[self._prev_point_index:self._prev_point_index + self.LOOKAHEAD + 5]
+        route_slice = route[self.prev_point_index:self.prev_point_index + self.LOOKAHEAD + 5]
         displacements = np.linalg.norm(coordinates - np.array(route_slice), axis=1)
 
-        min_displacement_index = self._prev_point_index + np.argmin(displacements)
+        min_displacement_index = self.prev_point_index + np.argmin(displacements)
 
         return min_displacement_index
 

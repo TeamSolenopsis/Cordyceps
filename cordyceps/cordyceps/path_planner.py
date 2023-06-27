@@ -1,7 +1,6 @@
 import rclpy
 from rclpy.node import Node
 import numpy as np
-import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
 import csv
 from cordyceps_interfaces.srv import CustomPathPlanner
