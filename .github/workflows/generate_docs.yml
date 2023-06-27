@@ -46,6 +46,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           force: true
-          directory: ./docs/_build/html
+          directory: ./cordyceps/docs/_build/html
           
           
