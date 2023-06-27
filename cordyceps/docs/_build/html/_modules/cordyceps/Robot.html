@@ -30,6 +30,7 @@
           
           <a href="../../index.html" class="icon icon-home">
             Cordyceps
+              <img src="../../_static/cordyceps_logo_transparent.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -76,11 +77,9 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">rclpy.node</span> <span class="kn">import</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">nav_msgs.msg</span> <span class="kn">import</span> <span class="n">Odometry</span>
-<span class="kn">from</span> <span class="nn">geometry_msgs.msg</span> <span class="kn">import</span> <span class="n">Twist</span><span class="p">,</span> <span class="n">Quaternion</span>
+<span class="kn">from</span> <span class="nn">geometry_msgs.msg</span> <span class="kn">import</span> <span class="n">Twist</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">time</span>
-
 
 <div class="viewcode-block" id="Robot"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot">[docs]</a><span class="k">class</span> <span class="nc">Robot</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -104,16 +103,16 @@
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">pose</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">theta</span><span class="p">)]])</span><span class="o">.</span><span class="n">T</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># number of points pure pursuit looks ahead</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span> <span class="o">=</span> <span class="mi">3</span> 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_point_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_point_index</span> <span class="o">=</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="Robot.set_prev_point_index"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.set_prev_point_index">[docs]</a>    <span class="k">def</span> <span class="nf">set_prev_point_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;sets the index of the previous point in the route</span>
 
 <span class="sd">        :param int index: index of the previous point</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_prev_point_index</span> <span class="o">=</span> <span class="n">index</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prev_point_index</span> <span class="o">=</span> <span class="n">index</span></div>
 
 <div class="viewcode-block" id="Robot.odom_callback"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.odom_callback">[docs]</a>    <span class="k">def</span> <span class="nf">odom_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">Odometry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;updates the pose of the robot</span>
@@ -142,18 +141,11 @@
 <span class="sd">        :return: index of the closest point</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">displacement</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">route</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_prev_point_index</span> <span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prev_point_index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)]:</span>
-            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">pose</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pose</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
-            <span class="n">displacement</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">coordinates</span> <span class="o">-</span> <span class="n">point</span><span class="p">))</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">pose</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">pose</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">route_slice</span> <span class="o">=</span> <span class="n">route</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_point_index</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">prev_point_index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span> <span class="o">+</span> <span class="mi">5</span><span class="p">]</span>
+        <span class="n">displacements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">coordinates</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">route_slice</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">min_displacement_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_point_index</span> <span class="o">+</span> <span class="n">displacement</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
-            <span class="nb">min</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, min_displacement: </span><span class="si">{</span><span class="n">min_displacement_index</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_prev_point_index</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+        <span class="n">min_displacement_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev_point_index</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">displacements</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">min_displacement_index</span></div>
 
@@ -166,9 +158,9 @@
 
         <span class="n">lookahead_index</span> <span class="o">=</span> <span class="n">projected_point_index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span>
         <span class="k">if</span> <span class="n">lookahead_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">):</span>
-            <span class="n">lookahead_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>     <span class="c1"># if the lookahead point is out of bounds, set it to the last point</span>
+            <span class="n">lookahead_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">carrot</span> <span class="o">=</span> <span class="n">route</span><span class="p">[</span><span class="n">lookahead_index</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lookahead_point: </span><span class="si">{</span><span class="n">lookahead_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">carrot</span></div>
 
 <div class="viewcode-block" id="Robot.get_point_ref_to_robot_frame"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.get_point_ref_to_robot_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_point_ref_to_robot_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
@@ -203,16 +195,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">goal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_point_ref_to_robot_frame</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
+        
         <span class="n">displacement</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">goal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">goal</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">displacement</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
         <span class="k">if</span> <span class="n">goal</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">displacement</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">displacement</span>
 
         <span class="n">radius</span> <span class="o">=</span> <span class="n">displacement</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">goal</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">delta_theta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">displacement</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span><span class="p">))</span>
-        <span class="n">delta_s</span> <span class="o">=</span> <span class="n">delta_theta</span> <span class="o">*</span> <span class="n">radius</span>
+        <span class="n">delta_theta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">displacement</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">goal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">delta_s</span> <span class="o">=</span> <span class="n">delta_theta</span> <span class="o">*</span> <span class="n">radius</span> 
         <span class="k">return</span> <span class="n">delta_s</span><span class="p">,</span> <span class="n">delta_theta</span><span class="p">,</span> <span class="n">displacement</span></div>
 
 <div class="viewcode-block" id="Robot.publish_velocity"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.publish_velocity">[docs]</a>    <span class="k">def</span> <span class="nf">publish_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lin_vel</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ang_vel</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>

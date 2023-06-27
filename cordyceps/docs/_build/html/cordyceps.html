@@ -224,19 +224,11 @@
 <dt class="sig sig-object py" id="cordyceps.path_planner.PathPlanner.generate_vs_path_mock">
 <span class="sig-name descname"><span class="pre">generate_vs_path_mock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pose</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner.generate_vs_path_mock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner.generate_vs_path_mock" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a path for the virtual structure to follow.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>start_pose</strong> (<em>Pose</em>) – The starting pose of the virtual structure.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The path that the virtual structure should follow.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.path_planner.PathPlanner.get_robot_paths_callback">
-<span class="sig-name descname"><span class="pre">get_robot_paths_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner.get_robot_paths_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner.get_robot_paths_callback" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="cordyceps.path_planner.PathPlanner.get_routes_callback">
+<span class="sig-name descname"><span class="pre">get_routes_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner.get_routes_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner.get_routes_callback" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a path for a robot to follow in order to reach a goal pose.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -329,23 +321,12 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService.follow_paths">
-<span class="sig-name descname"><span class="pre">follow_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService.follow_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService.follow_paths" title="Permalink to this definition"></a></dt>
-<dd><p>Publishes the velocities so that the robots follow their paths</p>
+<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService.follow_routes">
+<span class="sig-name descname"><span class="pre">follow_routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService.follow_routes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService.follow_routes" title="Permalink to this definition"></a></dt>
+<dd><p>Publishes the velocities so that the robots follow their routes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>paths</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em><em>]</em>) – List of paths for each robot.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService.plot_path">
-<span class="sig-name descname"><span class="pre">plot_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">robot_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService.plot_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService.plot_path" title="Permalink to this definition"></a></dt>
-<dd><p>Plots the paths of the robots</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>robot_paths</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em><em>]</em>) – List of paths for each robot.</p>
+<dd class="field-odd"><p><strong>routes</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em><em>]</em>) – List of routes for each robot.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -391,7 +372,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.controll_vs">
-<span class="sig-name descname"><span class="pre">controll_vs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.RobotPaths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.controll_vs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.controll_vs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">controll_vs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.RobotRoutes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.controll_vs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.controll_vs" title="Permalink to this definition"></a></dt>
 <dd><p>Function that calls the controller service to start the path following.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -401,18 +382,18 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.request_paths">
-<span class="sig-name descname"><span class="pre">request_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.Task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_ref_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.request_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.request_paths" title="Permalink to this definition"></a></dt>
-<dd><p>Function that requests the paths from the path planner service.</p>
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.request_routes">
+<span class="sig-name descname"><span class="pre">request_routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.Task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_ref_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.request_routes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.request_routes" title="Permalink to this definition"></a></dt>
+<dd><p>Function that requests the routes from the path planner service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>task</strong> (<em>Task</em>) – The task for which the paths are requested.</p></li>
+<li><p><strong>task</strong> (<em>Task</em>) – The task for which the routes are requested.</p></li>
 <li><p><strong>vs_ref_pose</strong> (<em>list</em>) – The reference poses for each robot.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The paths for each robot.</p>
+<dd class="field-even"><p>The routes for each robot.</p>
 </dd>
 </dl>
 </dd></dl>
