@@ -7,7 +7,7 @@ from cordyceps_interfaces.srv import Controller, CheckThread
 
 
 class ControllerService(Node):
-    def __init__(self, fleet_size=4):
+    def __init__(self):
         """Constructor for the ControllerService class. Initializes the ROS2 node and creates the service."""
 
         super().__init__("cordyceps_controller")
@@ -22,8 +22,6 @@ class ControllerService(Node):
         self.GOAL_RADIUS = 0.0  # m
         self.robots = []
 
-        for i in range(fleet_size):
-            self.robots.append(Robot(0, 0, 0, f"r{i}", self))
         self.follow_routes_thread = None
 
     def start_thread_callback(self, request, response):
@@ -36,6 +34,7 @@ class ControllerService(Node):
 
         routes = []
         for i, route in enumerate(request.robot_routes.routes):
+            self.robots.append(Robot(0, 0, 0, f"r{i}", self))
             routes.append([])
             for poses in route.robot_poses[:]:
                 routes[i].append([poses.x, poses.y])
@@ -64,9 +63,9 @@ class ControllerService(Node):
         :param list[list[tuple[float, float]]] routes: List of routes for each robot."""
         
         routes = np.array(routes)
-        for robot, route in enumerate(routes):
-            with open(f"/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
-                f.write(str(route))
+        # for robot, route in enumerate(routes):
+        #     with open(f"/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
+        #         f.write(str(route))
     
         route_completed = False
         while not route_completed:
