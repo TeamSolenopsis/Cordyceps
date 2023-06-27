@@ -54,10 +54,10 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#node">Node</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#path-planner-node">path_planner Node</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#vs-assembler-node">vs_assembler Node</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#vs-controller-node">vs_controller Node</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#vs-manager-node">vs_manager Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cordyceps.path_planner">path_planner Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cordyceps.vs_assembler">vs_assembler Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cordyceps.vs_controller">vs_controller Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-cordyceps.vs_manager">vs_manager Node</a></li>
 </ul>
 </li>
 </ul>
@@ -213,17 +213,253 @@
 </section>
 <section id="node">
 <h2>Node<a class="headerlink" href="#node" title="Permalink to this heading"></a></h2>
-<section id="path-planner-node">
-<h3>path_planner Node<a class="headerlink" href="#path-planner-node" title="Permalink to this heading"></a></h3>
+<section id="module-cordyceps.path_planner">
+<span id="path-planner-node"></span><h3>path_planner Node<a class="headerlink" href="#module-cordyceps.path_planner" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="cordyceps.path_planner.PathPlanner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cordyceps.path_planner.</span></span><span class="sig-name descname"><span class="pre">PathPlanner</span></span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.path_planner.PathPlanner.generate_vs_path_mock">
+<span class="sig-name descname"><span class="pre">generate_vs_path_mock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Pose</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner.generate_vs_path_mock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner.generate_vs_path_mock" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a path for the virtual structure to follow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>start_pose</strong> (<em>Pose</em>) – The starting pose of the virtual structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path that the virtual structure should follow.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.path_planner.PathPlanner.get_robot_paths_callback">
+<span class="sig-name descname"><span class="pre">get_robot_paths_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner.get_robot_paths_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner.get_robot_paths_callback" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a path for a robot to follow in order to reach a goal pose.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>Request</em>) – The request containing the starting pose of the robot.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path that the robot should follow.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cordyceps.path_planner.main">
+<span class="sig-prename descclassname"><span class="pre">cordyceps.path_planner.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/path_planner.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
-<section id="vs-assembler-node">
-<h3>vs_assembler Node<a class="headerlink" href="#vs-assembler-node" title="Permalink to this heading"></a></h3>
+<section id="module-cordyceps.vs_assembler">
+<span id="vs-assembler-node"></span><h3>vs_assembler Node<a class="headerlink" href="#module-cordyceps.vs_assembler" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="cordyceps.vs_assembler.Assembler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cordyceps.vs_assembler.</span></span><span class="sig-name descname"><span class="pre">Assembler</span></span><a class="reference internal" href="_modules/cordyceps/vs_assembler.html#Assembler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_assembler.Assembler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_assembler.Assembler.get_robot_vs_ref_pose_callback">
+<span class="sig-name descname"><span class="pre">get_robot_vs_ref_pose_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_assembler.html#Assembler.get_robot_vs_ref_pose_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_assembler.Assembler.get_robot_vs_ref_pose_callback" title="Permalink to this definition"></a></dt>
+<dd><p>Callback function for the assembler service.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Request message for the service.</p></li>
+<li><p><strong>response</strong> – Response message for the service.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The response message with the reference poses for each robot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cordyceps.vs_assembler.main">
+<span class="sig-prename descclassname"><span class="pre">cordyceps.vs_assembler.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_assembler.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_assembler.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
-<section id="vs-controller-node">
-<h3>vs_controller Node<a class="headerlink" href="#vs-controller-node" title="Permalink to this heading"></a></h3>
+<section id="module-cordyceps.vs_controller">
+<span id="vs-controller-node"></span><h3>vs_controller Node<a class="headerlink" href="#module-cordyceps.vs_controller" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cordyceps.vs_controller.</span></span><span class="sig-name descname"><span class="pre">ControllerService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fleet_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService.calc_velocities">
+<span class="sig-name descname"><span class="pre">calc_velocities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thetas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService.calc_velocities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService.calc_velocities" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the velocities for each robot</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distances</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – List of distances from the robots to their goals.</p></li>
+<li><p><strong>thetas</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – List of angles from the robots to their goals.</p></li>
+<li><p><strong>max_distance</strong> (<em>float</em>) – largest distance a robot travels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of velocities for each robot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService.check_thread_state_callback">
+<span class="sig-name descname"><span class="pre">check_thread_state_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService.check_thread_state_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService.check_thread_state_callback" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if the thread is still running</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>Request</em>) – Request message for the service.</p></li>
+<li><p><strong>response</strong> (<em>Response</em>) – Response message for the service.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the thread is still running, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService.follow_paths">
+<span class="sig-name descname"><span class="pre">follow_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService.follow_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService.follow_paths" title="Permalink to this definition"></a></dt>
+<dd><p>Publishes the velocities so that the robots follow their paths</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>paths</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em><em>]</em>) – List of paths for each robot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService.plot_path">
+<span class="sig-name descname"><span class="pre">plot_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">robot_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService.plot_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService.plot_path" title="Permalink to this definition"></a></dt>
+<dd><p>Plots the paths of the robots</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>robot_paths</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em><em>]</em>) – List of paths for each robot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_controller.ControllerService.start_thread_callback">
+<span class="sig-name descname"><span class="pre">start_thread_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#ControllerService.start_thread_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.ControllerService.start_thread_callback" title="Permalink to this definition"></a></dt>
+<dd><p>Recieves each bot’s path and sends the velocities to follow them</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>Request</em>) – Request message for the service.</p></li>
+<li><p><strong>response</strong> (<em>Response</em>) – Response message for the service.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cordyceps.vs_controller.main">
+<span class="sig-prename descclassname"><span class="pre">cordyceps.vs_controller.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_controller.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_controller.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
-<section id="vs-manager-node">
-<h3>vs_manager Node<a class="headerlink" href="#vs-manager-node" title="Permalink to this heading"></a></h3>
+<section id="module-cordyceps.vs_manager">
+<span id="vs-manager-node"></span><h3>vs_manager Node<a class="headerlink" href="#module-cordyceps.vs_manager" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cordyceps.vs_manager.</span></span><span class="sig-name descname"><span class="pre">VsManager</span></span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.construct_mock_task">
+<span class="sig-name descname"><span class="pre">construct_mock_task</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">cordyceps_interfaces.msg.Task</span></span></span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.construct_mock_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.construct_mock_task" title="Permalink to this definition"></a></dt>
+<dd><p>Function that constructs a mock task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A mock task.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.controll_vs">
+<span class="sig-name descname"><span class="pre">controll_vs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.RobotPaths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.controll_vs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.controll_vs" title="Permalink to this definition"></a></dt>
+<dd><p>Function that calls the controller service to start the path following.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>paths</strong> (<em>RobotPaths</em>) – The paths for each robot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.request_paths">
+<span class="sig-name descname"><span class="pre">request_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.Task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_ref_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.request_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.request_paths" title="Permalink to this definition"></a></dt>
+<dd><p>Function that requests the paths from the path planner service.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<em>Task</em>) – The task for which the paths are requested.</p></li>
+<li><p><strong>vs_ref_pose</strong> (<em>list</em>) – The reference poses for each robot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The paths for each robot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.request_vs_ref_pose">
+<span class="sig-name descname"><span class="pre">request_vs_ref_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.request_vs_ref_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.request_vs_ref_pose" title="Permalink to this definition"></a></dt>
+<dd><p>Function that requests the reference poses for each robot from the assembler service.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task</strong> (<em>Task</em>) – The task for which the reference poses are requested.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The reference poses for each robot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.task_callback">
+<span class="sig-name descname"><span class="pre">task_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.Task</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.task_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.task_callback" title="Permalink to this definition"></a></dt>
+<dd><p>Callback function for the task subscriber. Adds the task to the task queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg</strong> (<em>Task</em>) – The task message that is received from the task topic.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.task_executor">
+<span class="sig-name descname"><span class="pre">task_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.task_executor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.task_executor" title="Permalink to this definition"></a></dt>
+<dd><p>Function that executes the tasks in the task queue.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.timer_callback">
+<span class="sig-name descname"><span class="pre">timer_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.timer_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.timer_callback" title="Permalink to this definition"></a></dt>
+<dd><p>Callback function for the timer. Publishes a mock task to the task topic.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cordyceps.vs_manager.main">
+<span class="sig-prename descclassname"><span class="pre">cordyceps.vs_manager.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.main" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 </section>
 </section>
