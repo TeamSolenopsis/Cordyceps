@@ -1,12 +1,10 @@
 import rclpy
 from rclpy.node import Node
 import numpy as np
-import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
-import math
 import csv
-from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
-from cordyceps_interfaces.msg import Path, RobotPaths, RobotPose, Task
+from cordyceps_interfaces.srv import CustomPathPlanner
+from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose
 
 """ROS2 Node that generates paths for each robot in the virtual structure"""
 class PathPlanner(Node):
@@ -14,29 +12,24 @@ class PathPlanner(Node):
         """Initializes the node and creates the service"""
 
         super().__init__('path_planner_service')
-        self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_paths', self.get_robot_paths_callback)
+        self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_routes', self.get_routes_callback)
 
-        self.RESOLUTION = 10 # The amount of points in which the paths will be split.
-        self.MAX_SPEED = 0.5 # Maximum allowed speed from a robot.(m/s)
-
+        self.RESOLUTION = 10 
+        self.MAX_SPEED = 0.5 # m/s
         self.angle = 0.0  # rad
 
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
-        """Generates a path for the virtual structure to follow.
+        """Generates a path for the virtual structure to follow."""
 
-        :param Pose start_pose: The starting pose of the virtual structure.
-        :return: The path that the virtual structure should follow.
-        """
-
-        file = open('/home/mart/Documents/git/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/Path1.csv','r')
+        file = open('/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/Path3.csv','r')
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
         for i in range(len(data)):
             data[i] = [float(j) for j in data[i]]
         return data
-
-    def get_robot_paths_callback(self, request, response):
+         
+    def get_routes_callback(self, request, response):
         """Generates a path for a robot to follow in order to reach a goal pose.
     
         :param Request request: The request containing the starting pose of the robot.
@@ -49,16 +42,14 @@ class PathPlanner(Node):
         # TODO: Trigger nav2 to create a path for VS
         vs_path = self.generate_vs_path_mock(start_pose)
 
-        robot_paths = RobotPaths()
+        routes = RobotRoutes()
         
         fleet_size = request.task.number_of_robots
-        bot_paths = []
+        bot_routes = []
         for _ in range(fleet_size):
-            bot_paths.append(Path())
-
+            bot_routes.append(Path())
 
         for pose in vs_path:
-            # transformation matrix template.   
             tf_matrix = np.array(
                 [
                     [np.cos(pose[2]), -np.sin(pose[2]), pose[0]],
@@ -73,12 +64,12 @@ class PathPlanner(Node):
                 bot_pose = RobotPose()
                 bot_pose.x = trans[0]
                 bot_pose.y = trans[1]
-                bot_paths[bot_i].robot_poses.append(bot_pose)
+                bot_routes[bot_i].robot_poses.append(bot_pose)
 
-        for bot_path in bot_paths:
-            robot_paths.paths.append(bot_path)
+        for bot_path in bot_routes:
+            routes.routes.append(bot_path)
 
-        response.robot_paths = robot_paths
+        response.robot_routes = routes
         return response        
 
 def main(args=None):
