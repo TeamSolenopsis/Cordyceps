@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from cordyceps_interfaces.srv import CustomRobotAssembler
-from cordyceps_interfaces.msg import RobotPose, RobotRoutes, Task, Path
+from cordyceps_interfaces.msg import RobotPose
 import numpy as np
 
 class Assembler(Node):
