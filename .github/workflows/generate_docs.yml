@@ -3,11 +3,11 @@ name: Build Docs
 on:
   push:
     branches:
-      - main
+      - main  # Voeg hier eventueel andere branchnamen toe als dat nodig is
       - develop
   pull_request:
     branches:
-      - main 
+      - main  # Voeg hier eventueel andere branchnamen toe als dat nodig is
       - develop
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.x  # Specificeer hier de gewenste Python-versie
+          python-version: 3.10.6
 
       - name: Install dependencies
         run: |
@@ -34,8 +34,8 @@ jobs:
           cd cordyceps/docs
           make html  # Of gebruik een andere opdracht die nodig is om de documentatie te bouwen
 
-      - name: Deploy documentation
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Archive documentation
+        uses: actions/upload-artifact@v2
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: cordyceps/docs/_build/html  # Het pad naar de gegenereerde HTML-documentatie
+          name: documentation
+          path: cordyceps/docs/_build/html  # Het pad naar de gegenereerde HTML-documentatie
