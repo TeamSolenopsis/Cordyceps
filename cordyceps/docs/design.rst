@@ -22,8 +22,11 @@ The Assembler is also a node that acts as an service server. The Assembler is re
 
 The VS_Controller is a node that acts as an action server. The VS_Controller is responsible for sending the velocity commands to the robots so that they synchronously follow their routes.
 
-.. figure:: images/overviewVsManager.png
+.. figure:: images/overviewVSManager.png
    :name: overviewManager-image-label
    :align: center
 
    figure 2: Overview of the virtual structure manager
+
+
+The robot is running a MQTT to ROS bridge. This bridge is respon 
