@@ -30,3 +30,4 @@ autodoc_mock_imports = ["cordyceps_interfaces"]
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_logo = 'images/cordyceps_logo_transparent.png'
