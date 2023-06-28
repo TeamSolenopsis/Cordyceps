@@ -3,6 +3,7 @@ from rclpy.node import Node
 import numpy as np
 from geometry_msgs.msg import Pose
 import csv
+import os
 from cordyceps_interfaces.srv import CustomPathPlanner
 from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose
 
@@ -21,7 +22,11 @@ class PathPlanner(Node):
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
         """Generates a path for the virtual structure to follow."""
 
-        file = open('/home/mart/Documents/git/Turtlebot3_Simulation_WorkSpace/turtle_ws/src/Cordyceps/cordyceps/resource/8_robots_from_2-2.csv','r')
+        file_name = "Path0.csv"
+        file_dir = os.path.dirname(os.path.realpath('__file__'))
+        file_path = os.path.join(file_dir, "src/Cordyceps/cordyceps/resource/", file_name)
+        
+        file = open(file_path,'r')
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
