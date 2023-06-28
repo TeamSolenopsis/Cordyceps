@@ -11,7 +11,7 @@ from cordyceps_interfaces.srv import Controller, CheckThread
 
 
 class ControllerService(Node):
-    def __init__(self, fleet_size=1):
+    def __init__(self, fleet_size=2):
         """Constructor for the ControllerService class. Initializes the ROS2 node and creates the service."""
 
         super().__init__("cordyceps_controller")

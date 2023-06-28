@@ -24,7 +24,7 @@ class PathPlanner(Node):
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
         """Generates a path for the virtual structure to follow."""
         
-        file = open('/home/cas/Project_Solenopsis/solenopsis_ws/src/Cordyceps/cordyceps/resource/right_angle_1m.csv' ,'r')
+        file = open('/home/cas/Project_Solenopsis/solenopsis_ws/src/Cordyceps/cordyceps/resource/Path11.csv' ,'r')
         data = list(csv.reader(file, delimiter=','))
         file.close()
         

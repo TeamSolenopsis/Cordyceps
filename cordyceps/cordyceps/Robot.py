@@ -23,14 +23,14 @@ class Robot:
         self.wheelbase = 0.14  # m
 
         self.pose_sub = self.node.create_subscription(
-            Odometry, f"/odom", self.odom_callback, 10
+            Odometry, f"/{self.name}/odom", self.odom_callback, 10
         )
         self.cmd_vel_pub = self.node.create_publisher(
-            Twist, f"/cmd_vel", 10
+            Twist, f"/{self.name}/cmd_vel", 10
         )
 
         self.pose = np.array([[float(x), float(y), float(theta)]]).T
-        self.LOOKAHEAD = 3  # number of points pure pursuit looks ahead
+        self.LOOKAHEAD = 7  # number of points pure pursuit looks ahead
 
         self._prev_point_index = 0
 

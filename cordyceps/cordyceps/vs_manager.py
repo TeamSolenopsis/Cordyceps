@@ -100,8 +100,8 @@ class VsManager(Node):
         goal_pose = Pose()
         task.start_pose = start_pose
         task.goal_pose = goal_pose
-        task.number_of_robots = 1
-        task.diameter = 0
+        task.number_of_robots = 2
+        task.diameter = 1
         return task
 
     def controll_vs(self, routes: RobotRoutes):
