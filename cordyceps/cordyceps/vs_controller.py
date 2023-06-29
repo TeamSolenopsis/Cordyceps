@@ -36,7 +36,7 @@ class ControllerService(Node):
         :param Request request: Request message for the service.
         :param Response response: Response message for the service."""
 
-        self.get_logger().info("Executing goal...")
+        self.get_logger().info("Cordyceps controller executing route...")
 
         routes = []
         for i, route in enumerate(request.robot_routes.routes):
