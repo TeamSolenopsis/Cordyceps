@@ -4,7 +4,7 @@ import numpy as np
 from geometry_msgs.msg import Pose
 import csv
 import os
-from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
+from cordyceps_interfaces.srv import CustomPathPlanner
 from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose, Task
 
 
