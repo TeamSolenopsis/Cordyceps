@@ -16,7 +16,8 @@ $ git clone https://github.com/TeamSolenopsis/Cordyceps.git
 
 To use this with physical robots use the next commands to run the controller.
 ```
-$ cd your-ros-workspace
+export ROS_DOMAIN_ID=0
+$ cd <your-ros-workspace>
 $ colcon build
 $ . install/setup.bash
 $ ros2 run cordyceps manager
