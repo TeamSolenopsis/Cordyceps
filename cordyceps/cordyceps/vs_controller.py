@@ -31,6 +31,13 @@ class ControllerService(Node):
         :param Request request: Request message for the service.
         :param Response response: Response message for the service."""
 
+        routes = []
+        for i, route in enumerate(request.robot_routes.routes):
+            self.robots.append(Robot(0, 0, 0, f"r{i}", self))
+            routes.append([])
+            for poses in route.robot_poses[:]:
+                routes[i].append([poses.x, poses.y])
+
         self.get_logger().info(f"""
         ============================================
         | ~ Cordyceps controller executing route ~ |
@@ -41,13 +48,6 @@ class ControllerService(Node):
         ~ Fleet size: {len(request.robot_routes.routes)}
         ~ Number of poses in route: {len(request.robot_routes.routes[0].robot_poses)}
         """)
-
-        routes = []
-        for i, route in enumerate(request.robot_routes.routes):
-            self.robots.append(Robot(0, 0, 0, f"r{i}", self))
-            routes.append([])
-            for poses in route.robot_poses[:]:
-                routes[i].append([poses.x, poses.y])
 
         self.follow_routes_thread = threading.Thread(
             target=self.follow_routes, args=(routes,)
