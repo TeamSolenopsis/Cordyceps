@@ -1,6 +1,6 @@
 # Cordyceps
 Centralised controller for rigid formations in AGV fleets 
-This is the cordyceps controller that allows for controlling a vs controller. 
+This is the cordyceps controller that allows for controlling a virtual structure. 
 
 
 ## Prerequisite
