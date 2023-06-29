@@ -18,6 +18,3 @@ Definitions
     * Route -
 
 TODO: add more definitions and abbreviations. And check if they are correct.
-
-
-

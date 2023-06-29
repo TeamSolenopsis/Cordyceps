@@ -31,5 +31,6 @@ The VS_Controller is responsible for sending the velocity commands to the robots
 
    figure 2: Overview of the virtual structure manager
 
-
-The robot is running a MQTT to ROS bridge. This bridge is responsible for turning the ROS messages into MQTT messages and the otherway around. 
+The Robots and the VS manager both use ROS2 internally. For communication between the robots and the VS manager MQTT is used.
+MQTT is used because it is a lightweight protocol that is easy to use and during testing it was found that it is more reliable than ROS2 communication over the network.
+The robots are running a MQTT to ROS bridge. This bridge is responsible for turning the ROS messages into MQTT messages and the otherway around.

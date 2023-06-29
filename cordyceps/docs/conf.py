@@ -25,6 +25,34 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 autodoc_mock_imports = ["cordyceps_interfaces"]
 
+latex_engine = 'xelatex'
+
+latex_elements = {
+    'papersize': 'letterpaper',
+    'extraclassoptions': 'openany,oneside',
+    'pointsize': '12pt',
+    'preamble': '',
+    'figure_align': 'htbp',
+    'maketitle': r'''
+        \pagenumbering{roman}
+        \begin{titlepage}
+            \centering
+            \vspace*{2cm}
+            {\Huge\bfseries Design Document}
+            \par\vspace{2cm}
+            {\Large Mart Coppelmans,}
+            {\Large Sara van Eersel,}
+            {\Large Jordy Espina Font,}
+            {\Large Thomas Udo and}
+            {\Large Cas Leeflang}
+            \par\vfill
+            {\Large June 2023}
+        \end{titlepage}
+        \pagenumbering{arabic}
+    '''
+}
+
+
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
