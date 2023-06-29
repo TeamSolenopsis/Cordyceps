@@ -15,7 +15,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Path.msg"
-  "msg/RobotPaths.msg"
+  "msg/RobotRoutes.msg"
   "msg/RobotPose.msg"
   "msg/Task.msg"
   "srv/CustomRobotAssembler.srv"
