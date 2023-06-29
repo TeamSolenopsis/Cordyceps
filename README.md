@@ -1,4 +1,17 @@
-# TemplateRepo
-Use this repo as a template when creating a new repo for a package.
-Make sure to check the box: include branches.
+# Cordyceps
+
+This is the cordyceps controller that allows for controlling a vs controller. 
+
+
+## Installation
+'''
+$ git clone https://github.com/TeamSolenopsis/Cordyceps.git
+'''
+
+## Run
+'''
+$ cd your-ros-workspace
+$ ros2 run cordyceps manager
+'''
+
 ...
