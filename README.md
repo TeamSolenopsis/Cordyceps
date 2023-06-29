@@ -1,4 +1,3 @@
-# TemplateRepo
-Use this repo as a template when creating a new repo for a package.
-Make sure to check the box: include branches.
-...
+# Cordyceps
+
+Centralised controller for rigid formation AGV fleets using ROS2
