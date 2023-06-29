@@ -18,6 +18,7 @@ class Robot:
         self.node = node
         self.name = name
         self.lock = threading.Lock()
+        self.wheelbase = 0.14  # m
 
         self.pose_sub = self.node.create_subscription(
             Odometry, f"/{self.name}/odom", self.odom_callback, 10
@@ -27,7 +28,7 @@ class Robot:
         )
 
         self.pose = np.array([[float(x), float(y), float(theta)]]).T
-        self.LOOKAHEAD = 3 
+        self.LOOKAHEAD = 7  # number of points pure pursuit looks ahead
 
         self.prev_point_index = 0
 
@@ -123,12 +124,17 @@ class Robot:
         displacement = np.hypot(goal[0], goal[1], dtype=float)
 
         if goal[1] == 0:
-            return displacement, 0.0, displacement
+            return displacement, displacement, 0.0, displacement
 
         radius = displacement**2 / (2 * goal[1])
-        delta_theta = 2 * np.arcsin(displacement / (2 * radius)) * np.sign(goal[0])
+        
+        delta_theta = 2 * np.arcsin(displacement / (2 * radius)) * np.sign(goal[0]) 
+        delta_theta_wheelbase = 2 * np.arcsin(displacement / (2 * radius + ((self.wheelbase * np.sign(radius)) / 2))) * np.sign(goal[0])
+        
         delta_s = delta_theta * radius 
-        return delta_s, delta_theta, displacement
+        delta_s_wheelbase = delta_theta_wheelbase * (radius + ((self.wheelbase * np.sign(radius)) / 2))
+
+        return delta_s, delta_s_wheelbase,  delta_theta, displacement
 
     def publish_velocity(self, lin_vel: float, ang_vel: float):
         """publishes the velocity of the robot

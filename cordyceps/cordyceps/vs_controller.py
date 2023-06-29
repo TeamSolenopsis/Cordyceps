@@ -7,6 +7,7 @@ from cordyceps_interfaces.srv import Controller, CheckThread
 
 
 class ControllerService(Node):
+
     def __init__(self):
         """Constructor for the ControllerService class. Initializes the ROS2 node and creates the service."""
 
@@ -18,7 +19,7 @@ class ControllerService(Node):
             CheckThread, "check_thread_state", self.check_thread_state_callback
         )
 
-        self.MAX_BOT_SPEED = 0.2  # m/s
+        self.MAX_BOT_SPEED = 0.1  # m/s
         self.GOAL_RADIUS = 0.0  # m
         self.robots = []
 
@@ -30,7 +31,16 @@ class ControllerService(Node):
         :param Request request: Request message for the service.
         :param Response response: Response message for the service."""
 
-        self.get_logger().info("Executing goal...")
+        self.get_logger().info(f"""
+        ============================================
+        | ~ Cordyceps controller executing route ~ |
+        ============================================
+
+        ~~ Parameters:  
+        ~ Robot names: {[robot.name for robot in self.robots]}
+        ~ Fleet size: {len(request.robot_routes.routes)}
+        ~ Number of poses in route: {len(request.robot_routes.routes[0].robot_poses)}
+        """)
 
         routes = []
         for i, route in enumerate(request.robot_routes.routes):
@@ -63,10 +73,6 @@ class ControllerService(Node):
         :param list[list[tuple[float, float]]] routes: List of routes for each robot."""
         
         routes = np.array(routes)
-        # for robot, route in enumerate(routes):
-        #     with open(f"/home/sara/Documents/Fontys_Minor/ros_ws/src/Cordyceps/cordyceps/resource/route{robot}.txt","w") as f:
-        #         f.write(str(route))
-    
         route_completed = False
         while not route_completed:
             max_distance = 0
@@ -76,17 +82,16 @@ class ControllerService(Node):
                 robot.project_pose(route)
                 for robot, route in zip(self.robots, routes)
             )
-            for robot, route in zip(
-                self.robots, routes
-            ):  
+            for robot, route in zip(self.robots, routes):
                 current_point_index = robot.project_pose(route)
 
                 goal = robot.calculate_carrot(min_current_point_index, route)
                 goal = np.array((goal[0], goal[1], 1)).T 
-                delta_s, theta, displacement = robot.get_deltas(goal)
+                delta_s, delta_s_wheelbase, theta, displacement = robot.get_deltas(goal)
 
-                if abs(delta_s) > max_distance:
-                    max_distance = delta_s
+
+                if abs(delta_s_wheelbase) > max_distance:
+                    max_distance = delta_s_wheelbase
                 distances.append(delta_s)
                 thetas.append(theta)
 
@@ -94,11 +99,9 @@ class ControllerService(Node):
 
             bot_velocities = self.calc_velocities(distances, thetas, max_distance)  
 
-            for robot, velocity in zip(
-                self.robots, bot_velocities
-            ):  
-                robot.publish_velocity(float(velocity[0]), float(velocity[1]))
 
+            for robot, velocity in zip(self.robots, bot_velocities):  
+                robot.publish_velocity(float(velocity[0]), float(velocity[1]))
             if current_point_index == len(route) - 1:
                 for robot in self.robots:
                     robot.publish_velocity(0.0, 0.0)
@@ -118,7 +121,6 @@ class ControllerService(Node):
 
         delta_s = np.array(distances)
         delta_theta = np.array(thetas)
-
         delta_t = abs(max_distance) / self.MAX_BOT_SPEED
         self.time = delta_t
 

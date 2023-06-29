@@ -7,6 +7,7 @@ import os
 from cordyceps_interfaces.srv import CustomPathPlanner
 from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose
 
+
 """ROS2 Node that generates paths for each robot in the virtual structure"""
 class PathPlanner(Node):
     def __init__(self):
@@ -15,8 +16,9 @@ class PathPlanner(Node):
         super().__init__('path_planner_service')
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_routes', self.get_routes_callback)
 
-        self.RESOLUTION = 10 
-        self.MAX_SPEED = 0.5 # m/s
+        self.RESOLUTION = 10 # The amount of points in which the routes will be split.
+        self.MAX_SPEED = 0.2 # Maximum allowed speed from a robot.(m/s)
+
         self.angle = 0.0  # rad
 
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
@@ -27,6 +29,7 @@ class PathPlanner(Node):
         file_path = os.path.join(file_dir, "src/Cordyceps/cordyceps/resource/", file_name)
         
         file = open(file_path,'r')
+
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
