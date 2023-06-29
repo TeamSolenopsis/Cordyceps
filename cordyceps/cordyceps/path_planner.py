@@ -5,7 +5,7 @@ from geometry_msgs.msg import Pose
 import csv
 import os
 from cordyceps_interfaces.srv import CustomPathPlanner
-from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose, Task
+from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose
 
 
 """ROS2 Node that generates paths for each robot in the virtual structure"""
