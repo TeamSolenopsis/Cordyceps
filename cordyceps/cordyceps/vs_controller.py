@@ -36,7 +36,16 @@ class ControllerService(Node):
         :param Request request: Request message for the service.
         :param Response response: Response message for the service."""
 
-        self.get_logger().info("Cordyceps controller executing route...")
+        self.get_logger().info(f"""
+        ============================================
+        | ~ Cordyceps controller executing route ~ |
+        ============================================
+
+        ~~ Parameters:  
+        ~ Robot names: {[robot.name for robot in self.robots]}
+        ~ Fleet size: {len(request.robot_routes.routes)}
+        ~ Number of poses in route: {len(request.robot_routes.routes[0].robot_poses)}
+        """)
 
         routes = []
         for i, route in enumerate(request.robot_routes.routes):
@@ -97,7 +106,6 @@ class ControllerService(Node):
 
             for robot, velocity in zip(self.robots, bot_velocities):  # publish velocity commands to each bot
                 robot.publish_velocity(float(velocity[0]), float(velocity[1]))
-            print(f'current point index: {current_point_index}, length: {len(route)}')
             if current_point_index == len(route) - 1:
                 for robot in self.robots:
                     robot.publish_velocity(0.0, 0.0)
@@ -117,7 +125,6 @@ class ControllerService(Node):
 
         delta_s = np.array(distances)
         delta_theta = np.array(thetas)
-        print(max_distance)
         delta_t = abs(max_distance) / self.MAX_BOT_SPEED
         self.time = delta_t
 
