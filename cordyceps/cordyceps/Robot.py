@@ -4,8 +4,6 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, Quaternion, Pose
 import math
 import threading
-import time
-
 
 class Robot:
     def __init__(self, x, y, theta, name, node: Node) -> None:
@@ -32,14 +30,14 @@ class Robot:
         self.pose = np.array([[float(x), float(y), float(theta)]]).T
         self.LOOKAHEAD = 7  # number of points pure pursuit looks ahead
 
-        self._prev_point_index = 0
+        self.prev_point_index = 0
 
     def set_prev_point_index(self, index: int):
         """sets the index of the previous point in the route
 
         :param int index: index of the previous point
         """
-        self._prev_point_index = index
+        self.prev_point_index = index
 
     def odom_callback(self, msg: Odometry):
         """updates the pose of the robot
@@ -68,13 +66,11 @@ class Robot:
         :return: index of the closest point
         """
 
-        # calculate displacements between the prev_point and the nearby next
         coordinates = np.array((self.pose[0][0], self.pose[1][0]))
-        route_slice = route[self._prev_point_index:self._prev_point_index + self.LOOKAHEAD + 5]
+        route_slice = route[self.prev_point_index:self.prev_point_index + self.LOOKAHEAD + 5]
         displacements = np.linalg.norm(coordinates - np.array(route_slice), axis=1)
 
-        # calculate the index of the closest
-        min_displacement_index = self._prev_point_index + np.argmin(displacements)
+        min_displacement_index = self.prev_point_index + np.argmin(displacements)
 
         return min_displacement_index
 
@@ -87,7 +83,7 @@ class Robot:
 
         lookahead_index = projected_point_index + self.LOOKAHEAD
         if lookahead_index >= len(route):
-            lookahead_index = len(route) - 1     # if the lookahead point is out of bounds, set it to the last point
+            lookahead_index = len(route) - 1
         carrot = route[lookahead_index]
 
         return carrot
@@ -131,9 +127,10 @@ class Robot:
             return displacement, displacement, 0.0, displacement
 
         radius = displacement**2 / (2 * goal[1])
-        delta_theta = 2 * np.arcsin(displacement / (2 * radius)) * np.sign(goal[0]) # sign value indicates if the point is infront or behind
-        delta_theta_wheelbase = 2 * np.arcsin(displacement / (2 * radius + ((self.wheelbase * np.sign(radius)) / 2))) * np.sign(goal[0]) # sign value indicates if the point is infront or behind
-
+        
+        delta_theta = 2 * np.arcsin(displacement / (2 * radius)) * np.sign(goal[0]) 
+        delta_theta_wheelbase = 2 * np.arcsin(displacement / (2 * radius + ((self.wheelbase * np.sign(radius)) / 2))) * np.sign(goal[0])
+        
         delta_s = delta_theta * radius 
         delta_s_wheelbase = delta_theta_wheelbase * (radius + ((self.wheelbase * np.sign(radius)) / 2))
 

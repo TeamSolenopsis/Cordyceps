@@ -7,9 +7,8 @@ from geometry_msgs.msg import Pose
 from .path_planner import PathPlanner
 from .vs_assembler import Assembler
 from .vs_controller import ControllerService
-
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler, Controller, CheckThread
-from cordyceps_interfaces.msg import RobotRoutes, Task, RobotPose, Path
+from cordyceps_interfaces.msg import RobotRoutes, Task
 
 class VsManager(Node):
 
@@ -55,14 +54,14 @@ class VsManager(Node):
             self.controll_vs(routes)            
 
     def request_routes(self, task:Task, vs_ref_pose:list):
-        """Function that requests the paths from the path planner service.
+        """Function that requests the routes from the path planner service.
         
-        :param Task task: The task for which the paths are requested.
+        :param Task task: The task for which the routes are requested.
         :param list vs_ref_pose: The reference poses for each robot.
         
-        :returns: The paths for each robot."""
+        :returns: The routes for each robot."""
 
-        req  = CustomPathPlanner.Request()
+        req = CustomPathPlanner.Request()
         req.task = task
         req.vs_ref_pose = vs_ref_pose
 
@@ -102,6 +101,7 @@ class VsManager(Node):
         task.goal_pose = goal_pose
         task.number_of_robots = 2
         task.diameter = 1
+
         return task
 
     def controll_vs(self, routes: RobotRoutes):

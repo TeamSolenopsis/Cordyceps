@@ -1,13 +1,12 @@
 import rclpy
 from rclpy.node import Node
 import numpy as np
-import matplotlib.pyplot as plt
 from geometry_msgs.msg import Pose
-import math
 import csv
 import os
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler
 from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose, Task
+
 
 """ROS2 Node that generates paths for each robot in the virtual structure"""
 class PathPlanner(Node):
@@ -21,10 +20,16 @@ class PathPlanner(Node):
         self.MAX_SPEED = 0.2 # Maximum allowed speed from a robot.(m/s)
 
         self.angle = 0.0  # rad
+
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
         """Generates a path for the virtual structure to follow."""
+
+        file_name = "Path0.csv"
+        file_dir = os.path.dirname(os.path.realpath('__file__'))
+        file_path = os.path.join(file_dir, "src/Cordyceps/cordyceps/resource/", file_name)
         
-        file = open('/home/cas/Project_Solenopsis/solenopsis_ws/src/Cordyceps/cordyceps/resource/Path11.csv' ,'r')
+        file = open(file_path,'r')
+
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
@@ -53,7 +58,6 @@ class PathPlanner(Node):
             bot_routes.append(Path())
 
         for pose in vs_path:
-            # transformation matrix template.   
             tf_matrix = np.array(
                 [
                     [np.cos(pose[2]), -np.sin(pose[2]), pose[0]],
