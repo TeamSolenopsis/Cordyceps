@@ -99,8 +99,8 @@ class VsManager(Node):
         goal_pose = Pose()
         task.start_pose = start_pose
         task.goal_pose = goal_pose
-        task.number_of_robots = 2
-        task.diameter = 1
+        task.number_of_robots = 4
+        task.diameter = 2
 
         return task
 

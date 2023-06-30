@@ -23,7 +23,7 @@ extensions = ["sphinx.ext.todo", "sphinx.ext.githubpages", "sphinx.ext.autodoc",
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-autodoc_mock_imports = ["cordyceps_interfaces"]
+autodoc_mock_imports = ["cordyceps_interfaces","numpy","rclpy","geometry_msgs","nav_msgs"]
 
 latex_engine = 'xelatex'
 
