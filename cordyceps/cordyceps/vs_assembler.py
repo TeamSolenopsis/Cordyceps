@@ -25,14 +25,32 @@ class Assembler(Node):
 
         task = request.task
 
-        for robot_index in range(task.number_of_robots):
-            bot_pose = RobotPose()
-            angle = (2 * np.pi * robot_index) / task.number_of_robots
-            bot_pose.x = float(np.cos(angle) * task.diameter / 2)
-            bot_pose.y = float(np.sin(angle) * task.diameter / 2)
-            print(f'robot:{robot_index} x: {bot_pose.x}, y: {bot_pose.y}') 
-            response.vs_ref_pose.append(bot_pose)
+        # for robot_index in range(task.number_of_robots):
+        #     # angle = (2 * np.pi * robot_index) / task.number_of_robots
+        #     # bot_pose.x = float(np.cos(angle) * task.diameter / 2)
+        #     # bot_pose.y = float(np.sin(angle) * task.diameter / 2)
+            # print(f'robot:{robot_index} x: {bot_pose.x}, y: {bot_pose.y}') 
+            # response.vs_ref_pose.append(bot_pose)
 
+
+        bot_pose_0 = RobotPose()
+        bot_pose_0.x = 0.20
+        bot_pose_0.y = 0.0
+
+        bot_pose_1 = RobotPose()
+        bot_pose_1.x= -0.22
+        bot_pose_1.y = -0.18
+
+        bot_pose_2 = RobotPose()
+        bot_pose_2.x = -0.22
+        bot_pose_2.y = 0.18            
+
+        response.vs_ref_pose.append(bot_pose_0)
+        response.vs_ref_pose.append(bot_pose_1)
+        response.vs_ref_pose.append(bot_pose_2)
+
+
+        for robot_index in range(task.number_of_robots):
             self.add_robot(task.number_of_robots, robot_index)
 
         return response
