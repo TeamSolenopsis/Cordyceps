@@ -24,7 +24,7 @@ class PathPlanner(Node):
     def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
         """Generates a path for the virtual structure to follow."""
 
-        file_name = "right_angle_1m.csv"
+        file_name = "square1mfix.csv"
         file_dir = os.path.dirname(os.path.realpath('__file__'))
         file_path = os.path.join(file_dir, "src/Cordyceps/cordyceps/resource/", file_name)
         
