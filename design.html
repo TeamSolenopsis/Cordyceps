@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="cordyceps" href="modules.html" />
+    <link rel="next" title="Code documentation" href="modules.html" />
     <link rel="prev" title="Project Overview" href="project_overview.html" /> 
 </head>
 
@@ -46,10 +46,11 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html#id1">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">System Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">cordyceps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Code documentation</a></li>
 </ul>
 
         </div>
@@ -102,7 +103,9 @@ The VS_Controller is responsible for sending the velocity commands to the robots
 <p><span class="caption-text">figure 2: Overview of the virtual structure manager</span><a class="headerlink" href="#overviewmanager-image-label" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
-<p>The robot is running a MQTT to ROS bridge. This bridge is responsible for turning the ROS messages into MQTT messages and the otherway around.</p>
+<p>The Robots and the VS manager both use ROS2 internally. For communication between the robots and the VS manager MQTT is used.
+MQTT is used because it is a lightweight protocol that is easy to use and during testing it was found that it is more reliable than ROS2 communication over the network.
+The robots are running a MQTT to ROS bridge. This bridge is responsible for turning the ROS messages into MQTT messages and the otherway around.</p>
 </section>
 
 
@@ -110,7 +113,7 @@ The VS_Controller is responsible for sending the velocity commands to the robots
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="project_overview.html" class="btn btn-neutral float-left" title="Project Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="cordyceps" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="Code documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
