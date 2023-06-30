@@ -62,7 +62,7 @@ class Robot:
         )
 
         self.pose = np.array([[float(x), float(y), float(theta)]]).T
-        self.LOOKAHEAD = 5  # number of points pure pursuit looks ahead
+        self.LOOKAHEAD = 4  # number of points pure pursuit looks ahead
 
         self.prev_point_index = 0
 
