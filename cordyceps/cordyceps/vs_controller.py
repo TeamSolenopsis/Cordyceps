@@ -19,7 +19,7 @@ class ControllerService(Node):
             CheckThread, "check_thread_state", self.check_thread_state_callback
         )
 
-        self.MAX_BOT_SPEED = 0.2  # m/s
+        self.MAX_BOT_SPEED = 0.1  # m/s
         self.GOAL_RADIUS = 0.0  # m
         self.robots = []
 
