@@ -28,6 +28,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install sphinx
           python -m pip install sphinx-rtd-theme
+          sudo apt-get install latexmk
+          sudo apt-get install texlive-latex-extra
+          sudo apt-get install texlive-xetex
+          sudo apt-get install texlive-fonts-extra
+          sudo apt-get install xindy
+          
 
       - name: Build documentation
         run: |
