@@ -33,9 +33,17 @@ jobs:
         run: |
           cd cordyceps/docs
           make html  # Of gebruik een andere opdracht die nodig is om de documentatie te bouwen
+          make latexpdf
 
-      - name: Archive documentation
+      - name: Archive html documentation
         uses: actions/upload-artifact@v2
         with:
-          name: documentation
+          name: html documentation
           path: cordyceps/docs/_build/html  # Het pad naar de gegenereerde HTML-documentatie
+          
+      - name: Archive latex documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: latex documentation
+          path: cordyceps/docs/_build/latex  # Het pad naar de gegenereerde latex-documentatie
+
