@@ -14,4 +14,5 @@ Contents
    terminology
    project_overview
    design
+   algorithm
    modules
