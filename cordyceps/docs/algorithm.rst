@@ -7,4 +7,11 @@ The algorithm determines the steering angle of the robot based on the current po
 A lookahead distance is used to determine the point on the path that the robot should aim for.
 
 More information about the Pure Puresuit algorithm can be found here: https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf
+
+The Pure Pursuit algorithm is chosen for the following reasons:
+* It is deterministic
+* Low computational cost
+* It is easy to implement
+* It is easy to tune
+
 More information about how the Pure Pursuit algorithm is implemented in the Cordyceps controller can be found here: #TODO link to the paper
