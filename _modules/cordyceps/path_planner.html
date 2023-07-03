@@ -40,10 +40,8 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../introduction.html#id1">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../terminology.html">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">System Overview</a></li>
@@ -101,7 +99,7 @@
 <div class="viewcode-block" id="PathPlanner.generate_vs_path_mock"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.path_planner.PathPlanner.generate_vs_path_mock">[docs]</a>    <span class="k">def</span> <span class="nf">generate_vs_path_mock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_pose</span><span class="p">:</span><span class="n">Pose</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates a path for the virtual structure to follow.&quot;&quot;&quot;</span>
 
-        <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;8_robots_from_2-2.csv&quot;</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;Path0.csv&quot;</span>
         <span class="n">file_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="s1">&#39;__file__&#39;</span><span class="p">))</span>
         <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_dir</span><span class="p">,</span> <span class="s2">&quot;src/Cordyceps/cordyceps/resource/&quot;</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
         
