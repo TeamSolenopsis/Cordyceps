@@ -1,9 +1,6 @@
 Introduction
 ------------
 
-Introduction
-------------
-
 The increasing number of robots in various industries such as warehouses, farms, factories, 
 and cleaning services is driving the need for a shift towards utilizing multiple small collaborative robots instead of large powerful ones. 
 This approach offers several advantages including enhanced speed, efficiency, cost-effectiveness, reliability, and safety.
