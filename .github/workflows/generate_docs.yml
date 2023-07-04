@@ -39,6 +39,7 @@ jobs:
           cd cordyceps/docs
           make html  # Of gebruik een andere opdracht die nodig is om de documentatie te bouwen
           make latexpdf
+          
       - name: Archive html documentation
         uses: actions/upload-artifact@v2
         with:
@@ -50,3 +51,17 @@ jobs:
         with:
           name: latex documentation
           path: cordyceps/docs/_build/latex  # Het pad naar de gegenereerde latex-documentatie
+          
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+
+      - name: Copy artifacts to gh-pages branch
+        run: |
+          cp -R cordyceps/docs/_build/html/* .
+          git add .
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git commit -m "Update documentation artifacts"
+          git push
