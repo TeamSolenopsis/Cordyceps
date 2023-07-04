@@ -14,4 +14,4 @@ The Pure Pursuit algorithm is chosen for the following reasons:
     * It is easy to implement
     * It is easy to tune
 
-More information about how the Pure Pursuit algorithm is implemented in the Cordyceps controller can be found here: #TODO link to the paper
+More information about how the Pure Pursuit algorithm is implemented in the Cordyceps controller can be found here: https://github.com/TeamSolenopsis/Cordyceps/blob/gh-pages/Cordyceps.pdf
