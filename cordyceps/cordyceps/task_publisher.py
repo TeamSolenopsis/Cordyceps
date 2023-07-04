@@ -4,9 +4,12 @@ from cordyceps_interfaces.msg import Task
 from geometry_msgs.msg import Pose
 
 class TaskPublisher(Node):
-    def __init__(self):
+    def __init__(self, number_of_robots:int, diameter:float):
         super().__init__('task_publisher')
         self.publisher = self.create_publisher(Task, 'vs_manager/task', 10)
+
+        self.number_of_robots = number_of_robots
+        self.diameter = diameter
 
         timer_period_seconds = 5.0 
         self.timer = self.create_timer(timer_period_seconds, self.timer_callback)
@@ -33,8 +36,8 @@ class TaskPublisher(Node):
         task.start_pose = start_pose
         task.goal_pose = goal_pose
 
-        task.number_of_robots = 3
-        task.diameter = 1.0             # diameter of the circle on which the robots are placed around the vs center point in meters
+        task.number_of_robots = self.number_of_robots
+        task.diameter = self.diameter             # diameter of the circle on which the robots are placed around the vs center point in meters
 
         return task
     

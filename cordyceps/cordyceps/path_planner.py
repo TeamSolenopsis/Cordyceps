@@ -10,13 +10,14 @@ from cordyceps_interfaces.msg import Path, RobotRoutes, RobotPose
 
 """ROS2 Node that generates paths for each robot in the virtual structure"""
 class PathPlanner(Node):
-    def __init__(self):
+    def __init__(self, path_filename: str):
         """Initializes the node and creates the service"""
 
         super().__init__('path_planner_service')
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_routes', self.get_routes_callback)
 
         self.MAX_SPEED = 0.2 # Maximum allowed speed from a robot.(m/s)
+        self.path_filename = path_filename
 
     def get_path_from_csv(self, start_pose:Pose, filename: str) -> np.array:
         """Generates a path for the virtual structure to follow."""
@@ -46,7 +47,7 @@ class PathPlanner(Node):
         start_pose = request.task.start_pose
     
         # TODO: Trigger nav2 to create a path for VS
-        vs_path = self.get_path_from_csv(start_pose, 'squareDiffdrive')
+        vs_path = self.get_path_from_csv(start_pose, self.path_filename)
 
         routes = RobotRoutes()
         
