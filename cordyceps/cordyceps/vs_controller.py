@@ -87,8 +87,7 @@ class ControllerService(Node):
 
                 goal = robot.calculate_carrot(min_current_point_index, route)
                 goal = np.array((goal[0], goal[1], 1)).T 
-                delta_s, delta_s_wheelbase, theta, displacement = robot.get_deltas(goal)
-
+                delta_s, delta_s_wheelbase, theta = robot.get_deltas_to_point(goal)
 
                 if abs(delta_s_wheelbase) > max_distance:
                     max_distance = delta_s_wheelbase

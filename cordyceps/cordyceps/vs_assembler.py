@@ -30,8 +30,8 @@ class Assembler(Node):
             angle = (2 * np.pi * robot_index) / task.number_of_robots
             bot_pose.x = float(np.cos(angle) * task.diameter / 2)
             bot_pose.y = float(np.sin(angle) * task.diameter / 2)
-            print(f'robot:{robot_index} x: {bot_pose.x}, y: {bot_pose.y}') 
-            response.vs_ref_pose.append(bot_pose)
+            print(f'robot {robot_index} starting pose x: {bot_pose.x}, y: {bot_pose.y}') 
+            response.transformed_bot_poses.append(bot_pose)
 
             self.add_robot(task.number_of_robots, robot_index)
 
@@ -39,7 +39,7 @@ class Assembler(Node):
     
     def add_robot(self, number_of_robots, robot_number):
         if len(self.robots) < number_of_robots:
-            robot = Robot(0,0,0,f"r{robot_number}", self)
+            robot = Robot(0, 0, 0, f"r{robot_number}", self)
             self.robots.append(robot)
         
 

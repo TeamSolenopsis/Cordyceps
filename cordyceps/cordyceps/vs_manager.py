@@ -7,8 +7,9 @@ from geometry_msgs.msg import Pose
 from .path_planner import PathPlanner
 from .vs_assembler import Assembler
 from .vs_controller import ControllerService
+from .task_publisher import TaskPublisher
 from cordyceps_interfaces.srv import CustomPathPlanner, CustomRobotAssembler, Controller, CheckThread
-from cordyceps_interfaces.msg import RobotRoutes, Task
+from cordyceps_interfaces.msg import RobotRoutes, Task 
 
 class VsManager(Node):
 
@@ -27,16 +28,6 @@ class VsManager(Node):
 
         self.task_subscriber = self.create_subscription(Task, 'vs_manager/task', self.task_callback, 10)
 
-        self.timer = self.create_timer(5.0, self.timer_callback)
-        self.pub = self.create_publisher(Task, 'vs_manager/task', 10)
-
-
-    def timer_callback(self):
-        """Callback function for the timer. Publishes a mock task to the task topic."""
-
-        task = self.construct_mock_task()
-        self.pub.publish(task)
-
     def task_callback(self, msg:Task):
         """Callback function for the task subscriber. Adds the task to the task queue.
         
@@ -45,16 +36,16 @@ class VsManager(Node):
         self.task_queue.put(msg)
 
     def task_executor(self):
-        """Function that executes the tasks in the task queue."""
+        """Executes the tasks in the task queue."""
 
         while True:
             task = self.task_queue.get(block=True)
-            vs_ref_pose = self.request_vs_ref_pose(task)
+            vs_ref_pose = self.request_transformed_bot_poses(task)
             routes = self.request_routes(task, vs_ref_pose)
             self.controll_vs(routes)            
 
     def request_routes(self, task:Task, vs_ref_pose:list):
-        """Function that requests the routes from the path planner service.
+        """Requests the routes from the path planner service.
         
         :param Task task: The task for which the routes are requested.
         :param list vs_ref_pose: The reference poses for each robot.
@@ -72,8 +63,8 @@ class VsManager(Node):
         respone = self.robot_route_client.call(req)
         return respone.robot_routes
     
-    def request_vs_ref_pose(self, task):
-        """Function that requests the reference poses for each robot from the assembler service.
+    def request_transformed_bot_poses(self, task):
+        """Requests the reference poses for each robot from the assembler service.
         
         :param Task task: The task for which the reference poses are requested.
         
@@ -85,27 +76,10 @@ class VsManager(Node):
             if self.assembler_client.wait_for_service():
                 break
         response = self.assembler_client.call(assembler_request)
-        return response.vs_ref_pose
-
-    def construct_mock_task(self) -> Task:
-        """Function that constructs a mock task.
-        
-        :returns: A mock task."""
-
-        task = Task()
-        start_pose = Pose()
-        start_pose.position.x = 0.0
-        start_pose.position.y = 0.0
-        goal_pose = Pose()
-        task.start_pose = start_pose
-        task.goal_pose = goal_pose
-        task.number_of_robots = 3
-        task.diameter = 2
-
-        return task
+        return response.transformed_bot_poses
 
     def controll_vs(self, routes: RobotRoutes):
-        """Function that calls the controller service to start the path following.
+        """Calls the controller service to start the path following.
         
         :param RobotPaths paths: The paths for each robot.
         """
@@ -130,12 +104,14 @@ def main(args=None):
     controller = ControllerService()
     planner = PathPlanner()
     assembler = Assembler()
+    task_publisher = TaskPublisher()
 
     executor = MultiThreadedExecutor()
     executor.add_node(vs_manager)
     executor.add_node(controller)
     executor.add_node(planner)
     executor.add_node(assembler)
+    executor.add_node(task_publisher)
 
     executor.spin()
     vs_manager.destroy_node()
