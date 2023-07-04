@@ -15,4 +15,5 @@ Contents
    project_overview
    design
    algorithm
+   communication
    modules
