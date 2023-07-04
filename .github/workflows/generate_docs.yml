@@ -1,0 +1,52 @@
+name: Build Docs
+
+on:
+  push:
+    branches:
+      - main  # Voeg hier eventueel andere branchnamen toe als dat nodig is
+      - develop
+  pull_request:
+    branches:
+      - main  # Voeg hier eventueel andere branchnamen toe als dat nodig is
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.6
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install sphinx
+          python -m pip install sphinx-rtd-theme
+          sudo apt-get install latexmk
+          sudo apt-get install texlive-latex-extra
+          sudo apt-get install texlive-xetex
+          sudo apt-get install texlive-fonts-extra
+          sudo apt-get install xindy
+          
+      - name: Build documentation
+        run: |
+          cd cordyceps/docs
+          make html  # Of gebruik een andere opdracht die nodig is om de documentatie te bouwen
+          make latexpdf
+      - name: Archive html documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: html documentation
+          path: cordyceps/docs/_build/html  # Het pad naar de gegenereerde HTML-documentatie
+          
+      - name: Archive latex documentation
+        uses: actions/upload-artifact@v2
+        with:
+          name: latex documentation
+          path: cordyceps/docs/_build/latex  # Het pad naar de gegenereerde latex-documentatie
