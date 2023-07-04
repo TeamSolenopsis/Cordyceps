@@ -74,7 +74,7 @@ jobs:
         run: |
           git checkout gh-pages
           rm -rf *
-          unzip /home/runner/work/Cordyceps/Cordyceps/html-documentation.zip
+          unzip /home/runner/work/Cordyceps/Cordyceps/html-documentation
           cp -R /home/runner/work/Cordyceps/Cordyceps/html-documentation/* .
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
