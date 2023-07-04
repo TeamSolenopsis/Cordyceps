@@ -66,11 +66,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: html-documentation
-
-      - name: Extract artifact
-        run: |
-          mkdir extracted-artifact
-          unzip ${{ github.workspace }}/html-documentation -d extracted-artifact
+        
+      - name: 'Echo download path'
+        run: echo ${{steps.download.outputs.download-path}}
 
       - name: Move artifact to gh-pages branch
         run: |
