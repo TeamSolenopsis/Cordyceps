@@ -8,6 +8,17 @@ The system will be able to control the robots to form a virtual structure (VS) a
 The aim of this project is to take an initial step into the realm of collaborative load transportation. 
 Through research and experimentation, we will explore the most promising and feasible methods for creating virtual structure formations.
 
+
+System Requirements
+^^^^^^^^^^^^^^^^^^^
+    * The implementation must be realized in a physical setup (as opposed to virtual).
+    * The members of the VS shall use a differential drive system for moving.
+    * The VS navigates in the shortest trajectory to the immediate 2D pose of the provided path until it reaches the last one.
+    * The VS shall be formed by 2, 3 or 4 robots.
+    * The behavior of the VS shall not change regardless of the number of members.
+    * The starting poses of each robot are random.
+    * The formation must be a regular polygon where the number of faces is equal to the number of members.
+
 Scope
 ^^^^^
 
