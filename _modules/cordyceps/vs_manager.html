@@ -92,8 +92,20 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor for the VsManager class. Initializes the ROS2 node and creates the service.&quot;&quot;&quot;</span>
-
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;vs_manager&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">declare_parameters</span><span class="p">(</span>
+            <span class="n">namespace</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="p">[</span>
+                <span class="p">(</span><span class="s1">&#39;number_of_robots&#39;</span><span class="p">,</span> <span class="n">rclpy</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;diameter&#39;</span><span class="p">,</span> <span class="n">rclpy</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">DOUBLE</span><span class="p">),</span>
+                <span class="p">(</span><span class="s1">&#39;path_filename&#39;</span><span class="p">,</span> <span class="n">rclpy</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">STRING</span><span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_robots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span><span class="s1">&#39;number_of_robots&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span><span class="s1">&#39;diameter&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span><span class="s1">&#39;path_filename&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">task_executor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -104,6 +116,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">check_thread_state_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_client</span><span class="p">(</span><span class="n">CheckThread</span><span class="p">,</span> <span class="s1">&#39;check_thread_state&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">task_subscriber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="s1">&#39;vs_manager/task&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_callback</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VsManager.get_parameters"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_robots</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_filename</span></div>
 
 <div class="viewcode-block" id="VsManager.task_callback"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.task_callback">[docs]</a>    <span class="k">def</span> <span class="nf">task_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback function for the task subscriber. Adds the task to the task queue.</span>
@@ -179,9 +194,9 @@
     <span class="n">rclpy</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
     <span class="n">vs_manager</span> <span class="o">=</span> <span class="n">VsManager</span><span class="p">()</span>
     <span class="n">controller</span> <span class="o">=</span> <span class="n">ControllerService</span><span class="p">()</span>
-    <span class="n">planner</span> <span class="o">=</span> <span class="n">PathPlanner</span><span class="p">()</span>
+    <span class="n">planner</span> <span class="o">=</span> <span class="n">PathPlanner</span><span class="p">(</span><span class="n">vs_manager</span><span class="o">.</span><span class="n">path_filename</span><span class="p">)</span>
     <span class="n">assembler</span> <span class="o">=</span> <span class="n">Assembler</span><span class="p">()</span>
-    <span class="n">task_publisher</span> <span class="o">=</span> <span class="n">TaskPublisher</span><span class="p">()</span>
+    <span class="n">task_publisher</span> <span class="o">=</span> <span class="n">TaskPublisher</span><span class="p">(</span><span class="n">vs_manager</span><span class="o">.</span><span class="n">number_of_robots</span><span class="p">,</span> <span class="n">vs_manager</span><span class="o">.</span><span class="n">diameter</span><span class="p">)</span>
 
     <span class="n">executor</span> <span class="o">=</span> <span class="n">MultiThreadedExecutor</span><span class="p">()</span>
     <span class="n">executor</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">vs_manager</span><span class="p">)</span>

@@ -87,13 +87,14 @@
 
 <span class="sd">&quot;&quot;&quot;ROS2 Node that generates paths for each robot in the virtual structure&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="PathPlanner"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.path_planner.PathPlanner">[docs]</a><span class="k">class</span> <span class="nc">PathPlanner</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the node and creates the service&quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;path_planner_service&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path_planner_service</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_service</span><span class="p">(</span><span class="n">CustomPathPlanner</span><span class="p">,</span> <span class="s1">&#39;get_robot_routes&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_routes_callback</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">MAX_SPEED</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="c1"># Maximum allowed speed from a robot.(m/s)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_filename</span> <span class="o">=</span> <span class="n">path_filename</span>
 
 <div class="viewcode-block" id="PathPlanner.get_path_from_csv"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.path_planner.PathPlanner.get_path_from_csv">[docs]</a>    <span class="k">def</span> <span class="nf">get_path_from_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_pose</span><span class="p">:</span><span class="n">Pose</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates a path for the virtual structure to follow.&quot;&quot;&quot;</span>
@@ -123,7 +124,7 @@
         <span class="n">start_pose</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">start_pose</span>
     
         <span class="c1"># TODO: Trigger nav2 to create a path for VS</span>
-        <span class="n">vs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_path_from_csv</span><span class="p">(</span><span class="n">start_pose</span><span class="p">,</span> <span class="s1">&#39;squareDiffdrive&#39;</span><span class="p">)</span>
+        <span class="n">vs_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_path_from_csv</span><span class="p">(</span><span class="n">start_pose</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_filename</span><span class="p">)</span>
 
         <span class="n">routes</span> <span class="o">=</span> <span class="n">RobotRoutes</span><span class="p">()</span>
         

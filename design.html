@@ -79,7 +79,7 @@
              
   <section id="system-overview">
 <h1>System Overview<a class="headerlink" href="#system-overview" title="Permalink to this heading"></a></h1>
-<p>In <a class="reference internal" href="#topview-image-label"><span class="std std-ref">figure 1: Topview of the software architecture</span></a>. the topview architecture of the entire software is shown.
+<p>In <a class="reference internal" href="#topview-image-label"><span class="std std-ref">figure 1: Topview of the software architecture</span></a>. An overview of the architecture of the entire software is shown.
 For this implementation a centralised architecture is chosen.
 This means that the robots are controlled by a central node, the VS manager.
 This approach is chosen for the following reasons:</p>
@@ -89,8 +89,7 @@ This approach is chosen for the following reasons:</p>
 <li><p>Minimal variability in delay</p></li>
 </ul>
 </div></blockquote>
-<p>Task is the task that will be executed by the robots.
-This will enter the VS manager where the paths for the robots are calculated and the robots are assembled.
+<p>A Task is an object which contains information about the task that should be executed. For example, the number of robots and the diameter of the VS.
 The VS manager communicates with the robots via ROS topics.</p>
 <figure class="align-center" id="topview-image-label">
 <img alt="_images/TopOverview.png" src="_images/TopOverview.png" />
@@ -98,8 +97,7 @@ The VS manager communicates with the robots via ROS topics.</p>
 <p><span class="caption-text">figure 1: Topview of the software architecture</span><a class="headerlink" href="#topview-image-label" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
-<p>In figure <a class="reference internal" href="#overviewmanager-image-label"><span class="std std-ref">figure 2: Overview of the virtual structure manager</span></a> the architecture of the virtual structure manager is shown.
-The dotted lines indicate non local communication.</p>
+<p>In figure <a class="reference internal" href="#overviewmanager-image-label"><span class="std std-ref">figure 2: Overview of the virtual structure manager</span></a> the architecture of the virtual structure manager is shown.</p>
 <p>The vs_manager is the main node, it is responsible for receiving the task and giving the other nodes the correct information based on the incomming task.</p>
 <p>The pathplanner is responsible for calculating the route for each of the robots.
 The pathplanner can for example use nav2 (or any other pathplanner) the vs path, based on this path the pathplanner calculates the route for each of the robots.</p>
