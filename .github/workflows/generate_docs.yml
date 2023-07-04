@@ -73,7 +73,9 @@ jobs:
       - name: Move artifact to gh-pages branch
         run: |
           git checkout gh-pages
-          cp -R html-documentation/* .
+          rm -rf *
+          unzip /home/runner/work/Cordyceps/Cordyceps/html-documentation.zip
+          cp -R /home/runner/work/Cordyceps/Cordyceps/html-documentation/* .
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git add .
