@@ -1,5 +1,5 @@
 Algorithm 
-^^^^^^^^^^^^^^
+--------------
 
 The Cordyceps controller implements a variant of the Pure Pursuit algorithm.
 The Pure Pursuit algorithm is a path tracking algorithm used for robotics and autonomous navigation.
