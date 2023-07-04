@@ -102,9 +102,9 @@ def main(args=None):
     rclpy.init(args=args)
     vs_manager = VsManager()
     controller = ControllerService()
-    planner = PathPlanner('squareDiffdrive')
+    planner = PathPlanner(path_filename='squareDiffdrive')
     assembler = Assembler()
-    task_publisher = TaskPublisher()
+    task_publisher = TaskPublisher(number_of_robots=3, diameter=1.0)
 
     executor = MultiThreadedExecutor()
     executor.add_node(vs_manager)
