@@ -16,5 +16,3 @@ Definitions
     * Point - X and Y coordinates
     * Pose - Point and orientation
     * Route - Array of points
-
-TODO: add more definitions and abbreviations. And check if they are correct.

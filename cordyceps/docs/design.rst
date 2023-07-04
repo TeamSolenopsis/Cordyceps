@@ -5,8 +5,8 @@ In :ref:`topview-image-label`. the topview architecture of the entire software i
 For this implementation a centralised architecture is chosen. 
 This means that the robots are controlled by a central node, the VS manager.
 This approach is chosen for the following reasons:
-* It is easier to implement
-* Minimal variability in delay
+   * It is easier to implement
+   * Minimal variability in delay
 
 Task is the task that will be executed by the robots.
 This will enter the VS manager where the paths for the robots are calculated and the robots are assembled. 

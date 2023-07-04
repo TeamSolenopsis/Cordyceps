@@ -10,7 +10,7 @@ Through research and experimentation, we will explore the most promising and fea
 
 The project will involve the following key components:
 
-    * Robot Hardware: Turtlebot3 burger and Turtlebot4 
+    * Robot Hardware: Turtlebot3 burger
 
     * Software Development
 

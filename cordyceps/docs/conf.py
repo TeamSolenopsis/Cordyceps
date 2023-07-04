@@ -12,7 +12,7 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 project = 'Cordyceps'
-copyright = '2023, Mart Coppelmans, Sara van Eersel, Jordy Espina Font, Thomas Udo, Cas Leeflang'
+copyright = '2023, Mart Coppelmans, Sara van Eersel, Jordi Espina Font, Thomas Udo, Cas Leeflang'
 author = 'Mart Coppelmans, Sara van Eersel, Jordi Espina Font, Thomas Udo, Cas Leeflang'
 
 # -- General configuration ---------------------------------------------------
@@ -42,11 +42,11 @@ latex_elements = {
             \par\vspace{2cm}
             {\Large Mart Coppelmans,}
             {\Large Sara van Eersel,}
-            {\Large Jordy Espina Font,}
+            {\Large Jordi Espina Font,}
             {\Large Thomas Udo and}
             {\Large Cas Leeflang}
             \par\vfill
-            {\Large June 2023}
+            {\Large July 2023}
         \end{titlepage}
         \pagenumbering{arabic}
     '''
