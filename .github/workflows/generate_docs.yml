@@ -43,7 +43,7 @@ jobs:
       - name: Archive html documentation
         uses: actions/upload-artifact@v2
         with:
-          name: html documentation
+          name: html-documentation
           path: cordyceps/docs/_build/html  # Het pad naar de gegenereerde HTML-documentatie
           
       - name: Archive latex documentation
