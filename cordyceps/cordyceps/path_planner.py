@@ -16,15 +16,12 @@ class PathPlanner(Node):
         super().__init__('path_planner_service')
         self.path_planner_service = self.create_service(CustomPathPlanner, 'get_robot_routes', self.get_routes_callback)
 
-        self.RESOLUTION = 10 # The amount of points in which the routes will be split.
         self.MAX_SPEED = 0.2 # Maximum allowed speed from a robot.(m/s)
 
-        self.angle = 0.0  # rad
-
-    def generate_vs_path_mock(self, start_pose:Pose) -> np.array:
+    def get_path_from_csv(self, start_pose:Pose, filename: str) -> np.array:
         """Generates a path for the virtual structure to follow."""
 
-        file_name = "square1mfix.csv"
+        file_name = f"{filename}.csv"
         file_dir = os.path.dirname(os.path.realpath('__file__'))
         file_path = os.path.join(file_dir, "src/Cordyceps/cordyceps/resource/", file_name)
         
@@ -33,6 +30,7 @@ class PathPlanner(Node):
         data = list(csv.reader(file, delimiter=','))
         file.close()
         
+        # Convert to float
         for i in range(len(data)):
             data[i] = [float(j) for j in data[i]]
         return data
@@ -48,7 +46,7 @@ class PathPlanner(Node):
         start_pose = request.task.start_pose
     
         # TODO: Trigger nav2 to create a path for VS
-        vs_path = self.generate_vs_path_mock(start_pose)
+        vs_path = self.get_path_from_csv(start_pose, 'squareDiffdrive')
 
         routes = RobotRoutes()
         

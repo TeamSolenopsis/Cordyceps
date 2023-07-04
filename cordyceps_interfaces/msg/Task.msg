@@ -1,4 +1,4 @@
 geometry_msgs/Pose start_pose
 geometry_msgs/Pose goal_pose
 int64 number_of_robots
-int64 diameter
+float32 diameter

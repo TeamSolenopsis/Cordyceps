@@ -40,7 +40,8 @@ class Robot:
         self.prev_point_index = index
 
     def odom_callback(self, msg: Odometry):
-        """updates the pose of the robot
+        """updates the pose of the robot.
+        Transforms from quaternion to euler angles
         
         :param Odometry msg: Odometry message
         """
@@ -82,13 +83,15 @@ class Robot:
         :return: the new goal point"""
 
         lookahead_index = projected_point_index + self.LOOKAHEAD
-        if lookahead_index >= len(route):
+        
+        # Constraint to prevent index out of bounds
+        if lookahead_index >= len(route):       
             lookahead_index = len(route) - 1
         carrot = route[lookahead_index]
 
         return carrot
 
-    def get_point_ref_to_robot_frame(self, point: np.array([[float, float, float]]).T):
+    def transform_pt_to_bot_frame(self, point: np.array([[float, float, float]]).T):
         """given a point, returns the point in the robot frame  
         
         :param np.array([[float,float,float]]).T point: point to be converted
@@ -112,19 +115,19 @@ class Robot:
             new_point = np.matmul(rot_matrix, new_point)
             return new_point
 
-    def get_deltas(self, goal: np.array([[float, float, float]]).T) -> tuple[float, float, float]:
-        """given a goal point, returns the deltas
+    def get_deltas_to_point(self, goal: np.array([[float, float, float]]).T) -> tuple[float, float, float]:
+        """given a goal point, returns the deltas to the goal point
 
         :param np.array([[float,float,float]]).T goal: goal point
-        :return: delta s, delta theta, displacement
+        :return: delta s, delta_s_wheelbase, delta theta
         """
 
-        goal = self.get_point_ref_to_robot_frame(goal)
+        goal = self.transform_pt_to_bot_frame(goal)
         
         displacement = np.hypot(goal[0], goal[1], dtype=float)
 
         if goal[1] == 0:
-            return displacement, displacement, 0.0, displacement
+            return displacement, displacement, 0.0
 
         radius = displacement**2 / (2 * goal[1])
         
@@ -134,7 +137,7 @@ class Robot:
         delta_s = delta_theta * radius 
         delta_s_wheelbase = delta_theta_wheelbase * (radius + ((self.wheelbase * np.sign(radius)) / 2))
 
-        return delta_s, delta_s_wheelbase,  delta_theta, displacement
+        return delta_s, delta_s_wheelbase, delta_theta
 
     def publish_velocity(self, lin_vel: float, ang_vel: float):
         """publishes the velocity of the robot
