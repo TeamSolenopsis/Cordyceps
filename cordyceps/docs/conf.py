@@ -18,7 +18,7 @@ author = 'Mart Coppelmans, Sara van Eersel, Jordi Espina Font, Thomas Udo, Cas L
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.todo", "sphinx.ext.githubpages", "sphinx.ext.autodoc", "sphinx.ext.viewcode"]
+extensions = ["sphinx.ext.todo", "sphinx.ext.githubpages", "sphinx.ext.autodoc", "sphinx.ext.viewcode", 'sphinxcontrib.youtube']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
