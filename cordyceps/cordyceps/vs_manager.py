@@ -15,8 +15,20 @@ class VsManager(Node):
 
     def __init__(self):
         """Constructor for the VsManager class. Initializes the ROS2 node and creates the service."""
-
         super().__init__('vs_manager')
+        self.declare_parameters(
+            namespace='',
+            parameters=[
+                ('number_of_robots', rclpy.Parameter.Type.INTEGER),
+                ('diameter', rclpy.Parameter.Type.DOUBLE),
+                ('path_filename', rclpy.Parameter.Type.STRING),
+            ]
+        )
+
+        self.number_of_robots = self.get_parameter('number_of_robots').value
+        self.diameter = self.get_parameter('diameter').value
+        self.path_filename = self.get_parameter('path_filename').value
+
         self.task_queue = Queue(1)
         self.task_thread = threading.Thread(target=self.task_executor)
         self.task_thread.start()
@@ -27,6 +39,9 @@ class VsManager(Node):
         self.check_thread_state_client = self.create_client(CheckThread, 'check_thread_state')
 
         self.task_subscriber = self.create_subscription(Task, 'vs_manager/task', self.task_callback, 10)
+
+    def get_parameters(self):
+        return self.number_of_robots, self.diameter, self.path_filename
 
     def task_callback(self, msg:Task):
         """Callback function for the task subscriber. Adds the task to the task queue.
@@ -102,9 +117,9 @@ def main(args=None):
     rclpy.init(args=args)
     vs_manager = VsManager()
     controller = ControllerService()
-    planner = PathPlanner(path_filename='squareDiffdrive')
+    planner = PathPlanner(vs_manager.path_filename)
     assembler = Assembler()
-    task_publisher = TaskPublisher(number_of_robots=3, diameter=1.0)
+    task_publisher = TaskPublisher(vs_manager.number_of_robots, vs_manager.diameter)
 
     executor = MultiThreadedExecutor()
     executor.add_node(vs_manager)
