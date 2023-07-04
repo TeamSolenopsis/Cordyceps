@@ -72,7 +72,7 @@ jobs:
 
       - name: Move artifact to gh-pages branch
         run: |
-          git checkout -b gh-pages
+          git checkout gh-pages
           cp -R extracted-artifact/* .
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
