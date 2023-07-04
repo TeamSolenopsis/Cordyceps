@@ -102,7 +102,7 @@ def main(args=None):
     rclpy.init(args=args)
     vs_manager = VsManager()
     controller = ControllerService()
-    planner = PathPlanner()
+    planner = PathPlanner('squareDiffdrive')
     assembler = Assembler()
     task_publisher = TaskPublisher()
 
