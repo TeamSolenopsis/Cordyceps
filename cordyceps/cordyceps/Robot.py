@@ -30,6 +30,7 @@ class Robot:
 
         self.first_odom = True
 
+        # These offsets are added programatically to the odom values to make the robots start at the correct position
         if (self.name == 'r0'):
             self.odom_offset_x = 0.20
             self.odom_offset_y = 0.0
@@ -78,6 +79,8 @@ class Robot:
         
         :param Odometry msg: Odometry message
         """
+
+        # First time odometry is received, set the offset
         if self.first_odom == True: 
             self.first_odom = False
             self.odom_offset_x -= msg.pose.pose.position.x
