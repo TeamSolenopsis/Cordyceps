@@ -9,6 +9,7 @@ Abbreviations
     * MQTT - Message Queuing Telemetry Transport
     * ROS - Robot Operating System
     * VS - Virtual Structure
+    * AGV - Automated Guided Vehicle
 
 Definitions
 ^^^^^^^^^^^
