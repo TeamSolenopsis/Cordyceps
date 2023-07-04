@@ -47,6 +47,8 @@
 <li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">System Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Interfaces</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Code documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">cordyceps package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#class">Class</a><ul>
@@ -119,29 +121,15 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.Robot.Robot.get_deltas">
-<span class="sig-name descname"><span class="pre">get_deltas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">goal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.array.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/cordyceps/Robot.html#Robot.get_deltas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.Robot.Robot.get_deltas" title="Permalink to this definition"></a></dt>
-<dd><p>given a goal point, returns the deltas</p>
+<dt class="sig sig-object py" id="cordyceps.Robot.Robot.get_deltas_to_point">
+<span class="sig-name descname"><span class="pre">get_deltas_to_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">goal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.array.T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/cordyceps/Robot.html#Robot.get_deltas_to_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.Robot.Robot.get_deltas_to_point" title="Permalink to this definition"></a></dt>
+<dd><p>given a goal point, returns the deltas to the goal point</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>goal</strong> (<em>np.array</em><em>(</em><em>[</em><em>[</em><em>float</em><em>,</em><em>float</em><em>,</em><em>float</em><em>]</em><em>]</em><em>)</em><em>.T</em>) – goal point</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>delta s, delta theta, displacement</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.Robot.Robot.get_point_ref_to_robot_frame">
-<span class="sig-name descname"><span class="pre">get_point_ref_to_robot_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.array.T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/Robot.html#Robot.get_point_ref_to_robot_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.Robot.Robot.get_point_ref_to_robot_frame" title="Permalink to this definition"></a></dt>
-<dd><p>given a point, returns the point in the robot frame</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>point</strong> (<em>np.array</em><em>(</em><em>[</em><em>[</em><em>float</em><em>,</em><em>float</em><em>,</em><em>float</em><em>]</em><em>]</em><em>)</em><em>.T</em>) – point to be converted</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>point in the robot frame</p>
+<dd class="field-even"><p>delta s, delta_s_wheelbase, delta theta</p>
 </dd>
 </dl>
 </dd></dl>
@@ -160,7 +148,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="cordyceps.Robot.Robot.odom_callback">
 <span class="sig-name descname"><span class="pre">odom_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">nav_msgs.msg.Odometry</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/Robot.html#Robot.odom_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.Robot.Robot.odom_callback" title="Permalink to this definition"></a></dt>
-<dd><p>updates the pose of the robot</p>
+<dd><p>updates the pose of the robot.
+Transforms from quaternion to euler angles</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>msg</strong> (<em>Odometry</em>) – Odometry message</p>
@@ -207,6 +196,20 @@
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="cordyceps.Robot.Robot.transform_pt_to_bot_frame">
+<span class="sig-name descname"><span class="pre">transform_pt_to_bot_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.array.T</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/Robot.html#Robot.transform_pt_to_bot_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.Robot.Robot.transform_pt_to_bot_frame" title="Permalink to this definition"></a></dt>
+<dd><p>given a point, returns the point in the robot frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>point</strong> (<em>np.array</em><em>(</em><em>[</em><em>[</em><em>float</em><em>,</em><em>float</em><em>,</em><em>float</em><em>]</em><em>]</em><em>)</em><em>.T</em>) – point to be converted</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>point in the robot frame</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -220,8 +223,8 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cordyceps.path_planner.</span></span><span class="sig-name descname"><span class="pre">PathPlanner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.path_planner.PathPlanner.generate_vs_path_mock">
-<span class="sig-name descname"><span class="pre">generate_vs_path_mock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">geometry_msgs.msg.Pose</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.array</span></span></span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner.generate_vs_path_mock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner.generate_vs_path_mock" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="cordyceps.path_planner.PathPlanner.get_path_from_csv">
+<span class="sig-name descname"><span class="pre">get_path_from_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">geometry_msgs.msg.Pose</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.array</span></span></span><a class="reference internal" href="_modules/cordyceps/path_planner.html#PathPlanner.get_path_from_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.path_planner.PathPlanner.get_path_from_csv" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a path for the virtual structure to follow.</p>
 </dd></dl>
 
@@ -364,20 +367,9 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cordyceps.vs_manager.</span></span><span class="sig-name descname"><span class="pre">VsManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.construct_mock_task">
-<span class="sig-name descname"><span class="pre">construct_mock_task</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">cordyceps_interfaces.msg.Task</span></span></span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.construct_mock_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.construct_mock_task" title="Permalink to this definition"></a></dt>
-<dd><p>Function that constructs a mock task.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A mock task.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.controll_vs">
 <span class="sig-name descname"><span class="pre">controll_vs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.RobotRoutes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.controll_vs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.controll_vs" title="Permalink to this definition"></a></dt>
-<dd><p>Function that calls the controller service to start the path following.</p>
+<dd><p>Calls the controller service to start the path following.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>paths</strong> (<em>RobotPaths</em>) – The paths for each robot.</p>
@@ -388,7 +380,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.request_routes">
 <span class="sig-name descname"><span class="pre">request_routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">cordyceps_interfaces.msg.Task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vs_ref_pose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.request_routes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.request_routes" title="Permalink to this definition"></a></dt>
-<dd><p>Function that requests the routes from the path planner service.</p>
+<dd><p>Requests the routes from the path planner service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -403,9 +395,9 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.request_vs_ref_pose">
-<span class="sig-name descname"><span class="pre">request_vs_ref_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.request_vs_ref_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.request_vs_ref_pose" title="Permalink to this definition"></a></dt>
-<dd><p>Function that requests the reference poses for each robot from the assembler service.</p>
+<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.request_transformed_bot_poses">
+<span class="sig-name descname"><span class="pre">request_transformed_bot_poses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.request_transformed_bot_poses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.request_transformed_bot_poses" title="Permalink to this definition"></a></dt>
+<dd><p>Requests the reference poses for each robot from the assembler service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>task</strong> (<em>Task</em>) – The task for which the reference poses are requested.</p>
@@ -430,13 +422,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.task_executor">
 <span class="sig-name descname"><span class="pre">task_executor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.task_executor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.task_executor" title="Permalink to this definition"></a></dt>
-<dd><p>Function that executes the tasks in the task queue.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cordyceps.vs_manager.VsManager.timer_callback">
-<span class="sig-name descname"><span class="pre">timer_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cordyceps/vs_manager.html#VsManager.timer_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#cordyceps.vs_manager.VsManager.timer_callback" title="Permalink to this definition"></a></dt>
-<dd><p>Callback function for the timer. Publishes a mock task to the task topic.</p>
+<dd><p>Executes the tasks in the task queue.</p>
 </dd></dl>
 
 </dd></dl>
@@ -460,7 +446,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordy Espina Font, Thomas Udo, Cas Leeflang.</p>
+    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordi Espina Font, Thomas Udo, Cas Leeflang.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

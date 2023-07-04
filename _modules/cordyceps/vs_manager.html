@@ -45,6 +45,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../terminology.html">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">System Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../communication.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">Code documentation</a></li>
 </ul>
 
@@ -82,8 +84,9 @@
 <span class="kn">from</span> <span class="nn">.path_planner</span> <span class="kn">import</span> <span class="n">PathPlanner</span>
 <span class="kn">from</span> <span class="nn">.vs_assembler</span> <span class="kn">import</span> <span class="n">Assembler</span>
 <span class="kn">from</span> <span class="nn">.vs_controller</span> <span class="kn">import</span> <span class="n">ControllerService</span>
+<span class="kn">from</span> <span class="nn">.task_publisher</span> <span class="kn">import</span> <span class="n">TaskPublisher</span>
 <span class="kn">from</span> <span class="nn">cordyceps_interfaces.srv</span> <span class="kn">import</span> <span class="n">CustomPathPlanner</span><span class="p">,</span> <span class="n">CustomRobotAssembler</span><span class="p">,</span> <span class="n">Controller</span><span class="p">,</span> <span class="n">CheckThread</span>
-<span class="kn">from</span> <span class="nn">cordyceps_interfaces.msg</span> <span class="kn">import</span> <span class="n">RobotRoutes</span><span class="p">,</span> <span class="n">Task</span>
+<span class="kn">from</span> <span class="nn">cordyceps_interfaces.msg</span> <span class="kn">import</span> <span class="n">RobotRoutes</span><span class="p">,</span> <span class="n">Task</span> 
 
 <div class="viewcode-block" id="VsManager"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager">[docs]</a><span class="k">class</span> <span class="nc">VsManager</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
 
@@ -102,16 +105,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">task_subscriber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="s1">&#39;vs_manager/task&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_callback</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_timer</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timer_callback</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_publisher</span><span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="s1">&#39;vs_manager/task&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="VsManager.timer_callback"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.timer_callback">[docs]</a>    <span class="k">def</span> <span class="nf">timer_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback function for the timer. Publishes a mock task to the task topic.&quot;&quot;&quot;</span>
-
-        <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_mock_task</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">task</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="VsManager.task_callback"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.task_callback">[docs]</a>    <span class="k">def</span> <span class="nf">task_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span><span class="n">Task</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback function for the task subscriber. Adds the task to the task queue.</span>
 <span class="sd">        </span>
@@ -120,16 +113,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VsManager.task_executor"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.task_executor">[docs]</a>    <span class="k">def</span> <span class="nf">task_executor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function that executes the tasks in the task queue.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes the tasks in the task queue.&quot;&quot;&quot;</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">vs_ref_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_vs_ref_pose</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+            <span class="n">vs_ref_pose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_transformed_bot_poses</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
             <span class="n">routes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_routes</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">vs_ref_pose</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">controll_vs</span><span class="p">(</span><span class="n">routes</span><span class="p">)</span>            </div>
 
 <div class="viewcode-block" id="VsManager.request_routes"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.request_routes">[docs]</a>    <span class="k">def</span> <span class="nf">request_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span><span class="n">Task</span><span class="p">,</span> <span class="n">vs_ref_pose</span><span class="p">:</span><span class="nb">list</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function that requests the routes from the path planner service.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Requests the routes from the path planner service.</span>
 <span class="sd">        </span>
 <span class="sd">        :param Task task: The task for which the routes are requested.</span>
 <span class="sd">        :param list vs_ref_pose: The reference poses for each robot.</span>
@@ -147,8 +140,8 @@
         <span class="n">respone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot_route_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">respone</span><span class="o">.</span><span class="n">robot_routes</span></div>
     
-<div class="viewcode-block" id="VsManager.request_vs_ref_pose"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.request_vs_ref_pose">[docs]</a>    <span class="k">def</span> <span class="nf">request_vs_ref_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function that requests the reference poses for each robot from the assembler service.</span>
+<div class="viewcode-block" id="VsManager.request_transformed_bot_poses"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.request_transformed_bot_poses">[docs]</a>    <span class="k">def</span> <span class="nf">request_transformed_bot_poses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Requests the reference poses for each robot from the assembler service.</span>
 <span class="sd">        </span>
 <span class="sd">        :param Task task: The task for which the reference poses are requested.</span>
 <span class="sd">        </span>
@@ -160,27 +153,10 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">assembler_client</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">():</span>
                 <span class="k">break</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">assembler_client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">assembler_request</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">vs_ref_pose</span></div>
-
-<div class="viewcode-block" id="VsManager.construct_mock_task"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.construct_mock_task">[docs]</a>    <span class="k">def</span> <span class="nf">construct_mock_task</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Task</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function that constructs a mock task.</span>
-<span class="sd">        </span>
-<span class="sd">        :returns: A mock task.&quot;&quot;&quot;</span>
-
-        <span class="n">task</span> <span class="o">=</span> <span class="n">Task</span><span class="p">()</span>
-        <span class="n">start_pose</span> <span class="o">=</span> <span class="n">Pose</span><span class="p">()</span>
-        <span class="n">start_pose</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">start_pose</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="n">goal_pose</span> <span class="o">=</span> <span class="n">Pose</span><span class="p">()</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">start_pose</span> <span class="o">=</span> <span class="n">start_pose</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">goal_pose</span> <span class="o">=</span> <span class="n">goal_pose</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">number_of_robots</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="mi">2</span>
-
-        <span class="k">return</span> <span class="n">task</span></div>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">transformed_bot_poses</span></div>
 
 <div class="viewcode-block" id="VsManager.controll_vs"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_manager.VsManager.controll_vs">[docs]</a>    <span class="k">def</span> <span class="nf">controll_vs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="p">:</span> <span class="n">RobotRoutes</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function that calls the controller service to start the path following.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calls the controller service to start the path following.</span>
 <span class="sd">        </span>
 <span class="sd">        :param RobotPaths paths: The paths for each robot.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -205,12 +181,14 @@
     <span class="n">controller</span> <span class="o">=</span> <span class="n">ControllerService</span><span class="p">()</span>
     <span class="n">planner</span> <span class="o">=</span> <span class="n">PathPlanner</span><span class="p">()</span>
     <span class="n">assembler</span> <span class="o">=</span> <span class="n">Assembler</span><span class="p">()</span>
+    <span class="n">task_publisher</span> <span class="o">=</span> <span class="n">TaskPublisher</span><span class="p">()</span>
 
     <span class="n">executor</span> <span class="o">=</span> <span class="n">MultiThreadedExecutor</span><span class="p">()</span>
     <span class="n">executor</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">vs_manager</span><span class="p">)</span>
     <span class="n">executor</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">controller</span><span class="p">)</span>
     <span class="n">executor</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">planner</span><span class="p">)</span>
     <span class="n">executor</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">assembler</span><span class="p">)</span>
+    <span class="n">executor</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">task_publisher</span><span class="p">)</span>
 
     <span class="n">executor</span><span class="o">.</span><span class="n">spin</span><span class="p">()</span>
     <span class="n">vs_manager</span><span class="o">.</span><span class="n">destroy_node</span><span class="p">()</span>
@@ -230,7 +208,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordy Espina Font, Thomas Udo, Cas Leeflang.</p>
+    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordi Espina Font, Thomas Udo, Cas Leeflang.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

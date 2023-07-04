@@ -5,7 +5,7 @@ Class
 ----------
 
 Robot Class
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
 
 .. automodule:: cordyceps.Robot
    :members:
@@ -16,7 +16,7 @@ Node
 ----------
 
 path\_planner Node
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 .. automodule:: cordyceps.path_planner
    :members:
@@ -24,7 +24,7 @@ path\_planner Node
    :show-inheritance:
 
 vs\_assembler Node
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 .. automodule:: cordyceps.vs_assembler
    :members:
@@ -32,15 +32,14 @@ vs\_assembler Node
    :show-inheritance:
 
 vs\_controller Node
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+^^^^^^^^^^^^^^^^^^^
 .. automodule:: cordyceps.vs_controller
    :members:
    :undoc-members:
    :show-inheritance:
 
 vs\_manager Node
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 .. automodule:: cordyceps.vs_manager
    :members:

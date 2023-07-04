@@ -45,6 +45,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../terminology.html">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">System Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../communication.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">Code documentation</a></li>
 </ul>
 
@@ -115,7 +117,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prev_point_index</span> <span class="o">=</span> <span class="n">index</span></div>
 
 <div class="viewcode-block" id="Robot.odom_callback"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.odom_callback">[docs]</a>    <span class="k">def</span> <span class="nf">odom_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="n">Odometry</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;updates the pose of the robot</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;updates the pose of the robot.</span>
+<span class="sd">        Transforms from quaternion to euler angles</span>
 <span class="sd">        </span>
 <span class="sd">        :param Odometry msg: Odometry message</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -157,13 +160,15 @@
 <span class="sd">        :return: the new goal point&quot;&quot;&quot;</span>
 
         <span class="n">lookahead_index</span> <span class="o">=</span> <span class="n">projected_point_index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOOKAHEAD</span>
-        <span class="k">if</span> <span class="n">lookahead_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">):</span>
+        
+        <span class="c1"># Constraint to prevent index out of bounds</span>
+        <span class="k">if</span> <span class="n">lookahead_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">):</span>       
             <span class="n">lookahead_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">carrot</span> <span class="o">=</span> <span class="n">route</span><span class="p">[</span><span class="n">lookahead_index</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">carrot</span></div>
 
-<div class="viewcode-block" id="Robot.get_point_ref_to_robot_frame"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.get_point_ref_to_robot_frame">[docs]</a>    <span class="k">def</span> <span class="nf">get_point_ref_to_robot_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+<div class="viewcode-block" id="Robot.transform_pt_to_bot_frame"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.transform_pt_to_bot_frame">[docs]</a>    <span class="k">def</span> <span class="nf">transform_pt_to_bot_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;given a point, returns the point in the robot frame  </span>
 <span class="sd">        </span>
 <span class="sd">        :param np.array([[float,float,float]]).T point: point to be converted</span>
@@ -187,19 +192,19 @@
             <span class="n">new_point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">rot_matrix</span><span class="p">,</span> <span class="n">new_point</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">new_point</span></div>
 
-<div class="viewcode-block" id="Robot.get_deltas"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.get_deltas">[docs]</a>    <span class="k">def</span> <span class="nf">get_deltas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;given a goal point, returns the deltas</span>
+<div class="viewcode-block" id="Robot.get_deltas_to_point"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.get_deltas_to_point">[docs]</a>    <span class="k">def</span> <span class="nf">get_deltas_to_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;given a goal point, returns the deltas to the goal point</span>
 
 <span class="sd">        :param np.array([[float,float,float]]).T goal: goal point</span>
-<span class="sd">        :return: delta s, delta theta, displacement</span>
+<span class="sd">        :return: delta s, delta_s_wheelbase, delta theta</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">goal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_point_ref_to_robot_frame</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
+        <span class="n">goal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_pt_to_bot_frame</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
         
         <span class="n">displacement</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">goal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">goal</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">goal</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">displacement</span><span class="p">,</span> <span class="n">displacement</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">displacement</span>
+            <span class="k">return</span> <span class="n">displacement</span><span class="p">,</span> <span class="n">displacement</span><span class="p">,</span> <span class="mf">0.0</span>
 
         <span class="n">radius</span> <span class="o">=</span> <span class="n">displacement</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">goal</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         
@@ -209,7 +214,7 @@
         <span class="n">delta_s</span> <span class="o">=</span> <span class="n">delta_theta</span> <span class="o">*</span> <span class="n">radius</span> 
         <span class="n">delta_s_wheelbase</span> <span class="o">=</span> <span class="n">delta_theta_wheelbase</span> <span class="o">*</span> <span class="p">(</span><span class="n">radius</span> <span class="o">+</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">wheelbase</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">radius</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">delta_s</span><span class="p">,</span> <span class="n">delta_s_wheelbase</span><span class="p">,</span>  <span class="n">delta_theta</span><span class="p">,</span> <span class="n">displacement</span></div>
+        <span class="k">return</span> <span class="n">delta_s</span><span class="p">,</span> <span class="n">delta_s_wheelbase</span><span class="p">,</span> <span class="n">delta_theta</span></div>
 
 <div class="viewcode-block" id="Robot.publish_velocity"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.Robot.Robot.publish_velocity">[docs]</a>    <span class="k">def</span> <span class="nf">publish_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lin_vel</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">ang_vel</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;publishes the velocity of the robot</span>
@@ -241,7 +246,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordy Espina Font, Thomas Udo, Cas Leeflang.</p>
+    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordi Espina Font, Thomas Udo, Cas Leeflang.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

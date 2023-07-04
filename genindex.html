@@ -45,6 +45,8 @@
 <li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">System Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="communication.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Code documentation</a></li>
 </ul>
 
@@ -109,8 +111,6 @@
 </li>
       <li><a href="cordyceps.html#cordyceps.vs_controller.ControllerService.check_thread_state_callback">check_thread_state_callback() (cordyceps.vs_controller.ControllerService method)</a>
 </li>
-      <li><a href="cordyceps.html#cordyceps.vs_manager.VsManager.construct_mock_task">construct_mock_task() (cordyceps.vs_manager.VsManager method)</a>
-</li>
       <li><a href="cordyceps.html#cordyceps.vs_manager.VsManager.controll_vs">controll_vs() (cordyceps.vs_manager.VsManager method)</a>
 </li>
       <li><a href="cordyceps.html#cordyceps.vs_controller.ControllerService">ControllerService (class in cordyceps.vs_controller)</a>
@@ -166,11 +166,9 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="cordyceps.html#cordyceps.path_planner.PathPlanner.generate_vs_path_mock">generate_vs_path_mock() (cordyceps.path_planner.PathPlanner method)</a>
+      <li><a href="cordyceps.html#cordyceps.Robot.Robot.get_deltas_to_point">get_deltas_to_point() (cordyceps.Robot.Robot method)</a>
 </li>
-      <li><a href="cordyceps.html#cordyceps.Robot.Robot.get_deltas">get_deltas() (cordyceps.Robot.Robot method)</a>
-</li>
-      <li><a href="cordyceps.html#cordyceps.Robot.Robot.get_point_ref_to_robot_frame">get_point_ref_to_robot_frame() (cordyceps.Robot.Robot method)</a>
+      <li><a href="cordyceps.html#cordyceps.path_planner.PathPlanner.get_path_from_csv">get_path_from_csv() (cordyceps.path_planner.PathPlanner method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -243,7 +241,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="cordyceps.html#cordyceps.vs_manager.VsManager.request_vs_ref_pose">request_vs_ref_pose() (cordyceps.vs_manager.VsManager method)</a>
+      <li><a href="cordyceps.html#cordyceps.vs_manager.VsManager.request_transformed_bot_poses">request_transformed_bot_poses() (cordyceps.vs_manager.VsManager method)</a>
 </li>
       <li><a href="cordyceps.html#cordyceps.Robot.Robot">Robot (class in cordyceps.Robot)</a>
 </li>
@@ -271,7 +269,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="cordyceps.html#cordyceps.vs_manager.VsManager.task_executor">task_executor() (cordyceps.vs_manager.VsManager method)</a>
 </li>
-      <li><a href="cordyceps.html#cordyceps.vs_manager.VsManager.timer_callback">timer_callback() (cordyceps.vs_manager.VsManager method)</a>
+      <li><a href="cordyceps.html#cordyceps.Robot.Robot.transform_pt_to_bot_frame">transform_pt_to_bot_frame() (cordyceps.Robot.Robot method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -293,7 +291,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordy Espina Font, Thomas Udo, Cas Leeflang.</p>
+    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordi Espina Font, Thomas Udo, Cas Leeflang.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -45,6 +45,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../terminology.html">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../project_overview.html">Project Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../design.html">System Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../communication.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">Code documentation</a></li>
 </ul>
 
@@ -105,8 +107,8 @@
             <span class="n">angle</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">robot_index</span><span class="p">)</span> <span class="o">/</span> <span class="n">task</span><span class="o">.</span><span class="n">number_of_robots</span>
             <span class="n">bot_pose</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">task</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">bot_pose</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">task</span><span class="o">.</span><span class="n">diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;robot:</span><span class="si">{</span><span class="n">robot_index</span><span class="si">}</span><span class="s1"> x: </span><span class="si">{</span><span class="n">bot_pose</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s1">, y: </span><span class="si">{</span><span class="n">bot_pose</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> 
-            <span class="n">response</span><span class="o">.</span><span class="n">vs_ref_pose</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bot_pose</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;robot </span><span class="si">{</span><span class="n">robot_index</span><span class="si">}</span><span class="s1"> starting pose x: </span><span class="si">{</span><span class="n">bot_pose</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s1">, y: </span><span class="si">{</span><span class="n">bot_pose</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> 
+            <span class="n">response</span><span class="o">.</span><span class="n">transformed_bot_poses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bot_pose</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">add_robot</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">number_of_robots</span><span class="p">,</span> <span class="n">robot_index</span><span class="p">)</span>
 
@@ -114,7 +116,7 @@
     
 <div class="viewcode-block" id="Assembler.add_robot"><a class="viewcode-back" href="../../cordyceps.html#cordyceps.vs_assembler.Assembler.add_robot">[docs]</a>    <span class="k">def</span> <span class="nf">add_robot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number_of_robots</span><span class="p">,</span> <span class="n">robot_number</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robots</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">number_of_robots</span><span class="p">:</span>
-            <span class="n">robot</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="sa">f</span><span class="s2">&quot;r</span><span class="si">{</span><span class="n">robot_number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">robot</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;r</span><span class="si">{</span><span class="n">robot_number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">robots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">robot</span><span class="p">)</span></div></div>
         
 
@@ -137,7 +139,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordy Espina Font, Thomas Udo, Cas Leeflang.</p>
+    <p>&#169; Copyright 2023, Mart Coppelmans, Sara van Eersel, Jordi Espina Font, Thomas Udo, Cas Leeflang.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>System Overview &mdash; Cordyceps  documentation</title>
+  <title>Algorithm &mdash; Cordyceps  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Algorithm" href="algorithm.html" />
-    <link rel="prev" title="Project Overview" href="project_overview.html" /> 
+    <link rel="next" title="Interfaces" href="communication.html" />
+    <link rel="prev" title="System Overview" href="design.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,8 +47,8 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="terminology.html">Terminology</a></li>
 <li class="toctree-l1"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">System Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="algorithm.html">Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">System Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="communication.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Code documentation</a></li>
 </ul>
@@ -67,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">System Overview</li>
+      <li class="breadcrumb-item active">Algorithm</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/design.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/algorithm.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -77,50 +77,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="system-overview">
-<h1>System Overview<a class="headerlink" href="#system-overview" title="Permalink to this heading"></a></h1>
-<p>In <a class="reference internal" href="#topview-image-label"><span class="std std-ref">figure 1: Topview of the software architecture</span></a>. the topview architecture of the entire software is shown.
-For this implementation a centralised architecture is chosen.
-This means that the robots are controlled by a central node, the VS manager.
-This approach is chosen for the following reasons:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>It is easier to implement</p></li>
-<li><p>Minimal variability in delay</p></li>
+  <section id="algorithm">
+<h1>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this heading"></a></h1>
+<p>The Cordyceps controller implements a variant of the Pure Pursuit algorithm.
+The Pure Pursuit algorithm is a path tracking algorithm used for robotics and autonomous navigation.
+The algorithm determines the steering angle of the robot based on the current position relative to the desired path.
+A lookahead distance is used to determine the point on the path that the robot should aim for.</p>
+<p>More information about the Pure Pursuit algorithm can be found here: <a class="reference external" href="https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf">https://www.ri.cmu.edu/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf</a></p>
+<dl class="simple">
+<dt>The Pure Pursuit algorithm is chosen for the following reasons:</dt><dd><ul class="simple">
+<li><p>It is deterministic</p></li>
+<li><p>Low computational cost</p></li>
+<li><p>It is easy to implement</p></li>
+<li><p>It is easy to tune</p></li>
 </ul>
-</div></blockquote>
-<p>Task is the task that will be executed by the robots.
-This will enter the VS manager where the paths for the robots are calculated and the robots are assembled.
-The VS manager communicates with the robots via ROS topics.</p>
-<figure class="align-center" id="topview-image-label">
-<img alt="_images/TopOverview.png" src="_images/TopOverview.png" />
-<figcaption>
-<p><span class="caption-text">figure 1: Topview of the software architecture</span><a class="headerlink" href="#topview-image-label" title="Permalink to this image"></a></p>
-</figcaption>
-</figure>
-<p>In figure <a class="reference internal" href="#overviewmanager-image-label"><span class="std std-ref">figure 2: Overview of the virtual structure manager</span></a> the architecture of the virtual structure manager is shown.
-The dotted lines indicate non local communication.</p>
-<p>The vs_manager is the main node, it is responsible for receiving the task and giving the other nodes the correct information based on the incomming task.</p>
-<p>The pathplanner is responsible for calculating the route for each of the robots.
-The pathplanner can for example use nav2 (or any other pathplanner) the vs path, based on this path the pathplanner calculates the route for each of the robots.</p>
-<p>The Assembler is responsible for assembling the robots.
-It receives the task and chooses the correct robots for the task and assembles them at their starting position.</p>
-<p>The VS_Controller is responsible for sending the velocity commands based on the route and the current position of the robot.
-It receives the routes created by the pathplanner and the current position of the robots, based on this information it calculates the velocity commands for the robots.</p>
-<figure class="align-center" id="overviewmanager-image-label">
-<img alt="_images/overviewVSManager.png" src="_images/overviewVSManager.png" />
-<figcaption>
-<p><span class="caption-text">figure 2: Overview of the virtual structure manager</span><a class="headerlink" href="#overviewmanager-image-label" title="Permalink to this image"></a></p>
-</figcaption>
-</figure>
+</dd>
+</dl>
+<p>More information about how the Pure Pursuit algorithm is implemented in the Cordyceps controller can be found here: #TODO link to the paper</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="project_overview.html" class="btn btn-neutral float-left" title="Project Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="algorithm.html" class="btn btn-neutral float-right" title="Algorithm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="design.html" class="btn btn-neutral float-left" title="System Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="communication.html" class="btn btn-neutral float-right" title="Interfaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
