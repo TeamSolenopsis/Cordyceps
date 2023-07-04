@@ -53,6 +53,7 @@ jobs:
           path: cordyceps/docs/_build/latex  # Het pad naar de gegenereerde latex-documentatie
           
   retrieve-artifact:
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
