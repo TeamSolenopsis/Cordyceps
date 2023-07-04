@@ -9,12 +9,11 @@ Abbreviations
     * MQTT - Message Queuing Telemetry Transport
     * ROS - Robot Operating System
     * VS - Virtual Structure
+    * AGV - Automated Guided Vehicle
 
 Definitions
 ^^^^^^^^^^^
     * Path - Array of poses
-    * Point -
-    * Pose - Full definition of a frame in space. Depending on the context, it can be 2D {x, y, θ} or 3D {coordinates, quaternions}
-    * Route -
-
-TODO: add more definitions and abbreviations. And check if they are correct.
+    * Point - X and Y coordinates
+    * Pose - Point and orientation
+    * Route - Array of points
